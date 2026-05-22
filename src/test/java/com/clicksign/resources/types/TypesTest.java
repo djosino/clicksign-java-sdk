@@ -4,7 +4,9 @@ import com.clicksign.resources.notarial.CommunicateEvents;
 import com.clicksign.resources.notarial.NotificationChannel;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TypesTest {
 

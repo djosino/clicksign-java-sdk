@@ -3,14 +3,25 @@ package com.clicksign.resources.notarial;
 import com.clicksign.ClientConfig;
 import com.clicksign.JsonApiFixtures;
 import com.clicksign.errors.ValidationException;
-import com.clicksign.instrumentation.Instrumentation;
 import com.clicksign.jsonapi.BulkOperationsClient;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.junit.jupiter.api.*;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 
 class BulkRequirementTest {
 
@@ -29,7 +40,9 @@ class BulkRequirementTest {
     }
 
     @AfterAll
-    static void stopWireMock() { wireMock.stop(); }
+    static void stopWireMock() {
+        wireMock.stop();
+    }
 
     @BeforeEach
     void setUp() {

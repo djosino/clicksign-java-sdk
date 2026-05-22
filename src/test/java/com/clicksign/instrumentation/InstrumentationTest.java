@@ -1,18 +1,25 @@
 package com.clicksign.instrumentation;
 
-import com.clicksign.ClientConfig;
 import com.clicksign.ClicksignClient;
-import com.clicksign.Environment;
-import com.clicksign.errors.ServerException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 
 class InstrumentationTest {
 
@@ -25,10 +32,14 @@ class InstrumentationTest {
     }
 
     @AfterAll
-    static void stopWireMock() { wireMock.stop(); }
+    static void stopWireMock() {
+        wireMock.stop();
+    }
 
     @BeforeEach
-    void setUp() { wireMock.resetAll(); }
+    void setUp() {
+        wireMock.resetAll();
+    }
 
     private ClicksignClient.Builder clientBuilder() {
         return ClicksignClient.builder()
@@ -112,7 +123,9 @@ class InstrumentationTest {
             .willReturn(okJson("{\"data\":[]}")));
 
         ClicksignClient client = clientBuilder()
-            .onRequest(e -> { throw new RuntimeException("callback boom"); })
+            .onRequest(e -> {
+                throw new RuntimeException("callback boom");
+            })
             .build();
 
         // Should not throw despite callback exception
