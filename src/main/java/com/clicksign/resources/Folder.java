@@ -4,7 +4,11 @@ import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a Clicksign folder. */
 public final class Folder {
@@ -38,7 +42,9 @@ public final class Folder {
                 for (Object item : (List<?>) data) {
                     if (item instanceof Map) {
                         Object fid = ((Map<String, Object>) item).get("id");
-                        if (fid != null) childIds.add(fid.toString());
+                        if (fid != null) {
+                            childIds.add(fid.toString());
+                        }
                     }
                 }
             }
@@ -46,22 +52,50 @@ public final class Folder {
         this.childFolderIds = Collections.unmodifiableList(childIds);
     }
 
-    public String id()                   { return id; }
-    public String name()                 { return name; }
-    public String path()                 { return path; }
-    public boolean inRoot()              { return inRoot; }
-    public String folderId()             { return folderId; }
-    public List<String> childFolderIds() { return childFolderIds; }
-    public String createdAt()            { return createdAt; }
-    public String modifiedAt()           { return modifiedAt; }
+    public String id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String path() {
+        return path;
+    }
+
+    public boolean inRoot() {
+        return inRoot;
+    }
+
+    public String folderId() {
+        return folderId;
+    }
+
+    public List<String> childFolderIds() {
+        return childFolderIds;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "Folder{id='" + id + "', name='" + name + "', path='" + path + "'}";
     }
 
-    private static String str(Object o)   { return o != null ? o.toString() : null; }
-    private static boolean bool(Object o) { return Boolean.TRUE.equals(o) || "true".equals(str(o)); }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
+
+    private static boolean bool(Object o) {
+        return Boolean.TRUE.equals(o) || "true".equals(str(o));
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -70,12 +104,16 @@ public final class Folder {
         private static final String ENDPOINT = "/folders";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Folder> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Folder> result = new ArrayList<>();
-            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) result.add(new Folder(obj));
+            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) {
+                result.add(new Folder(obj));
+            }
             return Collections.unmodifiableList(result);
         }
 
@@ -110,7 +148,9 @@ public final class Folder {
         }
 
         Map<String, Object> toRelationships() {
-            if (folderId == null) return Collections.emptyMap();
+            if (folderId == null) {
+                return Collections.emptyMap();
+            }
             Map<String, Object> data = new LinkedHashMap<>();
             data.put("type", "folders");
             data.put("id",   folderId);
@@ -121,7 +161,9 @@ public final class Folder {
             return rels;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String name;
@@ -129,11 +171,20 @@ public final class Folder {
 
             private Builder() {}
 
-            public Builder name(String v)     { this.name = v; return this; }
-            public Builder folderId(String v) { this.folderId = v; return this; }
+            public Builder name(String v) {
+                this.name = v;
+                return this;
+            }
+
+            public Builder folderId(String v) {
+                this.folderId = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (name == null || name.isBlank()) throw new IllegalArgumentException("name is required");
+                if (name == null || name.isBlank()) {
+                    throw new IllegalArgumentException("name is required");
+                }
                 return new CreateParams(this);
             }
         }

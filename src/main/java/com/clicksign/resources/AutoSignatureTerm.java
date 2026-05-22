@@ -5,7 +5,9 @@ import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
 import com.clicksign.resources.types.AutoSignatureSigner;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /** Automatic signature authorization term for a signer. */
 public final class AutoSignatureTerm {
@@ -29,20 +31,42 @@ public final class AutoSignatureTerm {
         this.modifiedAt    = str(a.get("modified"));
     }
 
-    public String id()            { return id; }
-    public String name()          { return name; }
-    public String email()         { return email; }
-    public String documentation() { return documentation; }
-    public String birthday()      { return birthday; }
-    public String createdAt()     { return createdAt; }
-    public String modifiedAt()    { return modifiedAt; }
+    public String id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String email() {
+        return email;
+    }
+
+    public String documentation() {
+        return documentation;
+    }
+
+    public String birthday() {
+        return birthday;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "AutoSignatureTerm{id='" + id + "', email='" + email + "'}";
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -51,7 +75,9 @@ public final class AutoSignatureTerm {
         private static final String ENDPOINT = "/auto_signature/terms";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public AutoSignatureTerm retrieve(String id) {
             String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
@@ -99,7 +125,9 @@ public final class AutoSignatureTerm {
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String signerName;
@@ -118,24 +146,55 @@ public final class AutoSignatureTerm {
                     .signerBirthday(signer.birthday());
             }
 
-            public Builder signerName(String v)          { this.signerName = v; return this; }
-            public Builder signerEmail(String v)         { this.signerEmail = v; return this; }
-            public Builder signerDocumentation(String v) { this.signerDocumentation = v; return this; }
-            public Builder signerBirthday(String v)      { this.signerBirthday = v; return this; }
-            public Builder apiEmail(String v)            { this.apiEmail = v; return this; }
-            public Builder adminEmail(String v)          { this.adminEmail = v; return this; }
+            public Builder signerName(String v) {
+                this.signerName = v;
+                return this;
+            }
+
+            public Builder signerEmail(String v) {
+                this.signerEmail = v;
+                return this;
+            }
+
+            public Builder signerDocumentation(String v) {
+                this.signerDocumentation = v;
+                return this;
+            }
+
+            public Builder signerBirthday(String v) {
+                this.signerBirthday = v;
+                return this;
+            }
+
+            public Builder apiEmail(String v) {
+                this.apiEmail = v;
+                return this;
+            }
+
+            public Builder adminEmail(String v) {
+                this.adminEmail = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (signerName == null || signerName.isBlank()) throw new IllegalArgumentException("signerName is required");
-                if (signerEmail == null || signerEmail.isBlank()) throw new IllegalArgumentException("signerEmail is required");
+                if (signerName == null || signerName.isBlank()) {
+                    throw new IllegalArgumentException("signerName is required");
+                }
+                if (signerEmail == null || signerEmail.isBlank()) {
+                    throw new IllegalArgumentException("signerEmail is required");
+                }
                 if (signerDocumentation == null || signerDocumentation.isBlank()) {
                     throw new IllegalArgumentException("signerDocumentation is required");
                 }
                 if (signerBirthday == null || signerBirthday.isBlank()) {
                     throw new IllegalArgumentException("signerBirthday is required");
                 }
-                if (apiEmail == null || apiEmail.isBlank()) throw new IllegalArgumentException("apiEmail is required");
-                if (adminEmail == null || adminEmail.isBlank()) throw new IllegalArgumentException("adminEmail is required");
+                if (apiEmail == null || apiEmail.isBlank()) {
+                    throw new IllegalArgumentException("apiEmail is required");
+                }
+                if (adminEmail == null || adminEmail.isBlank()) {
+                    throw new IllegalArgumentException("adminEmail is required");
+                }
                 return new CreateParams(this);
             }
         }

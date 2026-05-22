@@ -19,9 +19,13 @@ public enum NotificationChannel {
     }
 
     public static NotificationChannel fromApiValue(String value) {
-        if (value == null) return null;
+        if (value == null) {
+            return null;
+        }
         for (NotificationChannel ch : values()) {
-            if (ch.apiValue.equals(value)) return ch;
+            if (ch.apiValue.equals(value)) {
+                return ch;
+            }
         }
         throw new IllegalArgumentException("unknown notification channel: " + value);
     }

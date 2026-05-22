@@ -25,7 +25,9 @@ public final class Metadata {
     }
 
     public static Metadata fromMap(Map<String, Object> raw) {
-        if (raw == null || raw.isEmpty()) return null;
+        if (raw == null || raw.isEmpty()) {
+            return null;
+        }
         return new Metadata(raw);
     }
 

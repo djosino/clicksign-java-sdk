@@ -25,10 +25,20 @@ public class ClicksignException extends RuntimeException {
         this.responseBody = null;
     }
 
-    public int statusCode()      { return statusCode; }
-    public String requestId()    { return requestId; }
-    public String responseBody() { return responseBody; }
+    public int statusCode() {
+        return statusCode;
+    }
+
+    public String requestId() {
+        return requestId;
+    }
+
+    public String responseBody() {
+        return responseBody;
+    }
 
     /** Whether this error is safe to retry. */
-    public boolean isRetryable() { return false; }
+    public boolean isRetryable() {
+        return false;
+    }
 }

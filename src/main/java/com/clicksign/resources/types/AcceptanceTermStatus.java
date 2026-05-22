@@ -12,8 +12,12 @@ public enum AcceptanceTermStatus implements ApiStringEnum {
 
     private final String apiValue;
 
-    AcceptanceTermStatus(String apiValue) { this.apiValue = apiValue; }
+    AcceptanceTermStatus(String apiValue) {
+        this.apiValue = apiValue;
+    }
 
     @Override
-    public String apiValue() { return apiValue; }
+    public String apiValue() {
+        return apiValue;
+    }
 }

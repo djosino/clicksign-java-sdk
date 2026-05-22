@@ -16,8 +16,12 @@ public enum RequirementRole implements ApiStringEnum {
 
     private final String apiValue;
 
-    RequirementRole(String apiValue) { this.apiValue = apiValue; }
+    RequirementRole(String apiValue) {
+        this.apiValue = apiValue;
+    }
 
     @Override
-    public String apiValue() { return apiValue; }
+    public String apiValue() {
+        return apiValue;
+    }
 }

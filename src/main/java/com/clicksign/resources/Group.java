@@ -4,7 +4,11 @@ import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a Clicksign user group. */
 public final class Group {
@@ -22,17 +26,30 @@ public final class Group {
         this.modifiedAt = str(a.get("modified"));
     }
 
-    public String id()          { return id; }
-    public String name()        { return name; }
-    public String createdAt()   { return createdAt; }
-    public String modifiedAt()  { return modifiedAt; }
+    public String id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "Group{id='" + id + "', name='" + name + "'}";
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -41,12 +58,16 @@ public final class Group {
         private static final String ENDPOINT = "/groups";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Group> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Group> result = new ArrayList<>();
-            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) result.add(new Group(obj));
+            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) {
+                result.add(new Group(obj));
+            }
             return Collections.unmodifiableList(result);
         }
 
@@ -106,7 +127,9 @@ public final class Group {
 
         private final String name;
 
-        private CreateParams(Builder b) { this.name = b.name; }
+        private CreateParams(Builder b) {
+            this.name = b.name;
+        }
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
@@ -114,17 +137,24 @@ public final class Group {
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String name;
 
             private Builder() {}
 
-            public Builder name(String v) { this.name = v; return this; }
+            public Builder name(String v) {
+                this.name = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (name == null || name.isBlank()) throw new IllegalArgumentException("name is required");
+                if (name == null || name.isBlank()) {
+                    throw new IllegalArgumentException("name is required");
+                }
                 return new CreateParams(this);
             }
         }
@@ -136,24 +166,35 @@ public final class Group {
 
         private final String name;
 
-        private UpdateParams(Builder b) { this.name = b.name; }
+        private UpdateParams(Builder b) {
+            this.name = b.name;
+        }
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (name != null) m.put("name", name);
+            if (name != null) {
+                m.put("name", name);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String name;
 
             private Builder() {}
 
-            public Builder name(String v) { this.name = v; return this; }
+            public Builder name(String v) {
+                this.name = v;
+                return this;
+            }
 
-            public UpdateParams build() { return new UpdateParams(this); }
+            public UpdateParams build() {
+                return new UpdateParams(this);
+            }
         }
     }
 }

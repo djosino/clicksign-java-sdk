@@ -2,7 +2,14 @@ package com.clicksign.jsonapi;
 
 import com.clicksign.resources.types.ApiStringEnum;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -125,7 +132,9 @@ public class ResourceQuery<T> {
             JsonApiParser.ParsedResponse parsed = JsonApiParser.parse(raw);
 
             List<T> items = new ArrayList<>();
-            for (JsonApiParser.ResourceObject obj : parsed.data()) items.add(mapper.apply(obj));
+            for (JsonApiParser.ResourceObject obj : parsed.data()) {
+                items.add(mapper.apply(obj));
+            }
             all.addAll(items);
 
             if (parsed.nextLink() != null) {
@@ -142,7 +151,9 @@ public class ResourceQuery<T> {
 
     private Map<String, String> buildQueryParams() {
         Map<String, String> p = new LinkedHashMap<>(params);
-        if (includeParam != null) p.put("include", includeParam);
+        if (includeParam != null) {
+            p.put("include", includeParam);
+        }
         return p;
     }
 }

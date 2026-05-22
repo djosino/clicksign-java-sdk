@@ -6,9 +6,13 @@ public interface ApiStringEnum {
     String apiValue();
 
     static <E extends Enum<E> & ApiStringEnum> E tryParse(Class<E> type, String value) {
-        if (value == null) return null;
+        if (value == null) {
+            return null;
+        }
         for (E constant : type.getEnumConstants()) {
-            if (constant.apiValue().equals(value)) return constant;
+            if (constant.apiValue().equals(value)) {
+                return constant;
+            }
         }
         return null;
     }

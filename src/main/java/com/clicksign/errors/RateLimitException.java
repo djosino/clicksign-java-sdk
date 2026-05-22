@@ -12,8 +12,12 @@ public class RateLimitException extends ClicksignException {
     }
 
     /** Seconds from {@code Retry-After} header, if present. */
-    public Long retryAfterSeconds() { return retryAfterSeconds; }
+    public Long retryAfterSeconds() {
+        return retryAfterSeconds;
+    }
 
     @Override
-    public boolean isRetryable() { return true; }
+    public boolean isRetryable() {
+        return true;
+    }
 }

@@ -8,8 +8,12 @@ public enum DocumentStatus implements ApiStringEnum {
 
     private final String apiValue;
 
-    DocumentStatus(String apiValue) { this.apiValue = apiValue; }
+    DocumentStatus(String apiValue) {
+        this.apiValue = apiValue;
+    }
 
     @Override
-    public String apiValue() { return apiValue; }
+    public String apiValue() {
+        return apiValue;
+    }
 }

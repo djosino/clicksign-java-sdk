@@ -8,7 +8,11 @@ import com.clicksign.resources.types.AcceptanceTermStatus;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.SenderNameOption;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** WhatsApp acceptance term (Click.Agree). */
 public final class AcceptanceTermWhatsapp {
@@ -48,32 +52,74 @@ public final class AcceptanceTermWhatsapp {
         this.modifiedAt        = str(a.get("modified"));
     }
 
-    public String id()               { return id; }
-    public String title()            { return title; }
-    public String message()          { return message; }
-    public String signerName()       { return signerName; }
-    public String signerPhone()      { return signerPhone; }
-    public String senderPhone()      { return senderPhone; }
-    public String senderNameOption() { return senderNameOption; }
-    public String senderName()       { return senderName; }
-    public String status()           { return status; }
+    public String id() {
+        return id;
+    }
+
+    public String title() {
+        return title;
+    }
+
+    public String message() {
+        return message;
+    }
+
+    public String signerName() {
+        return signerName;
+    }
+
+    public String signerPhone() {
+        return signerPhone;
+    }
+
+    public String senderPhone() {
+        return senderPhone;
+    }
+
+    public String senderNameOption() {
+        return senderNameOption;
+    }
+
+    public String senderName() {
+        return senderName;
+    }
+
+    public String status() {
+        return status;
+    }
+
     public AcceptanceTermStatus statusAsEnum() {
         return ApiStringEnum.tryParse(AcceptanceTermStatus.class, status);
     }
+
     public SenderNameOption senderNameOptionAsEnum() {
         return ApiStringEnum.tryParse(SenderNameOption.class, senderNameOption);
     }
-    public String statusFlow()       { return statusFlow; }
-    public String sentAt()           { return sentAt; }
-    public String createdAt()        { return createdAt; }
-    public String modifiedAt()       { return modifiedAt; }
+
+    public String statusFlow() {
+        return statusFlow;
+    }
+
+    public String sentAt() {
+        return sentAt;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "AcceptanceTermWhatsapp{id='" + id + "', status='" + status + "'}";
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -82,7 +128,9 @@ public final class AcceptanceTermWhatsapp {
         private static final String ENDPOINT = "/acceptance_term/whatsapps";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<AcceptanceTermWhatsapp> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
@@ -150,11 +198,15 @@ public final class AcceptanceTermWhatsapp {
             m.put("message", message);
             m.put("signer_phone", signerPhone);
             m.put("signer_name", signerName);
-            if (senderPhone != null) m.put("sender_phone", senderPhone);
+            if (senderPhone != null) {
+                m.put("sender_phone", senderPhone);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String title;
@@ -166,24 +218,56 @@ public final class AcceptanceTermWhatsapp {
 
             private Builder() {}
 
-            public Builder title(String v)            { this.title = v; return this; }
-            public Builder senderNameOption(String v) { this.senderNameOption = v; return this; }
-            public Builder senderNameOption(SenderNameOption v) { return senderNameOption(v.apiValue()); }
-            public Builder senderPhone(String v)      { this.senderPhone = v; return this; }
-            public Builder message(String v)          { this.message = v; return this; }
-            public Builder signerPhone(String v)      { this.signerPhone = v; return this; }
-            public Builder signerName(String v)       { this.signerName = v; return this; }
+            public Builder title(String v) {
+                this.title = v;
+                return this;
+            }
+
+            public Builder senderNameOption(String v) {
+                this.senderNameOption = v;
+                return this;
+            }
+
+            public Builder senderNameOption(SenderNameOption v) {
+                return senderNameOption(v.apiValue());
+            }
+
+            public Builder senderPhone(String v) {
+                this.senderPhone = v;
+                return this;
+            }
+
+            public Builder message(String v) {
+                this.message = v;
+                return this;
+            }
+
+            public Builder signerPhone(String v) {
+                this.signerPhone = v;
+                return this;
+            }
+
+            public Builder signerName(String v) {
+                this.signerName = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (title == null || title.isBlank()) throw new IllegalArgumentException("title is required");
+                if (title == null || title.isBlank()) {
+                    throw new IllegalArgumentException("title is required");
+                }
                 if (senderNameOption == null || senderNameOption.isBlank()) {
                     throw new IllegalArgumentException("senderNameOption is required");
                 }
-                if (message == null || message.isBlank()) throw new IllegalArgumentException("message is required");
+                if (message == null || message.isBlank()) {
+                    throw new IllegalArgumentException("message is required");
+                }
                 if (signerPhone == null || signerPhone.isBlank()) {
                     throw new IllegalArgumentException("signerPhone is required");
                 }
-                if (signerName == null || signerName.isBlank()) throw new IllegalArgumentException("signerName is required");
+                if (signerName == null || signerName.isBlank()) {
+                    throw new IllegalArgumentException("signerName is required");
+                }
                 return new CreateParams(this);
             }
         }
@@ -195,26 +279,40 @@ public final class AcceptanceTermWhatsapp {
 
         private final String status;
 
-        private UpdateParams(Builder b) { this.status = b.status; }
+        private UpdateParams(Builder b) {
+            this.status = b.status;
+        }
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (status != null) m.put("status", status);
+            if (status != null) {
+                m.put("status", status);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String status;
 
             private Builder() {}
 
-            public Builder status(String v) { this.status = v; return this; }
-            public Builder status(AcceptanceTermStatus v) { return status(v.apiValue()); }
+            public Builder status(String v) {
+                this.status = v;
+                return this;
+            }
+
+            public Builder status(AcceptanceTermStatus v) {
+                return status(v.apiValue());
+            }
 
             public UpdateParams build() {
-                if (status == null || status.isBlank()) throw new IllegalArgumentException("status is required");
+                if (status == null || status.isBlank()) {
+                    throw new IllegalArgumentException("status is required");
+                }
                 return new UpdateParams(this);
             }
         }

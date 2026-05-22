@@ -10,7 +10,11 @@ import com.clicksign.resources.types.EnvelopeLocale;
 import com.clicksign.resources.types.EnvelopeStatus;
 import com.clicksign.resources.types.Metadata;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a Clicksign envelope.
@@ -69,47 +73,110 @@ public final class Envelope {
         this.modifiedAt                    = str(a.get("modified"));
     }
 
-    public String id()                                { return id; }
-    public String name()                              { return name; }
-    public String status()                            { return status; }
-    public String locale()                            { return locale; }
-    public boolean autoClose()                        { return autoClose; }
-    public boolean blockAfterRefusal()                { return blockAfterRefusal; }
-    public Map<String, Object> metadata()             { return metadata; }
+    public String id() {
+        return id;
+    }
 
-    public Metadata metadataTyped()                   { return Metadata.fromMap(metadata); }
-    public EnvelopeStatus statusAsEnum()              { return ApiStringEnum.tryParse(EnvelopeStatus.class, status); }
-    public EnvelopeLocale localeAsEnum()            { return ApiStringEnum.tryParse(EnvelopeLocale.class, locale); }
+    public String name() {
+        return name;
+    }
+
+    public String status() {
+        return status;
+    }
+
+    public String locale() {
+        return locale;
+    }
+
+    public boolean autoClose() {
+        return autoClose;
+    }
+
+    public boolean blockAfterRefusal() {
+        return blockAfterRefusal;
+    }
+
+    public Map<String, Object> metadata() {
+        return metadata;
+    }
+
+    public Metadata metadataTyped() {
+        return Metadata.fromMap(metadata);
+    }
+
+    public EnvelopeStatus statusAsEnum() {
+        return ApiStringEnum.tryParse(EnvelopeStatus.class, status);
+    }
+
+    public EnvelopeLocale localeAsEnum() {
+        return ApiStringEnum.tryParse(EnvelopeLocale.class, locale);
+    }
+
     public DeadlinePartialSignatureAction deadlinePartialSignatureActionAsEnum() {
         return ApiStringEnum.tryParse(DeadlinePartialSignatureAction.class, deadlinePartialSignatureAction);
     }
 
-    public Integer remindInterval()                   { return remindInterval; }
-    public String deadlineAt()                        { return deadlineAt; }
-    public String deadlinePartialSignatureAction()    { return deadlinePartialSignatureAction; }
-    public String defaultSubject()                    { return defaultSubject; }
-    public String defaultMessage()                    { return defaultMessage; }
-    public String folderId()                          { return folderId; }
-    public String createdAt()                         { return createdAt; }
-    public String modifiedAt()                        { return modifiedAt; }
+    public Integer remindInterval() {
+        return remindInterval;
+    }
+
+    public String deadlineAt() {
+        return deadlineAt;
+    }
+
+    public String deadlinePartialSignatureAction() {
+        return deadlinePartialSignatureAction;
+    }
+
+    public String defaultSubject() {
+        return defaultSubject;
+    }
+
+    public String defaultMessage() {
+        return defaultMessage;
+    }
+
+    public String folderId() {
+        return folderId;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "Envelope{id='" + id + "', name='" + name + "', status='" + status + "'}";
     }
 
-    private static String str(Object o)  { return o != null ? o.toString() : null; }
-    private static boolean bool(Object o){ return Boolean.TRUE.equals(o) || "true".equals(str(o)); }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
+
+    private static boolean bool(Object o) {
+        return Boolean.TRUE.equals(o) || "true".equals(str(o));
+    }
 
     @SuppressWarnings("unchecked")
     private static Map<String, Object> objectMap(Object o) {
-        if (!(o instanceof Map)) return null;
+        if (!(o instanceof Map)) {
+            return null;
+        }
         return Collections.unmodifiableMap(new LinkedHashMap<>((Map<String, Object>) o));
     }
 
     private static Integer integer(Object o) {
-        if (o == null) return null;
-        if (o instanceof Number) return ((Number) o).intValue();
+        if (o == null) {
+            return null;
+        }
+        if (o instanceof Number) {
+            return ((Number) o).intValue();
+        }
         try {
             return Integer.parseInt(o.toString());
         } catch (NumberFormatException e) {
@@ -124,7 +191,9 @@ public final class Envelope {
         private static final String ENDPOINT = "/envelopes";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Envelope> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
@@ -212,21 +281,43 @@ public final class Envelope {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (name                            != null) m.put("name",                              name);
-            if (locale                          != null) m.put("locale",                            locale);
-            if (autoClose                       != null) m.put("auto_close",                          autoClose);
-            if (blockAfterRefusal               != null) m.put("block_after_refusal",                 blockAfterRefusal);
-            if (remindInterval                  != null) m.put("remind_interval",                     remindInterval);
-            if (metadata                        != null) m.put("metadata",                            metadata);
-            if (deadlineAt                      != null) m.put("deadline_at",                         deadlineAt);
-            if (deadlinePartialSignatureAction  != null) m.put("deadline_partial_signature_action", deadlinePartialSignatureAction);
-            if (defaultSubject                  != null) m.put("default_subject",                     defaultSubject);
-            if (defaultMessage                  != null) m.put("default_message",                     defaultMessage);
+            if (name                            != null) {
+                m.put("name",                              name);
+            }
+            if (locale                          != null) {
+                m.put("locale",                            locale);
+            }
+            if (autoClose                       != null) {
+                m.put("auto_close",                          autoClose);
+            }
+            if (blockAfterRefusal               != null) {
+                m.put("block_after_refusal",                 blockAfterRefusal);
+            }
+            if (remindInterval                  != null) {
+                m.put("remind_interval",                     remindInterval);
+            }
+            if (metadata                        != null) {
+                m.put("metadata",                            metadata);
+            }
+            if (deadlineAt                      != null) {
+                m.put("deadline_at",                         deadlineAt);
+            }
+            if (deadlinePartialSignatureAction  != null) {
+                m.put("deadline_partial_signature_action", deadlinePartialSignatureAction);
+            }
+            if (defaultSubject                  != null) {
+                m.put("default_subject",                     defaultSubject);
+            }
+            if (defaultMessage                  != null) {
+                m.put("default_message",                     defaultMessage);
+            }
             return m;
         }
 
         Map<String, Object> toRelationships() {
-            if (folderId == null) return Collections.emptyMap();
+            if (folderId == null) {
+                return Collections.emptyMap();
+            }
             Map<String, Object> data = new LinkedHashMap<>();
             data.put("type", "folders");
             data.put("id",   folderId);
@@ -237,7 +328,9 @@ public final class Envelope {
             return rels;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String name;
@@ -254,27 +347,77 @@ public final class Envelope {
 
             private Builder() {}
 
-            public Builder name(String name)                                    { this.name = name; return this; }
-            public Builder locale(String locale)                                { this.locale = locale; return this; }
-            public Builder locale(EnvelopeLocale locale)                        { return locale(locale.apiValue()); }
-            public Builder autoClose(boolean autoClose)                         { this.autoClose = autoClose; return this; }
-            public Builder blockAfterRefusal(boolean v)                         { this.blockAfterRefusal = v; return this; }
-            public Builder remindInterval(int days)                             { this.remindInterval = days; return this; }
-            public Builder metadata(Map<String, Object> metadata)               { this.metadata = metadata; return this; }
+            public Builder name(String name) {
+                this.name = name;
+                return this;
+            }
+
+            public Builder locale(String locale) {
+                this.locale = locale;
+                return this;
+            }
+
+            public Builder locale(EnvelopeLocale locale) {
+                return locale(locale.apiValue());
+            }
+
+            public Builder autoClose(boolean autoClose) {
+                this.autoClose = autoClose;
+                return this;
+            }
+
+            public Builder blockAfterRefusal(boolean v) {
+                this.blockAfterRefusal = v;
+                return this;
+            }
+
+            public Builder remindInterval(int days) {
+                this.remindInterval = days;
+                return this;
+            }
+
+            public Builder metadata(Map<String, Object> metadata) {
+                this.metadata = metadata;
+                return this;
+            }
+
             public Builder metadata(Metadata metadata) {
                 return metadata(metadata != null ? metadata.toMap() : null);
             }
-            public Builder deadlineAt(String deadlineAt)                        { this.deadlineAt = deadlineAt; return this; }
-            public Builder deadlinePartialSignatureAction(String action)        { this.deadlinePartialSignatureAction = action; return this; }
+
+            public Builder deadlineAt(String deadlineAt) {
+                this.deadlineAt = deadlineAt;
+                return this;
+            }
+
+            public Builder deadlinePartialSignatureAction(String action) {
+                this.deadlinePartialSignatureAction = action;
+                return this;
+            }
+
             public Builder deadlinePartialSignatureAction(DeadlinePartialSignatureAction action) {
                 return deadlinePartialSignatureAction(action.apiValue());
             }
-            public Builder defaultSubject(String subject)                       { this.defaultSubject = subject; return this; }
-            public Builder defaultMessage(String message)                       { this.defaultMessage = message; return this; }
-            public Builder folderId(String folderId)                            { this.folderId = folderId; return this; }
+
+            public Builder defaultSubject(String subject) {
+                this.defaultSubject = subject;
+                return this;
+            }
+
+            public Builder defaultMessage(String message) {
+                this.defaultMessage = message;
+                return this;
+            }
+
+            public Builder folderId(String folderId) {
+                this.folderId = folderId;
+                return this;
+            }
 
             public CreateParams build() {
-                if (name == null || name.isBlank()) throw new IllegalArgumentException("name is required");
+                if (name == null || name.isBlank()) {
+                    throw new IllegalArgumentException("name is required");
+                }
                 EnvelopeValidation.validateOptionalFields(
                     locale, remindInterval, deadlineAt, deadlinePartialSignatureAction, defaultSubject);
                 return new CreateParams(this);
@@ -315,21 +458,45 @@ public final class Envelope {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (name                            != null) m.put("name",                              name);
-            if (status                          != null) m.put("status",                            status);
-            if (locale                          != null) m.put("locale",                            locale);
-            if (autoClose                       != null) m.put("auto_close",                          autoClose);
-            if (blockAfterRefusal               != null) m.put("block_after_refusal",                 blockAfterRefusal);
-            if (remindInterval                  != null) m.put("remind_interval",                     remindInterval);
-            if (metadata                        != null) m.put("metadata",                            metadata);
-            if (deadlineAt                      != null) m.put("deadline_at",                         deadlineAt);
-            if (deadlinePartialSignatureAction  != null) m.put("deadline_partial_signature_action", deadlinePartialSignatureAction);
-            if (defaultSubject                  != null) m.put("default_subject",                     defaultSubject);
-            if (defaultMessage                  != null) m.put("default_message",                     defaultMessage);
+            if (name                            != null) {
+                m.put("name",                              name);
+            }
+            if (status                          != null) {
+                m.put("status",                            status);
+            }
+            if (locale                          != null) {
+                m.put("locale",                            locale);
+            }
+            if (autoClose                       != null) {
+                m.put("auto_close",                          autoClose);
+            }
+            if (blockAfterRefusal               != null) {
+                m.put("block_after_refusal",                 blockAfterRefusal);
+            }
+            if (remindInterval                  != null) {
+                m.put("remind_interval",                     remindInterval);
+            }
+            if (metadata                        != null) {
+                m.put("metadata",                            metadata);
+            }
+            if (deadlineAt                      != null) {
+                m.put("deadline_at",                         deadlineAt);
+            }
+            if (deadlinePartialSignatureAction  != null) {
+                m.put("deadline_partial_signature_action", deadlinePartialSignatureAction);
+            }
+            if (defaultSubject                  != null) {
+                m.put("default_subject",                     defaultSubject);
+            }
+            if (defaultMessage                  != null) {
+                m.put("default_message",                     defaultMessage);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String name;
@@ -346,25 +513,76 @@ public final class Envelope {
 
             private Builder() {}
 
-            public Builder name(String name)                             { this.name = name; return this; }
-            public Builder status(String status)                         { this.status = status; return this; }
-            public Builder status(EnvelopeStatus status)                 { return status(status.apiValue()); }
-            public Builder locale(String locale)                         { this.locale = locale; return this; }
-            public Builder locale(EnvelopeLocale locale)                 { return locale(locale.apiValue()); }
-            public Builder autoClose(boolean v)                          { this.autoClose = v; return this; }
-            public Builder blockAfterRefusal(boolean v)                  { this.blockAfterRefusal = v; return this; }
-            public Builder remindInterval(int days)                      { this.remindInterval = days; return this; }
-            public Builder metadata(Map<String, Object> metadata)        { this.metadata = metadata; return this; }
+            public Builder name(String name) {
+                this.name = name;
+                return this;
+            }
+
+            public Builder status(String status) {
+                this.status = status;
+                return this;
+            }
+
+            public Builder status(EnvelopeStatus status) {
+                return status(status.apiValue());
+            }
+
+            public Builder locale(String locale) {
+                this.locale = locale;
+                return this;
+            }
+
+            public Builder locale(EnvelopeLocale locale) {
+                return locale(locale.apiValue());
+            }
+
+            public Builder autoClose(boolean v) {
+                this.autoClose = v;
+                return this;
+            }
+
+            public Builder blockAfterRefusal(boolean v) {
+                this.blockAfterRefusal = v;
+                return this;
+            }
+
+            public Builder remindInterval(int days) {
+                this.remindInterval = days;
+                return this;
+            }
+
+            public Builder metadata(Map<String, Object> metadata) {
+                this.metadata = metadata;
+                return this;
+            }
+
             public Builder metadata(Metadata metadata) {
                 return metadata(metadata != null ? metadata.toMap() : null);
             }
-            public Builder deadlineAt(String deadlineAt)                 { this.deadlineAt = deadlineAt; return this; }
-            public Builder deadlinePartialSignatureAction(String action) { this.deadlinePartialSignatureAction = action; return this; }
+
+            public Builder deadlineAt(String deadlineAt) {
+                this.deadlineAt = deadlineAt;
+                return this;
+            }
+
+            public Builder deadlinePartialSignatureAction(String action) {
+                this.deadlinePartialSignatureAction = action;
+                return this;
+            }
+
             public Builder deadlinePartialSignatureAction(DeadlinePartialSignatureAction action) {
                 return deadlinePartialSignatureAction(action.apiValue());
             }
-            public Builder defaultSubject(String subject)                { this.defaultSubject = subject; return this; }
-            public Builder defaultMessage(String message)                { this.defaultMessage = message; return this; }
+
+            public Builder defaultSubject(String subject) {
+                this.defaultSubject = subject;
+                return this;
+            }
+
+            public Builder defaultMessage(String message) {
+                this.defaultMessage = message;
+                return this;
+            }
 
             public UpdateParams build() {
                 EnvelopeValidation.validateOptionalFields(

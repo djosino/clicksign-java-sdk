@@ -1,7 +1,8 @@
 package com.clicksign.jsonapi;
 
 import com.clicksign.ClientConfig;
-import com.clicksign.errors.*;
+import com.clicksign.errors.ClicksignException;
+import com.clicksign.errors.TimeoutException;
 import com.clicksign.http.ErrorMessageExtractor;
 
 import java.io.IOException;
@@ -57,10 +58,14 @@ public final class BulkOperationsClient {
                 return handleResponse(response);
             } catch (IOException e) {
                 TimeoutException timeout = new TimeoutException(e.getMessage(), e);
-                if (attempts > config.maxRetries()) throw timeout;
+                if (attempts > config.maxRetries()) {
+                    throw timeout;
+                }
                 sleepJitter(attempts);
             } catch (TimeoutException e) {
-                if (attempts > config.maxRetries()) throw e;
+                if (attempts > config.maxRetries()) {
+                    throw e;
+                }
                 sleepJitter(attempts);
             } catch (ClicksignException e) {
                 // BulkOperationsClient does NOT retry ServerException — only TimeoutException.

@@ -20,12 +20,29 @@ public final class RetryEvent {
         this.waitMs     = waitMs;
     }
 
-    public String method()    { return method; }
-    public String path()      { return path; }
-    public int attempt()      { return attempt; }
-    public int maxRetries()   { return maxRetries; }
-    public Throwable error()  { return error; }
-    public long waitMs()      { return waitMs; }
+    public String method() {
+        return method;
+    }
+
+    public String path() {
+        return path;
+    }
+
+    public int attempt() {
+        return attempt;
+    }
+
+    public int maxRetries() {
+        return maxRetries;
+    }
+
+    public Throwable error() {
+        return error;
+    }
+
+    public long waitMs() {
+        return waitMs;
+    }
 
     @Override
     public String toString() {

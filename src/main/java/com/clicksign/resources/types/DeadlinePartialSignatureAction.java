@@ -6,8 +6,12 @@ public enum DeadlinePartialSignatureAction implements ApiStringEnum {
 
     private final String apiValue;
 
-    DeadlinePartialSignatureAction(String apiValue) { this.apiValue = apiValue; }
+    DeadlinePartialSignatureAction(String apiValue) {
+        this.apiValue = apiValue;
+    }
 
     @Override
-    public String apiValue() { return apiValue; }
+    public String apiValue() {
+        return apiValue;
+    }
 }

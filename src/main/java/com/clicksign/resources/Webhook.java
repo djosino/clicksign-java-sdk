@@ -6,7 +6,11 @@ import com.clicksign.jsonapi.JsonApiSerializer;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.WebhookEventType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a Clicksign webhook. Full CRUD supported. */
 public final class Webhook {
@@ -31,35 +35,60 @@ public final class Webhook {
         Object rawEvents = a.get("events");
         List<String> ev = new ArrayList<>();
         if (rawEvents instanceof List) {
-            for (Object e : (List<?>) rawEvents) ev.add(e.toString());
+            for (Object e : (List<?>) rawEvents) {
+                ev.add(e.toString());
+            }
         }
         this.events = Collections.unmodifiableList(ev);
     }
 
-    public String id()              { return id; }
-    public String endpoint()        { return endpoint; }
-    public String status()          { return status; }
-    public List<String> events()    { return events; }
+    public String id() {
+        return id;
+    }
+
+    public String endpoint() {
+        return endpoint;
+    }
+
+    public String status() {
+        return status;
+    }
+
+    public List<String> events() {
+        return events;
+    }
 
     public List<WebhookEventType> eventsAsEnums() {
         List<WebhookEventType> parsed = new ArrayList<>();
         for (String e : events) {
             WebhookEventType type = ApiStringEnum.tryParse(WebhookEventType.class, e);
-            if (type != null) parsed.add(type);
+            if (type != null) {
+                parsed.add(type);
+            }
         }
         return Collections.unmodifiableList(parsed);
     }
 
-    public String secret()          { return secret; }
-    public String createdAt()       { return createdAt; }
-    public String modifiedAt()      { return modifiedAt; }
+    public String secret() {
+        return secret;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "Webhook{id='" + id + "', endpoint='" + endpoint + "', status='" + status + "'}";
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -68,12 +97,16 @@ public final class Webhook {
         private static final String ENDPOINT = "/webhooks";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Webhook> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Webhook> result = new ArrayList<>();
-            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) result.add(new Webhook(obj));
+            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) {
+                result.add(new Webhook(obj));
+            }
             return Collections.unmodifiableList(result);
         }
 
@@ -119,12 +152,18 @@ public final class Webhook {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("endpoint", endpoint);
             m.put("events",   events);
-            if (status != null) m.put("status", status);
-            if (secret != null) m.put("secret", secret);
+            if (status != null) {
+                m.put("status", status);
+            }
+            if (secret != null) {
+                m.put("secret", secret);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String endpoint;
@@ -134,16 +173,42 @@ public final class Webhook {
 
             private Builder() {}
 
-            public Builder endpoint(String v)       { this.endpoint = v; return this; }
-            public Builder events(List<String> v)   { this.events = new ArrayList<>(v); return this; }
-            public Builder addEvent(String v)       { this.events.add(v); return this; }
-            public Builder addEvent(WebhookEventType v) { return addEvent(v.apiValue()); }
-            public Builder status(String v)         { this.status = v; return this; }
-            public Builder secret(String v)         { this.secret = v; return this; }
+            public Builder endpoint(String v) {
+                this.endpoint = v;
+                return this;
+            }
+
+            public Builder events(List<String> v) {
+                this.events = new ArrayList<>(v);
+                return this;
+            }
+
+            public Builder addEvent(String v) {
+                this.events.add(v);
+                return this;
+            }
+
+            public Builder addEvent(WebhookEventType v) {
+                return addEvent(v.apiValue());
+            }
+
+            public Builder status(String v) {
+                this.status = v;
+                return this;
+            }
+
+            public Builder secret(String v) {
+                this.secret = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (endpoint == null || endpoint.isBlank()) throw new IllegalArgumentException("endpoint is required");
-                if (events.isEmpty())                       throw new IllegalArgumentException("at least one event is required");
+                if (endpoint == null || endpoint.isBlank()) {
+                    throw new IllegalArgumentException("endpoint is required");
+                }
+                if (events.isEmpty()) {
+                    throw new IllegalArgumentException("at least one event is required");
+                }
                 return new CreateParams(this);
             }
         }
@@ -165,13 +230,21 @@ public final class Webhook {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (endpoint != null) m.put("endpoint", endpoint);
-            if (events   != null) m.put("events",   events);
-            if (status   != null) m.put("status",   status);
+            if (endpoint != null) {
+                m.put("endpoint", endpoint);
+            }
+            if (events   != null) {
+                m.put("events",   events);
+            }
+            if (status   != null) {
+                m.put("status",   status);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String endpoint;
@@ -180,11 +253,24 @@ public final class Webhook {
 
             private Builder() {}
 
-            public Builder endpoint(String v)     { this.endpoint = v; return this; }
-            public Builder events(List<String> v) { this.events = new ArrayList<>(v); return this; }
-            public Builder status(String v)       { this.status = v; return this; }
+            public Builder endpoint(String v) {
+                this.endpoint = v;
+                return this;
+            }
 
-            public UpdateParams build() { return new UpdateParams(this); }
+            public Builder events(List<String> v) {
+                this.events = new ArrayList<>(v);
+                return this;
+            }
+
+            public Builder status(String v) {
+                this.status = v;
+                return this;
+            }
+
+            public UpdateParams build() {
+                return new UpdateParams(this);
+            }
         }
     }
 }

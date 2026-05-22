@@ -10,7 +10,11 @@ import com.clicksign.resources.types.RequirementAuth;
 import com.clicksign.resources.types.RequirementRole;
 import com.clicksign.resources.types.RubricateKind;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a signing requirement linking a signer to a document action. */
 public final class Requirement {
@@ -48,22 +52,69 @@ public final class Requirement {
         this.modifiedAt  = str(a.get("modified"));
     }
 
-    public String id()           { return id; }
-    public String action()       { return action; }
-    public String role()         { return role; }
-    public String auth()         { return auth; }
-    public String pages()        { return pages; }
-    public String kind()         { return kind; }
-    public String rubricField()  { return rubricField; }
-    public String envelopeId()   { return envelopeId; }
-    public String documentId()   { return documentId; }
-    public String signerId()     { return signerId; }
-    public RequirementAction actionAsEnum() { return ApiStringEnum.tryParse(RequirementAction.class, action); }
-    public RequirementRole roleAsEnum()     { return ApiStringEnum.tryParse(RequirementRole.class, role); }
-    public RequirementAuth authAsEnum()     { return ApiStringEnum.tryParse(RequirementAuth.class, auth); }
-    public RubricateKind kindAsEnum()       { return ApiStringEnum.tryParse(RubricateKind.class, kind); }
-    public String createdAt()    { return createdAt; }
-    public String modifiedAt()   { return modifiedAt; }
+    public String id() {
+        return id;
+    }
+
+    public String action() {
+        return action;
+    }
+
+    public String role() {
+        return role;
+    }
+
+    public String auth() {
+        return auth;
+    }
+
+    public String pages() {
+        return pages;
+    }
+
+    public String kind() {
+        return kind;
+    }
+
+    public String rubricField() {
+        return rubricField;
+    }
+
+    public String envelopeId() {
+        return envelopeId;
+    }
+
+    public String documentId() {
+        return documentId;
+    }
+
+    public String signerId() {
+        return signerId;
+    }
+
+    public RequirementAction actionAsEnum() {
+        return ApiStringEnum.tryParse(RequirementAction.class, action);
+    }
+
+    public RequirementRole roleAsEnum() {
+        return ApiStringEnum.tryParse(RequirementRole.class, role);
+    }
+
+    public RequirementAuth authAsEnum() {
+        return ApiStringEnum.tryParse(RequirementAuth.class, auth);
+    }
+
+    public RubricateKind kindAsEnum() {
+        return ApiStringEnum.tryParse(RubricateKind.class, kind);
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
@@ -74,7 +125,9 @@ public final class Requirement {
         return new Requirement(obj, parentEnvelopeId);
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -82,7 +135,9 @@ public final class Requirement {
 
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public Requirement retrieve(String id, String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/requirements/" + id, Collections.emptyMap());
@@ -149,11 +204,21 @@ public final class Requirement {
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("action", action);
-            if (role        != null) m.put("role",         role);
-            if (auth        != null) m.put("auth",         auth);
-            if (pages       != null) m.put("pages",        pages);
-            if (kind        != null) m.put("kind",         kind);
-            if (rubricField != null) m.put("rubric_field", rubricField);
+            if (role        != null) {
+                m.put("role",         role);
+            }
+            if (auth        != null) {
+                m.put("auth",         auth);
+            }
+            if (pages       != null) {
+                m.put("pages",        pages);
+            }
+            if (kind        != null) {
+                m.put("kind",         kind);
+            }
+            if (rubricField != null) {
+                m.put("rubric_field", rubricField);
+            }
             return m;
         }
 
@@ -178,7 +243,9 @@ public final class Requirement {
             return rels;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String envelopeId;
@@ -193,23 +260,74 @@ public final class Requirement {
 
             private Builder() {}
 
-            public Builder envelopeId(String v)  { this.envelopeId = v; return this; }
-            public Builder action(String v)       { this.action = v; return this; }
-            public Builder action(RequirementAction v) { return action(v.apiValue()); }
-            public Builder role(String v)         { this.role = v; return this; }
-            public Builder role(RequirementRole v)   { return role(v.apiValue()); }
-            public Builder auth(String v)         { this.auth = v; return this; }
-            public Builder auth(RequirementAuth v)     { return auth(v.apiValue()); }
-            public Builder pages(String v)        { this.pages = v; return this; }
-            public Builder kind(String v)         { this.kind = v; return this; }
-            public Builder kind(RubricateKind v)       { return kind(v.apiValue()); }
-            public Builder rubricField(String v)  { this.rubricField = v; return this; }
-            public Builder documentId(String v)   { this.documentId = v; return this; }
-            public Builder signerId(String v)     { this.signerId = v; return this; }
+            public Builder envelopeId(String v) {
+                this.envelopeId = v;
+                return this;
+            }
+
+            public Builder action(String v) {
+                this.action = v;
+                return this;
+            }
+
+            public Builder action(RequirementAction v) {
+                return action(v.apiValue());
+            }
+
+            public Builder role(String v) {
+                this.role = v;
+                return this;
+            }
+
+            public Builder role(RequirementRole v) {
+                return role(v.apiValue());
+            }
+
+            public Builder auth(String v) {
+                this.auth = v;
+                return this;
+            }
+
+            public Builder auth(RequirementAuth v) {
+                return auth(v.apiValue());
+            }
+
+            public Builder pages(String v) {
+                this.pages = v;
+                return this;
+            }
+
+            public Builder kind(String v) {
+                this.kind = v;
+                return this;
+            }
+
+            public Builder kind(RubricateKind v) {
+                return kind(v.apiValue());
+            }
+
+            public Builder rubricField(String v) {
+                this.rubricField = v;
+                return this;
+            }
+
+            public Builder documentId(String v) {
+                this.documentId = v;
+                return this;
+            }
+
+            public Builder signerId(String v) {
+                this.signerId = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (envelopeId == null || envelopeId.isBlank()) throw new IllegalArgumentException("envelopeId is required");
-                if (action == null || action.isBlank())         throw new IllegalArgumentException("action is required");
+                if (envelopeId == null || envelopeId.isBlank()) {
+                    throw new IllegalArgumentException("envelopeId is required");
+                }
+                if (action == null || action.isBlank()) {
+                    throw new IllegalArgumentException("action is required");
+                }
                 if (RequirementAction.RUBRICATE.apiValue().equals(action)
                     && (pages == null || pages.isBlank())
                     && (rubricField == null || rubricField.isBlank())) {
@@ -237,13 +355,21 @@ public final class Requirement {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (action != null) m.put("action", action);
-            if (role   != null) m.put("role",   role);
-            if (auth   != null) m.put("auth",   auth);
+            if (action != null) {
+                m.put("action", action);
+            }
+            if (role   != null) {
+                m.put("role",   role);
+            }
+            if (auth   != null) {
+                m.put("auth",   auth);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String action;
@@ -252,14 +378,36 @@ public final class Requirement {
 
             private Builder() {}
 
-            public Builder action(String v) { this.action = v; return this; }
-            public Builder action(RequirementAction v) { return action(v.apiValue()); }
-            public Builder role(String v)   { this.role = v; return this; }
-            public Builder role(RequirementRole v)   { return role(v.apiValue()); }
-            public Builder auth(String v)   { this.auth = v; return this; }
-            public Builder auth(RequirementAuth v)   { return auth(v.apiValue()); }
+            public Builder action(String v) {
+                this.action = v;
+                return this;
+            }
 
-            public UpdateParams build() { return new UpdateParams(this); }
+            public Builder action(RequirementAction v) {
+                return action(v.apiValue());
+            }
+
+            public Builder role(String v) {
+                this.role = v;
+                return this;
+            }
+
+            public Builder role(RequirementRole v) {
+                return role(v.apiValue());
+            }
+
+            public Builder auth(String v) {
+                this.auth = v;
+                return this;
+            }
+
+            public Builder auth(RequirementAuth v) {
+                return auth(v.apiValue());
+            }
+
+            public UpdateParams build() {
+                return new UpdateParams(this);
+            }
         }
     }
 }

@@ -8,5 +8,7 @@ public class TimeoutException extends ClicksignException {
     }
 
     @Override
-    public boolean isRetryable() { return true; }
+    public boolean isRetryable() {
+        return true;
+    }
 }

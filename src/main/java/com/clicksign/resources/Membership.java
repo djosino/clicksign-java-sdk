@@ -7,7 +7,11 @@ import com.clicksign.jsonapi.MembershipQuery;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.MembershipRole;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a membership linking a user to an account role. */
 public final class Membership {
@@ -37,25 +41,54 @@ public final class Membership {
         this.modifiedAt                  = str(a.get("modified"));
     }
 
-    public String id()                          { return id; }
-    public String role()                        { return role; }
+    public String id() {
+        return id;
+    }
+
+    public String role() {
+        return role;
+    }
+
     public MembershipRole roleAsEnum() {
         return ApiStringEnum.tryParse(MembershipRole.class, role);
     }
-    public boolean consumptionAccessible()      { return consumptionAccessible; }
-    public boolean trackingAccessible()         { return trackingAccessible; }
-    public boolean folderManagementAccessible() { return folderManagementAccessible; }
-    public String userId()                      { return userId; }
-    public String createdAt()                   { return createdAt; }
-    public String modifiedAt()                  { return modifiedAt; }
+
+    public boolean consumptionAccessible() {
+        return consumptionAccessible;
+    }
+
+    public boolean trackingAccessible() {
+        return trackingAccessible;
+    }
+
+    public boolean folderManagementAccessible() {
+        return folderManagementAccessible;
+    }
+
+    public String userId() {
+        return userId;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "Membership{id='" + id + "', role='" + role + "', userId='" + userId + "'}";
     }
 
-    private static String str(Object o)   { return o != null ? o.toString() : null; }
-    private static boolean bool(Object o) { return Boolean.TRUE.equals(o) || "true".equals(str(o)); }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
+
+    private static boolean bool(Object o) {
+        return Boolean.TRUE.equals(o) || "true".equals(str(o));
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -64,12 +97,16 @@ public final class Membership {
         private static final String ENDPOINT = "/memberships";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Membership> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Membership> result = new ArrayList<>();
-            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) result.add(new Membership(obj));
+            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) {
+                result.add(new Membership(obj));
+            }
             return Collections.unmodifiableList(result);
         }
 
@@ -120,9 +157,15 @@ public final class Membership {
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("role", role);
-            if (consumptionAccessible      != null) m.put("consumption_accessible",       consumptionAccessible);
-            if (trackingAccessible         != null) m.put("tracking_accessible",          trackingAccessible);
-            if (folderManagementAccessible != null) m.put("folder_management_accessible", folderManagementAccessible);
+            if (consumptionAccessible      != null) {
+                m.put("consumption_accessible",       consumptionAccessible);
+            }
+            if (trackingAccessible         != null) {
+                m.put("tracking_accessible",          trackingAccessible);
+            }
+            if (folderManagementAccessible != null) {
+                m.put("folder_management_accessible", folderManagementAccessible);
+            }
             return m;
         }
 
@@ -137,7 +180,9 @@ public final class Membership {
             return rels;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String role;
@@ -148,18 +193,42 @@ public final class Membership {
 
             private Builder() {}
 
-            public Builder role(String v)   { this.role = v; return this; }
+            public Builder role(String v) {
+                this.role = v;
+                return this;
+            }
+
             public Builder role(MembershipRole v) {
                 return role(v != null ? v.apiValue() : null);
             }
-            public Builder userId(String v) { this.userId = v; return this; }
-            public Builder consumptionAccessible(boolean v)      { this.consumptionAccessible = v; return this; }
-            public Builder trackingAccessible(boolean v)         { this.trackingAccessible = v; return this; }
-            public Builder folderManagementAccessible(boolean v) { this.folderManagementAccessible = v; return this; }
+
+            public Builder userId(String v) {
+                this.userId = v;
+                return this;
+            }
+
+            public Builder consumptionAccessible(boolean v) {
+                this.consumptionAccessible = v;
+                return this;
+            }
+
+            public Builder trackingAccessible(boolean v) {
+                this.trackingAccessible = v;
+                return this;
+            }
+
+            public Builder folderManagementAccessible(boolean v) {
+                this.folderManagementAccessible = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (role == null || role.isBlank())     throw new IllegalArgumentException("role is required");
-                if (userId == null || userId.isBlank()) throw new IllegalArgumentException("userId is required");
+                if (role == null || role.isBlank()) {
+                    throw new IllegalArgumentException("role is required");
+                }
+                if (userId == null || userId.isBlank()) {
+                    throw new IllegalArgumentException("userId is required");
+                }
                 return new CreateParams(this);
             }
         }
@@ -183,14 +252,24 @@ public final class Membership {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (role                       != null) m.put("role", role);
-            if (consumptionAccessible      != null) m.put("consumption_accessible",       consumptionAccessible);
-            if (trackingAccessible         != null) m.put("tracking_accessible",          trackingAccessible);
-            if (folderManagementAccessible != null) m.put("folder_management_accessible", folderManagementAccessible);
+            if (role                       != null) {
+                m.put("role", role);
+            }
+            if (consumptionAccessible      != null) {
+                m.put("consumption_accessible",       consumptionAccessible);
+            }
+            if (trackingAccessible         != null) {
+                m.put("tracking_accessible",          trackingAccessible);
+            }
+            if (folderManagementAccessible != null) {
+                m.put("folder_management_accessible", folderManagementAccessible);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String role;
@@ -200,15 +279,33 @@ public final class Membership {
 
             private Builder() {}
 
-            public Builder role(String v)                        { this.role = v; return this; }
+            public Builder role(String v) {
+                this.role = v;
+                return this;
+            }
+
             public Builder role(MembershipRole v) {
                 return role(v != null ? v.apiValue() : null);
             }
-            public Builder consumptionAccessible(boolean v)      { this.consumptionAccessible = v; return this; }
-            public Builder trackingAccessible(boolean v)         { this.trackingAccessible = v; return this; }
-            public Builder folderManagementAccessible(boolean v) { this.folderManagementAccessible = v; return this; }
 
-            public UpdateParams build() { return new UpdateParams(this); }
+            public Builder consumptionAccessible(boolean v) {
+                this.consumptionAccessible = v;
+                return this;
+            }
+
+            public Builder trackingAccessible(boolean v) {
+                this.trackingAccessible = v;
+                return this;
+            }
+
+            public Builder folderManagementAccessible(boolean v) {
+                this.folderManagementAccessible = v;
+                return this;
+            }
+
+            public UpdateParams build() {
+                return new UpdateParams(this);
+            }
         }
     }
 }

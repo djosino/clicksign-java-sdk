@@ -6,7 +6,11 @@ import com.clicksign.jsonapi.JsonApiSerializer;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.SignatureWatcherKind;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a Clicksign signature watcher. Does not support update. */
 public final class SignatureWatcher {
@@ -33,32 +37,65 @@ public final class SignatureWatcher {
         this.modifiedAt              = str(a.get("modified"));
     }
 
-    public String id()                      { return id; }
-    public String email()                   { return email; }
-    public String kind()                    { return kind; }
-    public SignatureWatcherKind kindAsEnum() { return ApiStringEnum.tryParse(SignatureWatcherKind.class, kind); }
-    public boolean attachDocumentsEnabled() { return attachDocumentsEnabled; }
-    public Map<String, Object> communicateEvents() { return communicateEvents; }
+    public String id() {
+        return id;
+    }
+
+    public String email() {
+        return email;
+    }
+
+    public String kind() {
+        return kind;
+    }
+
+    public SignatureWatcherKind kindAsEnum() {
+        return ApiStringEnum.tryParse(SignatureWatcherKind.class, kind);
+    }
+
+    public boolean attachDocumentsEnabled() {
+        return attachDocumentsEnabled;
+    }
+
+    public Map<String, Object> communicateEvents() {
+        return communicateEvents;
+    }
 
     /** Parsed view of {@link #communicateEvents()}; {@code null} when unset. */
     public CommunicateEvents communicateEventsConfig() {
         return CommunicateEvents.fromMap(communicateEvents);
     }
-    public String envelopeId()              { return envelopeId; }
-    public String createdAt()               { return createdAt; }
-    public String modifiedAt()              { return modifiedAt; }
+
+    public String envelopeId() {
+        return envelopeId;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "SignatureWatcher{id='" + id + "', email='" + email + "', envelopeId='" + envelopeId + "'}";
     }
 
-    private static String str(Object o)   { return o != null ? o.toString() : null; }
-    private static boolean bool(Object o) { return Boolean.TRUE.equals(o) || "true".equals(str(o)); }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
+
+    private static boolean bool(Object o) {
+        return Boolean.TRUE.equals(o) || "true".equals(str(o));
+    }
 
     @SuppressWarnings("unchecked")
     private static Map<String, Object> objectMap(Object o) {
-        if (!(o instanceof Map)) return null;
+        if (!(o instanceof Map)) {
+            return null;
+        }
         return Collections.unmodifiableMap(new LinkedHashMap<>((Map<String, Object>) o));
     }
 
@@ -68,7 +105,9 @@ public final class SignatureWatcher {
 
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<SignatureWatcher> list(String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/signature_watchers", Collections.emptyMap());
@@ -118,12 +157,18 @@ public final class SignatureWatcher {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("email", email);
             m.put("kind",  kind);
-            if (attachDocumentsEnabled != null) m.put("attach_documents_enabled", attachDocumentsEnabled);
-            if (communicateEvents      != null) m.put("communicate_events",         communicateEvents);
+            if (attachDocumentsEnabled != null) {
+                m.put("attach_documents_enabled", attachDocumentsEnabled);
+            }
+            if (communicateEvents      != null) {
+                m.put("communicate_events",         communicateEvents);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String envelopeId;
@@ -134,21 +179,49 @@ public final class SignatureWatcher {
 
             private Builder() {}
 
-            public Builder envelopeId(String v)              { this.envelopeId = v; return this; }
-            public Builder email(String v)                   { this.email = v; return this; }
-            public Builder kind(String v)                    { this.kind = v; return this; }
-            public Builder kind(SignatureWatcherKind v)      { return kind(v.apiValue()); }
-            public Builder attachDocumentsEnabled(boolean v) { this.attachDocumentsEnabled = v; return this; }
-            public Builder communicateEvents(Map<String, Object> v) { this.communicateEvents = v; return this; }
+            public Builder envelopeId(String v) {
+                this.envelopeId = v;
+                return this;
+            }
+
+            public Builder email(String v) {
+                this.email = v;
+                return this;
+            }
+
+            public Builder kind(String v) {
+                this.kind = v;
+                return this;
+            }
+
+            public Builder kind(SignatureWatcherKind v) {
+                return kind(v.apiValue());
+            }
+
+            public Builder attachDocumentsEnabled(boolean v) {
+                this.attachDocumentsEnabled = v;
+                return this;
+            }
+
+            public Builder communicateEvents(Map<String, Object> v) {
+                this.communicateEvents = v;
+                return this;
+            }
 
             public Builder communicateEvents(CommunicateEvents v) {
                 return communicateEvents(v != null ? v.toMap() : null);
             }
 
             public CreateParams build() {
-                if (envelopeId == null || envelopeId.isBlank()) throw new IllegalArgumentException("envelopeId is required");
-                if (email == null || email.isBlank())           throw new IllegalArgumentException("email is required");
-                if (kind == null || kind.isBlank())             throw new IllegalArgumentException("kind is required");
+                if (envelopeId == null || envelopeId.isBlank()) {
+                    throw new IllegalArgumentException("envelopeId is required");
+                }
+                if (email == null || email.isBlank()) {
+                    throw new IllegalArgumentException("email is required");
+                }
+                if (kind == null || kind.isBlank()) {
+                    throw new IllegalArgumentException("kind is required");
+                }
                 return new CreateParams(this);
             }
         }

@@ -17,12 +17,26 @@ public final class ErrorEvent {
         this.durationMs = durationMs;
     }
 
-    public String method()     { return method; }
-    public String path()       { return path; }
+    public String method() {
+        return method;
+    }
+
+    public String path() {
+        return path;
+    }
+
     /** HTTP status code, or 0 for network/timeout errors. */
-    public int status()        { return status; }
-    public Throwable error()   { return error; }
-    public double durationMs() { return durationMs; }
+    public int status() {
+        return status;
+    }
+
+    public Throwable error() {
+        return error;
+    }
+
+    public double durationMs() {
+        return durationMs;
+    }
 
     @Override
     public String toString() {

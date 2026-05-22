@@ -4,7 +4,11 @@ import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents an asynchronous envelope bulk creation job. */
 public final class EnvelopeBulkCreation {
@@ -20,16 +24,26 @@ public final class EnvelopeBulkCreation {
         this.enqueuedAt  = str(a.get("enqueued_at"));
     }
 
-    public String id()           { return id; }
-    public String jobId()        { return jobId; }
-    public String enqueuedAt()   { return enqueuedAt; }
+    public String id() {
+        return id;
+    }
+
+    public String jobId() {
+        return jobId;
+    }
+
+    public String enqueuedAt() {
+        return enqueuedAt;
+    }
 
     @Override
     public String toString() {
         return "EnvelopeBulkCreation{id='" + id + "', jobId='" + jobId + "'}";
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -38,7 +52,9 @@ public final class EnvelopeBulkCreation {
         private static final String ENDPOINT = "/envelope_bulk_creations";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public EnvelopeBulkCreation create(CreateParams params) {
             String body = JsonApiSerializer.dump("envelope_bulk_creations", null, params.toAttributes(), null);
@@ -69,7 +85,9 @@ public final class EnvelopeBulkCreation {
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private Map<String, Object> envelope;
@@ -78,15 +96,36 @@ public final class EnvelopeBulkCreation {
 
             private Builder() {}
 
-            public Builder envelope(Map<String, Object> v) { this.envelope = v; return this; }
-            public Builder document(Map<String, Object> v) { this.document = v; return this; }
-            public Builder signers(List<Map<String, Object>> v) { this.signers = new ArrayList<>(v); return this; }
-            public Builder addSigner(Map<String, Object> v) { this.signers.add(v); return this; }
+            public Builder envelope(Map<String, Object> v) {
+                this.envelope = v;
+                return this;
+            }
+
+            public Builder document(Map<String, Object> v) {
+                this.document = v;
+                return this;
+            }
+
+            public Builder signers(List<Map<String, Object>> v) {
+                this.signers = new ArrayList<>(v);
+                return this;
+            }
+
+            public Builder addSigner(Map<String, Object> v) {
+                this.signers.add(v);
+                return this;
+            }
 
             public CreateParams build() {
-                if (envelope == null) throw new IllegalArgumentException("envelope is required");
-                if (document == null) throw new IllegalArgumentException("document is required");
-                if (signers.isEmpty()) throw new IllegalArgumentException("at least one signer is required");
+                if (envelope == null) {
+                    throw new IllegalArgumentException("envelope is required");
+                }
+                if (document == null) {
+                    throw new IllegalArgumentException("document is required");
+                }
+                if (signers.isEmpty()) {
+                    throw new IllegalArgumentException("at least one signer is required");
+                }
                 return new CreateParams(this);
             }
         }

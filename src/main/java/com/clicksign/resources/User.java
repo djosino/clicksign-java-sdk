@@ -4,7 +4,11 @@ import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a Clicksign user. */
 public final class User {
@@ -26,19 +30,38 @@ public final class User {
         this.modifiedAt  = str(a.get("modified"));
     }
 
-    public String id()           { return id; }
-    public String name()         { return name; }
-    public String email()        { return email; }
-    public String phoneNumber()  { return phoneNumber; }
-    public String createdAt()    { return createdAt; }
-    public String modifiedAt()   { return modifiedAt; }
+    public String id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String email() {
+        return email;
+    }
+
+    public String phoneNumber() {
+        return phoneNumber;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "User{id='" + id + "', name='" + name + "', email='" + email + "'}";
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -47,12 +70,16 @@ public final class User {
         private static final String ENDPOINT = "/users";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<User> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<User> result = new ArrayList<>();
-            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) result.add(new User(obj));
+            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) {
+                result.add(new User(obj));
+            }
             return Collections.unmodifiableList(result);
         }
 
@@ -91,11 +118,15 @@ public final class User {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("name",  name);
             m.put("email", email);
-            if (phoneNumber != null) m.put("phone_number", phoneNumber);
+            if (phoneNumber != null) {
+                m.put("phone_number", phoneNumber);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String name;
@@ -104,13 +135,28 @@ public final class User {
 
             private Builder() {}
 
-            public Builder name(String v)        { this.name = v; return this; }
-            public Builder email(String v)       { this.email = v; return this; }
-            public Builder phoneNumber(String v) { this.phoneNumber = v; return this; }
+            public Builder name(String v) {
+                this.name = v;
+                return this;
+            }
+
+            public Builder email(String v) {
+                this.email = v;
+                return this;
+            }
+
+            public Builder phoneNumber(String v) {
+                this.phoneNumber = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (name == null || name.isBlank())   throw new IllegalArgumentException("name is required");
-                if (email == null || email.isBlank()) throw new IllegalArgumentException("email is required");
+                if (name == null || name.isBlank()) {
+                    throw new IllegalArgumentException("name is required");
+                }
+                if (email == null || email.isBlank()) {
+                    throw new IllegalArgumentException("email is required");
+                }
                 return new CreateParams(this);
             }
         }

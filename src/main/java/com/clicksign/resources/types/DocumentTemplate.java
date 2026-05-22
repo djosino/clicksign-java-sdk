@@ -16,9 +16,13 @@ public final class DocumentTemplate {
             ? Collections.unmodifiableMap(new LinkedHashMap<>(fields)) : Collections.emptyMap();
     }
 
-    public String id() { return id; }
+    public String id() {
+        return id;
+    }
 
-    public Map<String, Object> fields() { return fields; }
+    public Map<String, Object> fields() {
+        return fields;
+    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> m = new LinkedHashMap<>(fields);

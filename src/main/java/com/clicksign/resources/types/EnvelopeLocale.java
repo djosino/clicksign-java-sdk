@@ -6,8 +6,12 @@ public enum EnvelopeLocale implements ApiStringEnum {
 
     private final String apiValue;
 
-    EnvelopeLocale(String apiValue) { this.apiValue = apiValue; }
+    EnvelopeLocale(String apiValue) {
+        this.apiValue = apiValue;
+    }
 
     @Override
-    public String apiValue() { return apiValue; }
+    public String apiValue() {
+        return apiValue;
+    }
 }

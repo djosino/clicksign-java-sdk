@@ -4,7 +4,11 @@ import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a Clicksign template. */
 public final class Template {
@@ -24,18 +28,34 @@ public final class Template {
         this.modifiedAt = str(a.get("modified"));
     }
 
-    public String id()          { return id; }
-    public String name()        { return name; }
-    public String color()       { return color; }
-    public String createdAt()   { return createdAt; }
-    public String modifiedAt()  { return modifiedAt; }
+    public String id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String color() {
+        return color;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "Template{id='" + id + "', name='" + name + "'}";
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -44,12 +64,16 @@ public final class Template {
         private static final String ENDPOINT = "/templates";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Template> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Template> result = new ArrayList<>();
-            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) result.add(new Template(obj));
+            for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) {
+                result.add(new Template(obj));
+            }
             return Collections.unmodifiableList(result);
         }
 
@@ -102,11 +126,15 @@ public final class Template {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("name", name);
             m.put("content_base64", contentBase64);
-            if (color != null) m.put("color", color);
+            if (color != null) {
+                m.put("color", color);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String name;
@@ -115,14 +143,28 @@ public final class Template {
 
             private Builder() {}
 
-            public Builder name(String v)            { this.name = v; return this; }
-            public Builder color(String v)           { this.color = v; return this; }
-            public Builder contentBase64(String v)   { this.contentBase64 = v; return this; }
+            public Builder name(String v) {
+                this.name = v;
+                return this;
+            }
+
+            public Builder color(String v) {
+                this.color = v;
+                return this;
+            }
+
+            public Builder contentBase64(String v) {
+                this.contentBase64 = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (name == null || name.isBlank())             throw new IllegalArgumentException("name is required");
-                if (contentBase64 == null || contentBase64.isBlank())
+                if (name == null || name.isBlank()) {
+                    throw new IllegalArgumentException("name is required");
+                }
+                if (contentBase64 == null || contentBase64.isBlank()) {
                     throw new IllegalArgumentException("contentBase64 is required");
+                }
                 return new CreateParams(this);
             }
         }
@@ -142,12 +184,18 @@ public final class Template {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (name  != null) m.put("name",  name);
-            if (color != null) m.put("color", color);
+            if (name  != null) {
+                m.put("name",  name);
+            }
+            if (color != null) {
+                m.put("color", color);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String name;
@@ -155,10 +203,19 @@ public final class Template {
 
             private Builder() {}
 
-            public Builder name(String v)  { this.name = v; return this; }
-            public Builder color(String v) { this.color = v; return this; }
+            public Builder name(String v) {
+                this.name = v;
+                return this;
+            }
 
-            public UpdateParams build() { return new UpdateParams(this); }
+            public Builder color(String v) {
+                this.color = v;
+                return this;
+            }
+
+            public UpdateParams build() {
+                return new UpdateParams(this);
+            }
         }
     }
 }

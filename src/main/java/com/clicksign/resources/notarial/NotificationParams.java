@@ -20,20 +20,30 @@ public final class NotificationParams {
 
     Map<String, Object> toAttributes() {
         Map<String, Object> m = new LinkedHashMap<>();
-        if (message            != null) m.put("message",             message);
-        if (emailCustomization != null) m.put("email_customization", emailCustomization);
+        if (message            != null) {
+            m.put("message",             message);
+        }
+        if (emailCustomization != null) {
+            m.put("email_customization", emailCustomization);
+        }
         return m;
     }
 
-    public String message() { return message; }
+    public String message() {
+        return message;
+    }
 
-    public Map<String, Object> emailCustomization() { return emailCustomization; }
+    public Map<String, Object> emailCustomization() {
+        return emailCustomization;
+    }
 
     public EmailCustomization emailCustomizationTyped() {
         return EmailCustomization.fromMap(emailCustomization);
     }
 
-    public static Builder builder() { return new Builder(); }
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static final class Builder {
         private String message;
@@ -55,6 +65,8 @@ public final class NotificationParams {
             return emailCustomization(customization != null ? customization.toMap() : null);
         }
 
-        public NotificationParams build() { return new NotificationParams(this); }
+        public NotificationParams build() {
+            return new NotificationParams(this);
+        }
     }
 }

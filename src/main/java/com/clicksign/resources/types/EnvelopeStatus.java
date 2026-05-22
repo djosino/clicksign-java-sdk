@@ -8,8 +8,12 @@ public enum EnvelopeStatus implements ApiStringEnum {
 
     private final String apiValue;
 
-    EnvelopeStatus(String apiValue) { this.apiValue = apiValue; }
+    EnvelopeStatus(String apiValue) {
+        this.apiValue = apiValue;
+    }
 
     @Override
-    public String apiValue() { return apiValue; }
+    public String apiValue() {
+        return apiValue;
+    }
 }

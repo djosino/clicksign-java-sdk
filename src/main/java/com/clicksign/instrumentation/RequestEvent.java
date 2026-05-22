@@ -17,11 +17,25 @@ public final class RequestEvent {
         this.durationMs = durationMs;
     }
 
-    public String method()     { return method; }
-    public String path()       { return path; }
-    public int status()        { return status; }
-    public int attempt()       { return attempt; }
-    public double durationMs() { return durationMs; }
+    public String method() {
+        return method;
+    }
+
+    public String path() {
+        return path;
+    }
+
+    public int status() {
+        return status;
+    }
+
+    public int attempt() {
+        return attempt;
+    }
+
+    public double durationMs() {
+        return durationMs;
+    }
 
     @Override
     public String toString() {

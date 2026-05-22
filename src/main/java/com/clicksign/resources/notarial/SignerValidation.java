@@ -56,9 +56,13 @@ final class SignerValidation {
     private static boolean requiresPhoneNumber(Map<String, Object> communicateEvents) {
         for (String channel : new String[] {"signature_request", "signature_reminder", "document_signed"}) {
             Object value = communicateEvents.get(channel);
-            if (value == null) continue;
+            if (value == null) {
+                continue;
+            }
             String s = value.toString();
-            if ("sms".equals(s) || "whatsapp".equals(s)) return true;
+            if ("sms".equals(s) || "whatsapp".equals(s)) {
+                return true;
+            }
         }
         return false;
     }

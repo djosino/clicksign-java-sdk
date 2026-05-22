@@ -5,7 +5,11 @@ import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
 import com.clicksign.jsonapi.SignerQuery;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Represents a Clicksign signer. Signers do not support update. */
 public final class Signer {
@@ -50,45 +54,99 @@ public final class Signer {
         this.modifiedAt              = str(a.get("modified"));
     }
 
-    public String id()                       { return id; }
-    public String name()                     { return name; }
-    public String email()                    { return email; }
-    public String phoneNumber()              { return phoneNumber; }
-    public String birthday()                 { return birthday; }
-    public boolean refusable()               { return refusable; }
-    public boolean locationRequiredEnabled() { return locationRequiredEnabled; }
-    public boolean hasDocumentation()        { return hasDocumentation; }
-    public String documentation()            { return documentation; }
-    public SignatureHost signatureHost()     { return signatureHost; }
-    public Map<String, Object> communicateEvents() { return communicateEvents; }
+    public String id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String email() {
+        return email;
+    }
+
+    public String phoneNumber() {
+        return phoneNumber;
+    }
+
+    public String birthday() {
+        return birthday;
+    }
+
+    public boolean refusable() {
+        return refusable;
+    }
+
+    public boolean locationRequiredEnabled() {
+        return locationRequiredEnabled;
+    }
+
+    public boolean hasDocumentation() {
+        return hasDocumentation;
+    }
+
+    public String documentation() {
+        return documentation;
+    }
+
+    public SignatureHost signatureHost() {
+        return signatureHost;
+    }
+
+    public Map<String, Object> communicateEvents() {
+        return communicateEvents;
+    }
 
     /** Parsed view of {@link #communicateEvents()}; {@code null} when unset. */
     public CommunicateEvents communicateEventsConfig() {
         return CommunicateEvents.fromMap(communicateEvents);
     }
 
-    public Integer group()                   { return group; }
-    public String envelopeId()               { return envelopeId; }
-    public String createdAt()                { return createdAt; }
-    public String modifiedAt()               { return modifiedAt; }
+    public Integer group() {
+        return group;
+    }
+
+    public String envelopeId() {
+        return envelopeId;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "Signer{id='" + id + "', name='" + name + "', email='" + email + "'}";
     }
 
-    private static String str(Object o)   { return o != null ? o.toString() : null; }
-    private static boolean bool(Object o) { return Boolean.TRUE.equals(o) || "true".equals(str(o)); }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
+
+    private static boolean bool(Object o) {
+        return Boolean.TRUE.equals(o) || "true".equals(str(o));
+    }
 
     @SuppressWarnings("unchecked")
     private static Map<String, Object> objectMap(Object o) {
-        if (!(o instanceof Map)) return null;
+        if (!(o instanceof Map)) {
+            return null;
+        }
         return Collections.unmodifiableMap(new LinkedHashMap<>((Map<String, Object>) o));
     }
 
     private static Integer integer(Object o) {
-        if (o == null) return null;
-        if (o instanceof Number) return ((Number) o).intValue();
+        if (o == null) {
+            return null;
+        }
+        if (o instanceof Number) {
+            return ((Number) o).intValue();
+        }
         try {
             return Integer.parseInt(o.toString());
         } catch (NumberFormatException e) {
@@ -98,7 +156,9 @@ public final class Signer {
 
     @SuppressWarnings("unchecked")
     private static SignatureHost parseSignatureHost(Object o) {
-        if (!(o instanceof Map)) return null;
+        if (!(o instanceof Map)) {
+            return null;
+        }
         Map<String, Object> m = (Map<String, Object>) o;
         return new SignatureHost(
             str(m.get("name")),
@@ -124,15 +184,29 @@ public final class Signer {
             this(name, email, communicateEvents != null ? communicateEvents.toMap() : null);
         }
 
-        public String name() { return name; }
-        public String email() { return email; }
-        public Map<String, Object> communicateEvents() { return communicateEvents; }
+        public String name() {
+            return name;
+        }
+
+        public String email() {
+            return email;
+        }
+
+        public Map<String, Object> communicateEvents() {
+            return communicateEvents;
+        }
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (name  != null) m.put("name",  name);
-            if (email != null) m.put("email", email);
-            if (communicateEvents != null) m.put("communicate_events", communicateEvents);
+            if (name  != null) {
+                m.put("name",  name);
+            }
+            if (email != null) {
+                m.put("email", email);
+            }
+            if (communicateEvents != null) {
+                m.put("communicate_events", communicateEvents);
+            }
             return m;
         }
     }
@@ -143,7 +217,9 @@ public final class Signer {
 
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Signer> list(String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/signers", Collections.emptyMap());
@@ -215,21 +291,45 @@ public final class Signer {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (name  != null) m.put("name",  name);
-            if (email != null) m.put("email", email);
-            if (phoneNumber != null) m.put("phone_number", phoneNumber);
-            if (birthday != null) m.put("birthday", birthday);
-            if (refusable != null) m.put("refusable", refusable);
-            if (locationRequiredEnabled != null) m.put("location_required_enabled", locationRequiredEnabled);
-            if (hasDocumentation != null) m.put("has_documentation", hasDocumentation);
-            if (documentation != null) m.put("documentation", documentation);
-            if (signatureHost != null) m.put("signature_host", signatureHost.toAttributes());
-            if (communicateEvents != null) m.put("communicate_events", communicateEvents);
-            if (group != null) m.put("group", group);
+            if (name  != null) {
+                m.put("name",  name);
+            }
+            if (email != null) {
+                m.put("email", email);
+            }
+            if (phoneNumber != null) {
+                m.put("phone_number", phoneNumber);
+            }
+            if (birthday != null) {
+                m.put("birthday", birthday);
+            }
+            if (refusable != null) {
+                m.put("refusable", refusable);
+            }
+            if (locationRequiredEnabled != null) {
+                m.put("location_required_enabled", locationRequiredEnabled);
+            }
+            if (hasDocumentation != null) {
+                m.put("has_documentation", hasDocumentation);
+            }
+            if (documentation != null) {
+                m.put("documentation", documentation);
+            }
+            if (signatureHost != null) {
+                m.put("signature_host", signatureHost.toAttributes());
+            }
+            if (communicateEvents != null) {
+                m.put("communicate_events", communicateEvents);
+            }
+            if (group != null) {
+                m.put("group", group);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String envelopeId;
@@ -247,28 +347,80 @@ public final class Signer {
 
             private Builder() {}
 
-            public Builder envelopeId(String v)               { this.envelopeId = v; return this; }
-            public Builder name(String v)                     { this.name = v; return this; }
-            public Builder email(String v)                    { this.email = v; return this; }
-            public Builder phoneNumber(String v)              { this.phoneNumber = v; return this; }
-            public Builder birthday(String v)                 { this.birthday = v; return this; }
-            public Builder refusable(boolean v)               { this.refusable = v; return this; }
-            public Builder locationRequiredEnabled(boolean v) { this.locationRequiredEnabled = v; return this; }
-            public Builder hasDocumentation(boolean v)        { this.hasDocumentation = v; return this; }
-            public Builder documentation(String v)            { this.documentation = v; return this; }
-            public Builder signatureHost(SignatureHost v)     { this.signatureHost = v; return this; }
-            public Builder communicateEvents(Map<String, Object> v) { this.communicateEvents = v; return this; }
+            public Builder envelopeId(String v) {
+                this.envelopeId = v;
+                return this;
+            }
+
+            public Builder name(String v) {
+                this.name = v;
+                return this;
+            }
+
+            public Builder email(String v) {
+                this.email = v;
+                return this;
+            }
+
+            public Builder phoneNumber(String v) {
+                this.phoneNumber = v;
+                return this;
+            }
+
+            public Builder birthday(String v) {
+                this.birthday = v;
+                return this;
+            }
+
+            public Builder refusable(boolean v) {
+                this.refusable = v;
+                return this;
+            }
+
+            public Builder locationRequiredEnabled(boolean v) {
+                this.locationRequiredEnabled = v;
+                return this;
+            }
+
+            public Builder hasDocumentation(boolean v) {
+                this.hasDocumentation = v;
+                return this;
+            }
+
+            public Builder documentation(String v) {
+                this.documentation = v;
+                return this;
+            }
+
+            public Builder signatureHost(SignatureHost v) {
+                this.signatureHost = v;
+                return this;
+            }
+
+            public Builder communicateEvents(Map<String, Object> v) {
+                this.communicateEvents = v;
+                return this;
+            }
 
             public Builder communicateEvents(CommunicateEvents v) {
                 return communicateEvents(v != null ? v.toMap() : null);
             }
 
-            public Builder group(int v)                       { this.group = v; return this; }
+            public Builder group(int v) {
+                this.group = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (envelopeId == null || envelopeId.isBlank()) throw new IllegalArgumentException("envelopeId is required");
-                if (name == null || name.isBlank())             throw new IllegalArgumentException("name is required");
-                if (email == null || email.isBlank())           throw new IllegalArgumentException("email is required");
+                if (envelopeId == null || envelopeId.isBlank()) {
+                    throw new IllegalArgumentException("envelopeId is required");
+                }
+                if (name == null || name.isBlank()) {
+                    throw new IllegalArgumentException("name is required");
+                }
+                if (email == null || email.isBlank()) {
+                    throw new IllegalArgumentException("email is required");
+                }
                 SignerValidation.validateName(name);
                 SignerValidation.validateOptionalFields(
                     hasDocumentation, documentation, birthday, phoneNumber, communicateEvents);

@@ -41,18 +41,34 @@ public final class Notification {
         return new Notification(obj);
     }
 
-    public String id()                    { return id; }
-    public String message()               { return message; }
-    public List<SummaryEntry> summary()   { return summary; }
-    public String createdAt()             { return createdAt; }
+    public String id() {
+        return id;
+    }
+
+    public String message() {
+        return message;
+    }
+
+    public List<SummaryEntry> summary() {
+        return summary;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
 
     @Override
     public String toString() {
         return "Notification{id='" + id + "', summarySize=" + summary.size() + "}";
     }
 
-    private static String str(Object o)   { return o != null ? o.toString() : null; }
-    private static boolean bool(Object o) { return Boolean.TRUE.equals(o) || "true".equals(str(o)); }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
+
+    private static boolean bool(Object o) {
+        return Boolean.TRUE.equals(o) || "true".equals(str(o));
+    }
 
     public static final class SummaryEntry {
 
@@ -64,7 +80,12 @@ public final class Notification {
             this.notified = notified;
         }
 
-        public String signerId()  { return signerId; }
-        public boolean notified() { return notified; }
+        public String signerId() {
+            return signerId;
+        }
+
+        public boolean notified() {
+            return notified;
+        }
     }
 }

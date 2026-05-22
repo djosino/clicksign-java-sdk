@@ -7,8 +7,12 @@ public enum SenderNameOption implements ApiStringEnum {
 
     private final String apiValue;
 
-    SenderNameOption(String apiValue) { this.apiValue = apiValue; }
+    SenderNameOption(String apiValue) {
+        this.apiValue = apiValue;
+    }
 
     @Override
-    public String apiValue() { return apiValue; }
+    public String apiValue() {
+        return apiValue;
+    }
 }

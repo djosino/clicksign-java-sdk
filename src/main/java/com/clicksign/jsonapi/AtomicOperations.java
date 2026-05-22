@@ -18,7 +18,7 @@ public final class AtomicOperations {
 
     public AtomicOperations add(Map<String, Object> data) {
         Map<String, Object> op = new LinkedHashMap<>();
-        op.put("op",   "add");
+        op.put("op", "add");
         op.put("data", stringify(data));
         entries.add(op);
         return this;
@@ -26,7 +26,7 @@ public final class AtomicOperations {
 
     public AtomicOperations remove(Map<String, Object> ref) {
         Map<String, Object> op = new LinkedHashMap<>();
-        op.put("op",  "remove");
+        op.put("op", "remove");
         op.put("ref", stringify(ref));
         entries.add(op);
         return this;
@@ -51,7 +51,9 @@ public final class AtomicOperations {
         }
         if (value instanceof List) {
             List<Object> result = new ArrayList<>();
-            for (Object item : (List<?>) value) result.add(stringify(item));
+            for (Object item : (List<?>) value) {
+                result.add(stringify(item));
+            }
             return result;
         }
         return value;

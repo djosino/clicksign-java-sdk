@@ -22,32 +22,56 @@ public final class CommunicateEvents {
         this.documentSigned    = b.documentSigned;
     }
 
-    public NotificationChannel signatureRequest()  { return signatureRequest; }
-    public NotificationChannel signatureReminder() { return signatureReminder; }
-    public NotificationChannel documentSigned()    { return documentSigned; }
+    public NotificationChannel signatureRequest() {
+        return signatureRequest;
+    }
+
+    public NotificationChannel signatureReminder() {
+        return signatureReminder;
+    }
+
+    public NotificationChannel documentSigned() {
+        return documentSigned;
+    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> m = new LinkedHashMap<>();
-        if (signatureRequest  != null) m.put("signature_request",  signatureRequest.apiValue());
-        if (signatureReminder != null) m.put("signature_reminder", signatureReminder.apiValue());
-        if (documentSigned    != null) m.put("document_signed",    documentSigned.apiValue());
+        if (signatureRequest  != null) {
+            m.put("signature_request",  signatureRequest.apiValue());
+        }
+        if (signatureReminder != null) {
+            m.put("signature_reminder", signatureReminder.apiValue());
+        }
+        if (documentSigned    != null) {
+            m.put("document_signed",    documentSigned.apiValue());
+        }
         return Collections.unmodifiableMap(m);
     }
 
     @SuppressWarnings("unchecked")
     public static CommunicateEvents fromMap(Map<String, Object> raw) {
-        if (raw == null || raw.isEmpty()) return null;
+        if (raw == null || raw.isEmpty()) {
+            return null;
+        }
         Builder b = builder();
         Object sr = raw.get("signature_request");
-        if (sr != null) b.signatureRequest(NotificationChannel.fromApiValue(sr.toString()));
+        if (sr != null) {
+            b.signatureRequest(NotificationChannel.fromApiValue(sr.toString()));
+        }
         Object srem = raw.get("signature_reminder");
-        if (srem != null) b.signatureReminder(NotificationChannel.fromApiValue(srem.toString()));
+        if (srem != null) {
+            b.signatureReminder(NotificationChannel.fromApiValue(srem.toString()));
+        }
         Object ds = raw.get("document_signed");
-        if (ds != null) b.documentSigned(NotificationChannel.fromApiValue(ds.toString()));
+        if (ds != null) {
+            b.documentSigned(NotificationChannel.fromApiValue(ds.toString()));
+        }
         return b.build();
     }
 
-    public static Builder builder() { return new Builder(); }
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static final class Builder {
         private NotificationChannel signatureRequest;
@@ -56,9 +80,20 @@ public final class CommunicateEvents {
 
         private Builder() {}
 
-        public Builder signatureRequest(NotificationChannel v)  { this.signatureRequest = v; return this; }
-        public Builder signatureReminder(NotificationChannel v) { this.signatureReminder = v; return this; }
-        public Builder documentSigned(NotificationChannel v)    { this.documentSigned = v; return this; }
+        public Builder signatureRequest(NotificationChannel v) {
+            this.signatureRequest = v;
+            return this;
+        }
+
+        public Builder signatureReminder(NotificationChannel v) {
+            this.signatureReminder = v;
+            return this;
+        }
+
+        public Builder documentSigned(NotificationChannel v) {
+            this.documentSigned = v;
+            return this;
+        }
 
         public CommunicateEvents build() {
             if (signatureRequest == null && signatureReminder == null && documentSigned == null) {

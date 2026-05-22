@@ -103,26 +103,81 @@ public final class ClicksignClient {
         this.autoSignatureTerms      = new AutoSignatureTerm.Service(httpClient);
     }
 
-    public Envelope.Service envelopes()                        { return envelopes; }
-    public Document.Service documents()                        { return documents; }
-    public Signer.Service signers()                            { return signers; }
-    public Requirement.Service requirements()                  { return requirements; }
-    public SignatureWatcher.Service signatureWatchers()        { return signatureWatchers; }
-    public Event.Service events()                              { return events; }
-    public BulkRequirement.Service bulkRequirements()          { return bulkRequirements; }
-    public Webhook.Service webhooks()                          { return webhooks; }
-    public Folder.Service folders()                            { return folders; }
-    public User.Service users()                                { return users; }
-    public Template.Service templates()                        { return templates; }
-    public TemplateField.Service templateFields()              { return templateFields; }
-    public Membership.Service memberships()                    { return memberships; }
-    public Group.Service groups()                              { return groups; }
-    public AccessControlList.Service accessControlLists()      { return accessControlLists; }
-    public EnvelopeBulkCreation.Service envelopeBulkCreations(){ return envelopeBulkCreations; }
-    public AcceptanceTermWhatsapp.Service acceptanceTermWhatsapps() { return acceptanceTermWhatsapps; }
-    public AutoSignatureTerm.Service autoSignatureTerms()           { return autoSignatureTerms; }
+    public Envelope.Service envelopes() {
+        return envelopes;
+    }
 
-    public static Builder builder() { return new Builder(); }
+    public Document.Service documents() {
+        return documents;
+    }
+
+    public Signer.Service signers() {
+        return signers;
+    }
+
+    public Requirement.Service requirements() {
+        return requirements;
+    }
+
+    public SignatureWatcher.Service signatureWatchers() {
+        return signatureWatchers;
+    }
+
+    public Event.Service events() {
+        return events;
+    }
+
+    public BulkRequirement.Service bulkRequirements() {
+        return bulkRequirements;
+    }
+
+    public Webhook.Service webhooks() {
+        return webhooks;
+    }
+
+    public Folder.Service folders() {
+        return folders;
+    }
+
+    public User.Service users() {
+        return users;
+    }
+
+    public Template.Service templates() {
+        return templates;
+    }
+
+    public TemplateField.Service templateFields() {
+        return templateFields;
+    }
+
+    public Membership.Service memberships() {
+        return memberships;
+    }
+
+    public Group.Service groups() {
+        return groups;
+    }
+
+    public AccessControlList.Service accessControlLists() {
+        return accessControlLists;
+    }
+
+    public EnvelopeBulkCreation.Service envelopeBulkCreations() {
+        return envelopeBulkCreations;
+    }
+
+    public AcceptanceTermWhatsapp.Service acceptanceTermWhatsapps() {
+        return acceptanceTermWhatsapps;
+    }
+
+    public AutoSignatureTerm.Service autoSignatureTerms() {
+        return autoSignatureTerms;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static final class Builder {
 
@@ -136,13 +191,36 @@ public final class ClicksignClient {
 
         private Builder() {}
 
-        public Builder apiKey(String apiKey)                { this.apiKey = apiKey; return this; }
-        public Builder environment(Environment environment) { this.environment = environment; return this; }
+        public Builder apiKey(String apiKey) {
+            this.apiKey = apiKey;
+            return this;
+        }
+
+        public Builder environment(Environment environment) {
+            this.environment = environment;
+            return this;
+        }
+
         /** Overrides environment URL — useful for tests or custom proxies. */
-        public Builder baseUrl(String baseUrl)              { this.baseUrl = baseUrl; return this; }
-        public Builder connectTimeoutMs(int ms)             { this.connectTimeoutMs = ms; return this; }
-        public Builder readTimeoutMs(int ms)                { this.readTimeoutMs = ms; return this; }
-        public Builder maxRetries(int maxRetries)           { this.maxRetries = maxRetries; return this; }
+        public Builder baseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
+            return this;
+        }
+
+        public Builder connectTimeoutMs(int ms) {
+            this.connectTimeoutMs = ms;
+            return this;
+        }
+
+        public Builder readTimeoutMs(int ms) {
+            this.readTimeoutMs = ms;
+            return this;
+        }
+
+        public Builder maxRetries(int maxRetries) {
+            this.maxRetries = maxRetries;
+            return this;
+        }
 
         public Builder onRequest(Consumer<RequestEvent> listener) {
             instrumentation.onRequest(listener);
@@ -160,7 +238,9 @@ public final class ClicksignClient {
         }
 
         public ClicksignClient build() {
-            if (apiKey == null || apiKey.isBlank()) throw new IllegalStateException("apiKey is required");
+            if (apiKey == null || apiKey.isBlank()) {
+                throw new IllegalStateException("apiKey is required");
+            }
             return new ClicksignClient(this);
         }
     }

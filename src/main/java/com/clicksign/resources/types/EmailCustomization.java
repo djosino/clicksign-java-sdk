@@ -13,29 +13,42 @@ public final class EmailCustomization {
         this.subject = b.subject;
     }
 
-    public String subject() { return subject; }
+    public String subject() {
+        return subject;
+    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> m = new LinkedHashMap<>();
-        if (subject != null) m.put("subject", subject);
+        if (subject != null) {
+            m.put("subject", subject);
+        }
         return Collections.unmodifiableMap(m);
     }
 
     public static EmailCustomization fromMap(Map<String, Object> raw) {
-        if (raw == null || raw.isEmpty()) return null;
+        if (raw == null || raw.isEmpty()) {
+            return null;
+        }
         Object subject = raw.get("subject");
         return builder()
             .subject(subject != null ? subject.toString() : null)
             .build();
     }
 
-    public static Builder builder() { return new Builder(); }
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static final class Builder {
         private String subject;
 
-        public Builder subject(String v) { this.subject = v; return this; }
+        public Builder subject(String v) {
+            this.subject = v;
+            return this;
+        }
 
-        public EmailCustomization build() { return new EmailCustomization(this); }
+        public EmailCustomization build() {
+            return new EmailCustomization(this);
+        }
     }
 }

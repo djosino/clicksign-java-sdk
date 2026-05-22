@@ -6,7 +6,11 @@ import com.clicksign.jsonapi.JsonApiSerializer;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.EventCustomKind;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a Clicksign document event.
@@ -33,14 +37,26 @@ public final class Event {
         this.createdAt = str(a.get("created"));
     }
 
-    public String id()                    { return id; }
-    public String name()                  { return name; }
-    public Map<String, Object> data()     { return data; }
+    public String id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public Map<String, Object> data() {
+        return data;
+    }
+
     public EventCustomKind customKindAsEnum() {
         Object kind = data != null ? data.get("kind") : null;
         return kind != null ? ApiStringEnum.tryParse(EventCustomKind.class, kind.toString()) : null;
     }
-    public String createdAt()             { return createdAt; }
+
+    public String createdAt() {
+        return createdAt;
+    }
 
     @Override
     public String toString() {
@@ -51,7 +67,9 @@ public final class Event {
         return new Event(obj);
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     // ── Service ─────────────────────────────────────────────────────────────
 
@@ -59,7 +77,9 @@ public final class Event {
 
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Event> listForEnvelope(String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/events", Collections.emptyMap());
@@ -101,8 +121,12 @@ public final class Event {
             data.put("kind",         params.kind);
             data.put("occurred_at",  params.occurredAt);
             data.put("signer_name",  params.signerName);
-            if (params.signerEmail       != null) data.put("signer_email",        params.signerEmail);
-            if (params.signerPhoneNumber != null) data.put("signer_phone_number", params.signerPhoneNumber);
+            if (params.signerEmail       != null) {
+                data.put("signer_email",        params.signerEmail);
+            }
+            if (params.signerPhoneNumber != null) {
+                data.put("signer_phone_number", params.signerPhoneNumber);
+            }
             attrs.put("data", data);
             String body = JsonApiSerializer.dump("events", null, attrs, null);
             String raw  = http.post("/envelopes/" + params.envelopeId + "/documents/" + params.documentId + "/events", body);
@@ -131,12 +155,18 @@ public final class Event {
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("name", name);
-            if (data          != null) m.put("data",          data);
-            if (contentBase64 != null) m.put("content_base64", contentBase64);
+            if (data          != null) {
+                m.put("data",          data);
+            }
+            if (contentBase64 != null) {
+                m.put("content_base64", contentBase64);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String envelopeId;
@@ -147,16 +177,41 @@ public final class Event {
 
             private Builder() {}
 
-            public Builder envelopeId(String v)              { this.envelopeId = v; return this; }
-            public Builder documentId(String v)              { this.documentId = v; return this; }
-            public Builder name(String v)                    { this.name = v; return this; }
-            public Builder data(Map<String, Object> v)       { this.data = v; return this; }
-            public Builder contentBase64(String v)           { this.contentBase64 = v; return this; }
+            public Builder envelopeId(String v) {
+                this.envelopeId = v;
+                return this;
+            }
+
+            public Builder documentId(String v) {
+                this.documentId = v;
+                return this;
+            }
+
+            public Builder name(String v) {
+                this.name = v;
+                return this;
+            }
+
+            public Builder data(Map<String, Object> v) {
+                this.data = v;
+                return this;
+            }
+
+            public Builder contentBase64(String v) {
+                this.contentBase64 = v;
+                return this;
+            }
 
             public CreateParams build() {
-                if (envelopeId == null || envelopeId.isBlank()) throw new IllegalArgumentException("envelopeId is required");
-                if (documentId == null || documentId.isBlank()) throw new IllegalArgumentException("documentId is required");
-                if (name == null || name.isBlank())             throw new IllegalArgumentException("name is required");
+                if (envelopeId == null || envelopeId.isBlank()) {
+                    throw new IllegalArgumentException("envelopeId is required");
+                }
+                if (documentId == null || documentId.isBlank()) {
+                    throw new IllegalArgumentException("documentId is required");
+                }
+                if (name == null || name.isBlank()) {
+                    throw new IllegalArgumentException("name is required");
+                }
                 return new CreateParams(this);
             }
         }
@@ -180,7 +235,9 @@ public final class Event {
             this.contentBase64 = b.contentBase64;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String envelopeId;
@@ -191,18 +248,47 @@ public final class Event {
 
             private Builder() {}
 
-            public Builder envelopeId(String v)    { this.envelopeId = v; return this; }
-            public Builder documentId(String v)    { this.documentId = v; return this; }
-            public Builder title(String v)         { this.title = v; return this; }
-            public Builder occurredAt(String v)    { this.occurredAt = v; return this; }
-            public Builder contentBase64(String v) { this.contentBase64 = v; return this; }
+            public Builder envelopeId(String v) {
+                this.envelopeId = v;
+                return this;
+            }
+
+            public Builder documentId(String v) {
+                this.documentId = v;
+                return this;
+            }
+
+            public Builder title(String v) {
+                this.title = v;
+                return this;
+            }
+
+            public Builder occurredAt(String v) {
+                this.occurredAt = v;
+                return this;
+            }
+
+            public Builder contentBase64(String v) {
+                this.contentBase64 = v;
+                return this;
+            }
 
             public AddImageParams build() {
-                if (envelopeId    == null || envelopeId.isBlank())    throw new IllegalArgumentException("envelopeId is required");
-                if (documentId    == null || documentId.isBlank())    throw new IllegalArgumentException("documentId is required");
-                if (title         == null || title.isBlank())         throw new IllegalArgumentException("title is required");
-                if (occurredAt    == null || occurredAt.isBlank())    throw new IllegalArgumentException("occurredAt is required");
-                if (contentBase64 == null || contentBase64.isBlank()) throw new IllegalArgumentException("contentBase64 is required");
+                if (envelopeId    == null || envelopeId.isBlank()) {
+                    throw new IllegalArgumentException("envelopeId is required");
+                }
+                if (documentId    == null || documentId.isBlank()) {
+                    throw new IllegalArgumentException("documentId is required");
+                }
+                if (title         == null || title.isBlank()) {
+                    throw new IllegalArgumentException("title is required");
+                }
+                if (occurredAt    == null || occurredAt.isBlank()) {
+                    throw new IllegalArgumentException("occurredAt is required");
+                }
+                if (contentBase64 == null || contentBase64.isBlank()) {
+                    throw new IllegalArgumentException("contentBase64 is required");
+                }
                 return new AddImageParams(this);
             }
         }
@@ -230,7 +316,9 @@ public final class Event {
             this.signerPhoneNumber  = b.signerPhoneNumber;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String envelopeId;
@@ -243,21 +331,61 @@ public final class Event {
 
             private Builder() {}
 
-            public Builder envelopeId(String v)        { this.envelopeId = v; return this; }
-            public Builder documentId(String v)        { this.documentId = v; return this; }
-            public Builder kind(String v)              { this.kind = v; return this; }
-            public Builder kind(EventCustomKind v)     { return kind(v.apiValue()); }
-            public Builder occurredAt(String v)        { this.occurredAt = v; return this; }
-            public Builder signerName(String v)        { this.signerName = v; return this; }
-            public Builder signerEmail(String v)       { this.signerEmail = v; return this; }
-            public Builder signerPhoneNumber(String v) { this.signerPhoneNumber = v; return this; }
+            public Builder envelopeId(String v) {
+                this.envelopeId = v;
+                return this;
+            }
+
+            public Builder documentId(String v) {
+                this.documentId = v;
+                return this;
+            }
+
+            public Builder kind(String v) {
+                this.kind = v;
+                return this;
+            }
+
+            public Builder kind(EventCustomKind v) {
+                return kind(v.apiValue());
+            }
+
+            public Builder occurredAt(String v) {
+                this.occurredAt = v;
+                return this;
+            }
+
+            public Builder signerName(String v) {
+                this.signerName = v;
+                return this;
+            }
+
+            public Builder signerEmail(String v) {
+                this.signerEmail = v;
+                return this;
+            }
+
+            public Builder signerPhoneNumber(String v) {
+                this.signerPhoneNumber = v;
+                return this;
+            }
 
             public CustomParams build() {
-                if (envelopeId == null || envelopeId.isBlank()) throw new IllegalArgumentException("envelopeId is required");
-                if (documentId == null || documentId.isBlank()) throw new IllegalArgumentException("documentId is required");
-                if (kind == null || kind.isBlank())             throw new IllegalArgumentException("kind is required");
-                if (occurredAt == null || occurredAt.isBlank()) throw new IllegalArgumentException("occurredAt is required");
-                if (signerName == null || signerName.isBlank()) throw new IllegalArgumentException("signerName is required");
+                if (envelopeId == null || envelopeId.isBlank()) {
+                    throw new IllegalArgumentException("envelopeId is required");
+                }
+                if (documentId == null || documentId.isBlank()) {
+                    throw new IllegalArgumentException("documentId is required");
+                }
+                if (kind == null || kind.isBlank()) {
+                    throw new IllegalArgumentException("kind is required");
+                }
+                if (occurredAt == null || occurredAt.isBlank()) {
+                    throw new IllegalArgumentException("occurredAt is required");
+                }
+                if (signerName == null || signerName.isBlank()) {
+                    throw new IllegalArgumentException("signerName is required");
+                }
                 return new CustomParams(this);
             }
         }

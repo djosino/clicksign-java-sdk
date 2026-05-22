@@ -4,7 +4,9 @@ import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /** Represents folder-group access control. Supports create and destroy only. */
 public final class AccessControlList {
@@ -19,9 +21,17 @@ public final class AccessControlList {
         this.groupId  = obj.relationshipId("group");
     }
 
-    public String id()       { return id; }
-    public String folderId() { return folderId; }
-    public String groupId()  { return groupId; }
+    public String id() {
+        return id;
+    }
+
+    public String folderId() {
+        return folderId;
+    }
+
+    public String groupId() {
+        return groupId;
+    }
 
     @Override
     public String toString() {
@@ -35,7 +45,9 @@ public final class AccessControlList {
         private static final String ENDPOINT = "/access_control_lists";
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public AccessControlList create(String folderId, String groupId) {
             Map<String, Object> rels = buildRelationships(folderId, groupId);

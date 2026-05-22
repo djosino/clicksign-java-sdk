@@ -12,11 +12,13 @@ public final class JsonApiSerializer {
     }
 
     public static String dump(String type, String id,
-                              Map<String, Object> attributes,
-                              Map<String, Object> relationships) {
+            Map<String, Object> attributes,
+            Map<String, Object> relationships) {
         StringBuilder sb = new StringBuilder("{\"data\":{");
         sb.append("\"type\":").append(quote(type));
-        if (id != null) sb.append(",\"id\":").append(quote(id));
+        if (id != null) {
+            sb.append(",\"id\":").append(quote(id));
+        }
         if (attributes != null && !attributes.isEmpty()) {
             sb.append(",\"attributes\":").append(toJson(attributes));
         }
@@ -29,14 +31,24 @@ public final class JsonApiSerializer {
 
     @SuppressWarnings("unchecked")
     public static String toJson(Object value) {
-        if (value == null)              return "null";
-        if (value instanceof String)    return quote((String) value);
-        if (value instanceof Boolean)   return value.toString();
-        if (value instanceof Number)    return value.toString();
+        if (value == null) {
+            return "null";
+        }
+        if (value instanceof String) {
+            return quote((String) value);
+        }
+        if (value instanceof Boolean) {
+            return value.toString();
+        }
+        if (value instanceof Number) {
+            return value.toString();
+        }
         if (value instanceof Map) {
             StringBuilder sb = new StringBuilder("{");
             ((Map<String, Object>) value).forEach((k, v) -> {
-                if (sb.length() > 1) sb.append(',');
+                if (sb.length() > 1) {
+                    sb.append(',');
+                }
                 sb.append(quote(k)).append(':').append(toJson(v));
             });
             return sb.append('}').toString();
@@ -44,7 +56,9 @@ public final class JsonApiSerializer {
         if (value instanceof Iterable) {
             StringBuilder sb = new StringBuilder("[");
             for (Object item : (Iterable<?>) value) {
-                if (sb.length() > 1) sb.append(',');
+                if (sb.length() > 1) {
+                    sb.append(',');
+                }
                 sb.append(toJson(item));
             }
             return sb.append(']').toString();

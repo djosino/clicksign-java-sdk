@@ -11,8 +11,12 @@ public enum WebhookEventType implements ApiStringEnum {
 
     private final String apiValue;
 
-    WebhookEventType(String apiValue) { this.apiValue = apiValue; }
+    WebhookEventType(String apiValue) {
+        this.apiValue = apiValue;
+    }
 
     @Override
-    public String apiValue() { return apiValue; }
+    public String apiValue() {
+        return apiValue;
+    }
 }

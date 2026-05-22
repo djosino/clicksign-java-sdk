@@ -10,7 +10,11 @@ import com.clicksign.resources.types.DocumentStatus;
 import com.clicksign.resources.types.DocumentTemplate;
 import com.clicksign.resources.types.Metadata;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a Clicksign document within an envelope.
@@ -50,26 +54,56 @@ public final class Document {
         this.modifiedAt = str(a.get("modified"));
     }
 
-    public String id()          { return id; }
-    public String filename()    { return filename; }
-    public String status()      { return status; }
-    public Map<String, Object> metadata() { return metadata; }
-    public Metadata metadataTyped()       { return Metadata.fromMap(metadata); }
-    public DocumentStatus statusAsEnum()  { return ApiStringEnum.tryParse(DocumentStatus.class, status); }
-    public String envelopeId()  { return envelopeId; }
-    public String createdAt()   { return createdAt; }
-    public String modifiedAt()  { return modifiedAt; }
+    public String id() {
+        return id;
+    }
+
+    public String filename() {
+        return filename;
+    }
+
+    public String status() {
+        return status;
+    }
+
+    public Map<String, Object> metadata() {
+        return metadata;
+    }
+
+    public Metadata metadataTyped() {
+        return Metadata.fromMap(metadata);
+    }
+
+    public DocumentStatus statusAsEnum() {
+        return ApiStringEnum.tryParse(DocumentStatus.class, status);
+    }
+
+    public String envelopeId() {
+        return envelopeId;
+    }
+
+    public String createdAt() {
+        return createdAt;
+    }
+
+    public String modifiedAt() {
+        return modifiedAt;
+    }
 
     @Override
     public String toString() {
         return "Document{id='" + id + "', filename='" + filename + "', envelopeId='" + envelopeId + "'}";
     }
 
-    private static String str(Object o) { return o != null ? o.toString() : null; }
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
 
     @SuppressWarnings("unchecked")
     private static Map<String, Object> objectMap(Object o) {
-        if (!(o instanceof Map)) return null;
+        if (!(o instanceof Map)) {
+            return null;
+        }
         return Collections.unmodifiableMap(new LinkedHashMap<>((Map<String, Object>) o));
     }
 
@@ -79,7 +113,9 @@ public final class Document {
 
         private final HttpClient http;
 
-        public Service(HttpClient http) { this.http = http; }
+        public Service(HttpClient http) {
+            this.http = http;
+        }
 
         public List<Document> list(String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/documents", Collections.emptyMap());
@@ -154,16 +190,30 @@ public final class Document {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (filename      != null) m.put("filename",       filename);
-            if (contentBase64 != null) m.put("content_base64", contentBase64);
-            if (contentUrl    != null) m.put("content_url",    contentUrl);
-            if (metadata      != null) m.put("metadata",       metadata);
-            if (template      != null) m.put("template",       template);
-            if (duplicate     != null) m.put("duplicate",      duplicate);
+            if (filename      != null) {
+                m.put("filename",       filename);
+            }
+            if (contentBase64 != null) {
+                m.put("content_base64", contentBase64);
+            }
+            if (contentUrl    != null) {
+                m.put("content_url",    contentUrl);
+            }
+            if (metadata      != null) {
+                m.put("metadata",       metadata);
+            }
+            if (template      != null) {
+                m.put("template",       template);
+            }
+            if (duplicate     != null) {
+                m.put("duplicate",      duplicate);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String envelopeId;
@@ -176,26 +226,60 @@ public final class Document {
 
             private Builder() {}
 
-            public Builder envelopeId(String envelopeId)       { this.envelopeId = envelopeId; return this; }
-            public Builder filename(String filename)            { this.filename = filename; return this; }
-            public Builder contentBase64(String contentBase64) { this.contentBase64 = contentBase64; return this; }
-            public Builder contentUrl(String contentUrl)       { this.contentUrl = contentUrl; return this; }
-            public Builder metadata(Map<String, Object> metadata) { this.metadata = metadata; return this; }
+            public Builder envelopeId(String envelopeId) {
+                this.envelopeId = envelopeId;
+                return this;
+            }
+
+            public Builder filename(String filename) {
+                this.filename = filename;
+                return this;
+            }
+
+            public Builder contentBase64(String contentBase64) {
+                this.contentBase64 = contentBase64;
+                return this;
+            }
+
+            public Builder contentUrl(String contentUrl) {
+                this.contentUrl = contentUrl;
+                return this;
+            }
+
+            public Builder metadata(Map<String, Object> metadata) {
+                this.metadata = metadata;
+                return this;
+            }
+
             public Builder metadata(Metadata metadata) {
                 return metadata(metadata != null ? metadata.toMap() : null);
             }
-            public Builder template(Map<String, Object> template) { this.template = template; return this; }
+
+            public Builder template(Map<String, Object> template) {
+                this.template = template;
+                return this;
+            }
+
             public Builder template(DocumentTemplate template) {
                 return template(template != null ? template.toMap() : null);
             }
-            public Builder duplicate(Map<String, Object> duplicate) { this.duplicate = duplicate; return this; }
+
+            public Builder duplicate(Map<String, Object> duplicate) {
+                this.duplicate = duplicate;
+                return this;
+            }
+
             public Builder duplicate(DocumentDuplicate duplicate) {
                 return duplicate(duplicate != null ? duplicate.toMap() : null);
             }
 
             public CreateParams build() {
-                if (envelopeId == null || envelopeId.isBlank()) throw new IllegalArgumentException("envelopeId is required");
-                if (filename == null || filename.isBlank())     throw new IllegalArgumentException("filename is required");
+                if (envelopeId == null || envelopeId.isBlank()) {
+                    throw new IllegalArgumentException("envelopeId is required");
+                }
+                if (filename == null || filename.isBlank()) {
+                    throw new IllegalArgumentException("filename is required");
+                }
                 boolean hasContent = (contentBase64 != null && !contentBase64.isBlank())
                     || (contentUrl != null && !contentUrl.isBlank());
                 boolean hasTemplate = template != null && !template.isEmpty();
@@ -224,12 +308,18 @@ public final class Document {
 
         Map<String, Object> toAttributes() {
             Map<String, Object> m = new LinkedHashMap<>();
-            if (filename != null) m.put("filename", filename);
-            if (metadata != null) m.put("metadata", metadata);
+            if (filename != null) {
+                m.put("filename", filename);
+            }
+            if (metadata != null) {
+                m.put("metadata", metadata);
+            }
             return m;
         }
 
-        public static Builder builder() { return new Builder(); }
+        public static Builder builder() {
+            return new Builder();
+        }
 
         public static final class Builder {
             private String filename;
@@ -237,13 +327,23 @@ public final class Document {
 
             private Builder() {}
 
-            public Builder filename(String filename) { this.filename = filename; return this; }
-            public Builder metadata(Map<String, Object> metadata) { this.metadata = metadata; return this; }
+            public Builder filename(String filename) {
+                this.filename = filename;
+                return this;
+            }
+
+            public Builder metadata(Map<String, Object> metadata) {
+                this.metadata = metadata;
+                return this;
+            }
+
             public Builder metadata(Metadata metadata) {
                 return metadata(metadata != null ? metadata.toMap() : null);
             }
 
-            public UpdateParams build() { return new UpdateParams(this); }
+            public UpdateParams build() {
+                return new UpdateParams(this);
+            }
         }
     }
 }

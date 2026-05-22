@@ -11,7 +11,9 @@ public final class DocumentDuplicate {
         this.id = id;
     }
 
-    public String id() { return id; }
+    public String id() {
+        return id;
+    }
 
     public Map<String, Object> toMap() {
         return Map.of("id", id);
