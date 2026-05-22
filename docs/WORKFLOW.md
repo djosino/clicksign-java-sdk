@@ -103,6 +103,8 @@ Signer.CreateParams.builder()
 
 Relacione signatário e documento com `documentId` e `signerId` nos builders — o SDK monta o JSON:API `relationships` internamente.
 
+> **Pré-requisito para ativar:** antes de colocar o envelope em `running`, a API exige **pelo menos um requisito `agree`** (qualificação, com `role`) **e um `provide_evidence`** (autenticação, com `auth`) para o mesmo par signatário/documento. Sem os dois, `update` com `status` ou `activate` retorna erro de validação.
+
 ### 4.1 Endpoint padrão (`Requirement`)
 
 ```java
@@ -160,12 +162,19 @@ Detalhes: [examples/02-bulk-requirements.md](examples/02-bulk-requirements.md).
 
 ## 5. Ativar o envelope
 
+Com os requisitos da seção 4 criados, altere o status para `running` via `update` (recomendado):
+
 ```java
-Envelope activated = client.envelopes().activate(envelopeId);
+import com.clicksign.resources.types.EnvelopeStatus;
+
+Envelope activated = client.envelopes().update(envelopeId,
+    Envelope.UpdateParams.builder()
+        .status(EnvelopeStatus.RUNNING)
+        .build());
 // status esperado: "running"
 ```
 
-O método `activate` faz `POST /envelopes/{id}/activate` com body JSON:API (`type` + `id`). Não use `update` com `status` para ativar — o endpoint dedicado é o fluxo suportado pela API.
+Alternativa equivalente: `client.envelopes().activate(envelopeId)` (`POST /envelopes/{id}/activate`). Prefira `update` com `EnvelopeStatus.RUNNING` — o PATCH em `/envelopes/{id}` é o fluxo usual na API 3.0 e permite ajustar outros atributos na mesma chamada.
 
 ## 6. Notificar signatários
 

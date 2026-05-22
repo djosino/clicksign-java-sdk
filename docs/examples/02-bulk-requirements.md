@@ -56,5 +56,6 @@ client.bulkRequirements().create(envelopeId,
 - Assumir exceção quando um slot falha — verifique `failures()`
 - Reenviar o lote inteiro após timeout sem checar o que já foi criado — bulk só retenta timeout, não 5xx
 - Omitir `documentId`/`signerId` nas operações `add` — relationships são obrigatórias
+- Ativar o envelope só com `addAgree` — antes de `update` com `status` `running` (ou `activate`), inclua também `addProvideEvidence` para o mesmo par signatário/documento
 
 Arquitetura: [ARCHITECTURE.md](../ARCHITECTURE.md#operações-em-massa-bulk).

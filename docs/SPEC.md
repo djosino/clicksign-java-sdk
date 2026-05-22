@@ -9,12 +9,12 @@ Legenda: **Q** = `ResourceQuery` via `.filter()`.
 | Resource | Método SDK | HTTP | Path | Notas |
 |----------|------------|------|------|-------|
 | `Envelope` | `list()` | GET | `/envelopes` | |
-| `Envelope` | `filter()` | GET | `/envelopes` | Q: filtros, sort, página |
+| `Envelope` | `filter()` | GET | `/envelopes` | `EnvelopeQuery`: status, name, created, modified, deadline_at |
 | `Envelope` | `retrieve(id)` | GET | `/envelopes/{id}` | |
 | `Envelope` | `create(params)` | POST | `/envelopes` | |
-| `Envelope` | `update(id, params)` | PATCH | `/envelopes/{id}` | |
+| `Envelope` | `update(id, params)` | PATCH | `/envelopes/{id}` | `status: running` para ativar (preferido); exige requisitos `agree` + `provide_evidence` |
 | `Envelope` | `delete(id)` | DELETE | `/envelopes/{id}` | |
-| `Envelope` | `activate(id)` | POST | `/envelopes/{id}/activate` | Body JSON:API |
+| `Envelope` | `activate(id)` | POST | `/envelopes/{id}/activate` | Alternativa a `update` com `running`; mesmos pré-requisitos de requisitos |
 | `Envelope` | `notifyAll(envelopeId, params)` | POST | `/envelopes/{id}/notifications` | |
 | `Document` | `list(envelopeId)` | GET | `/envelopes/{eid}/documents` | |
 | `Document` | `filter(envelopeId)` | GET | `/envelopes/{eid}/documents` | Q |
@@ -71,6 +71,7 @@ Legenda: **Q** = `ResourceQuery` via `.filter()`.
 | `TemplateField` | `update(id, params)` | PATCH | `/template_fields/{id}` | |
 | `TemplateField` | `delete(id)` | DELETE | `/template_fields/{id}` | |
 | `Membership` | `list()` | GET | `/memberships` | |
+| `Membership` | `filter()` | GET | `/memberships` | Q: `role`, `user.id` |
 | `Membership` | `retrieve(id)` | GET | `/memberships/{id}` | |
 | `Membership` | `create(params)` | POST | `/memberships` | |
 | `Membership` | `update(id, params)` | **PUT** | `/memberships/{id}` | Não PATCH |

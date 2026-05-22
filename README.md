@@ -102,6 +102,8 @@ Este SDK usa **`envelope.name()`**, não `envelope.getName()`. O mesmo vale para
 import com.clicksign.ClicksignClient;
 import com.clicksign.Environment;
 import com.clicksign.resources.notarial.*;
+import com.clicksign.resources.types.EnvelopeStatus;
+import com.clicksign.resources.types.RequirementAuth;
 import com.clicksign.resources.types.RequirementRole;
 
 ClicksignClient client = ClicksignClient.builder()
@@ -127,9 +129,13 @@ Signer signer = client.signers().create(
         .build());
 
 client.bulkRequirements().create(envelope.id(), ops -> ops
-    .addAgree(signer.id(), document.id(), RequirementRole.SIGN));
+    .addAgree(signer.id(), document.id(), RequirementRole.SIGN)
+    .addProvideEvidence(signer.id(), document.id(), RequirementAuth.EMAIL));
 
-client.envelopes().activate(envelope.id());
+client.envelopes().update(envelope.id(),
+    Envelope.UpdateParams.builder()
+        .status(EnvelopeStatus.RUNNING)
+        .build());
 ```
 
 Token sandbox: [sandbox.clicksign.com](https://sandbox.clicksign.com).
@@ -141,8 +147,8 @@ Token sandbox: [sandbox.clicksign.com](https://sandbox.clicksign.com).
 | 1 | `envelopes().create(...)` |
 | 2 | `documents().create(...)` |
 | 3 | `signers().create(...)` |
-| 4 | `requirements().create(...)` ou `bulkRequirements().create(...)` |
-| 5 | `envelopes().activate(id)` |
+| 4 | `requirements().create(...)` ou `bulkRequirements().create(...)` — ao menos um `agree` e um `provide_evidence` por par signatário/documento |
+| 5 | `envelopes().update(id, status RUNNING)` (preferido) ou `envelopes().activate(id)` |
 | 6 | `envelopes().notifyAll(...)` ou `signers().notify(...)` |
 | 7 | `events().listForEnvelope(id)` |
 
@@ -152,16 +158,18 @@ Guia detalhado: [docs/WORKFLOW.md](docs/WORKFLOW.md).
 
 ```java
 import com.clicksign.resources.notarial.Envelope;
+import com.clicksign.resources.types.EnvelopeStatus;
 
 java.util.List<Envelope> page = client.envelopes().filter()
-    .filter("status", "draft")
+    .status(EnvelopeStatus.DRAFT)
+    .name("Contrato Q1")
     .order("-created")
     .page(1)
     .perPage(20)
     .fetch();
 
 java.util.List<Envelope> all = client.envelopes().filter()
-    .filter("status", "draft")
+    .status(EnvelopeStatus.DRAFT)
     .fetchAll();
 ```
 
@@ -171,7 +179,7 @@ Cookbook: [docs/examples/07-list-and-filter.md](docs/examples/07-list-and-filter
 
 | `ClicksignClient` | Resource | Operações principais |
 |-------------------|----------|-------------------|
-| `envelopes()` | Envelope | CRUD, activate, notifyAll, filter |
+| `envelopes()` | Envelope | CRUD, `update` com `status` para ativar, `activate`, notifyAll, filter |
 | `documents()` | Document | CRUD, listEvents, filter |
 | `signers()` | Signer | list, retrieve, create, delete, notify, filter |
 | `requirements()` | Requirement | CRUD, filter |
@@ -183,7 +191,7 @@ Cookbook: [docs/examples/07-list-and-filter.md](docs/examples/07-list-and-filter
 | `users()` | User | list, retrieve, me, create |
 | `templates()` | Template | CRUD, listTemplateFields |
 | `templateFields()` | TemplateField | list, update, delete |
-| `memberships()` | Membership | CRUD (update via **PUT**) |
+| `memberships()` | Membership | CRUD, `filter()` (update via **PUT**) |
 | `groups()` | Group | CRUD, addUsers, removeUsers |
 | `accessControlLists()` | AccessControlList | create, destroy |
 | `envelopeBulkCreations()` | EnvelopeBulkCreation | create |

@@ -1,5 +1,7 @@
 package com.clicksign.jsonapi;
 
+import com.clicksign.resources.types.ApiStringEnum;
+
 import java.util.*;
 import java.util.function.Function;
 
@@ -11,14 +13,14 @@ import java.util.function.Function;
  *
  * <pre>{@code
  * client.envelopes().filter()
- *     .filter("status", "running")
+ *     .status(EnvelopeStatus.RUNNING)
+ *     .name("Contrato")
  *     .order("-created")
  *     .page(1).perPage(20)
- *     .fetch()
- *     .forEach(e -> System.out.println(e.name()));
+ *     .fetch();
  * }</pre>
  */
-public final class ResourceQuery<T> {
+public class ResourceQuery<T> {
 
     private final String endpoint;
     private final com.clicksign.http.HttpClient http;
@@ -36,8 +38,22 @@ public final class ResourceQuery<T> {
     }
 
     public ResourceQuery<T> filter(String key, String value) {
+        if (key == null || key.isBlank()) {
+            throw new IllegalArgumentException("filter key is required");
+        }
+        if (value == null) {
+            throw new IllegalArgumentException("filter value is required");
+        }
         params.put("filter[" + key + "]", value);
         return this;
+    }
+
+    /** Filters using an enum's {@link ApiStringEnum#apiValue()}. */
+    public ResourceQuery<T> filter(String key, ApiStringEnum value) {
+        if (value == null) {
+            throw new IllegalArgumentException("filter value is required");
+        }
+        return filter(key, value.apiValue());
     }
 
     public ResourceQuery<T> order(String field) {

@@ -90,7 +90,7 @@ class AcceptanceTermWhatsappTest {
     }
 
     @Test
-    void filterByStatus() {
+    void filterByStatusString() {
         wireMock.stubFor(get(urlPathEqualTo("/acceptance_term/whatsapps"))
             .withQueryParam("filter[status]", equalTo("sent"))
             .willReturn(okJson(JsonApiFixtures.acceptanceTermWhatsappList(
@@ -100,5 +100,20 @@ class AcceptanceTermWhatsappTest {
         List<AcceptanceTermWhatsapp> result = service.filter().filter("status", "sent").fetch();
         assertEquals(1, result.size());
         assertEquals("sent", result.get(0).status());
+    }
+
+    @Test
+    void filterByStatusEnum() {
+        wireMock.stubFor(get(urlPathEqualTo("/acceptance_term/whatsapps"))
+            .withQueryParam("filter[status]", equalTo("completed"))
+            .willReturn(okJson(JsonApiFixtures.acceptanceTermWhatsappList(
+                JsonApiFixtures.acceptanceTermWhatsapp("wa-2", "completed", "Outro")
+            ))));
+
+        List<AcceptanceTermWhatsapp> result = service.filter()
+            .status(com.clicksign.resources.types.AcceptanceTermStatus.COMPLETED)
+            .fetch();
+
+        assertEquals(com.clicksign.resources.types.AcceptanceTermStatus.COMPLETED, result.get(0).statusAsEnum());
     }
 }

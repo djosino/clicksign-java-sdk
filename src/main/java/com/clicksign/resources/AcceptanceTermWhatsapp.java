@@ -3,7 +3,7 @@ package com.clicksign.resources;
 import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
-import com.clicksign.jsonapi.ResourceQuery;
+import com.clicksign.jsonapi.AcceptanceTermWhatsappQuery;
 import com.clicksign.resources.types.AcceptanceTermStatus;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.SenderNameOption;
@@ -26,6 +26,10 @@ public final class AcceptanceTermWhatsapp {
     private final String sentAt;
     private final String createdAt;
     private final String modifiedAt;
+
+    public static AcceptanceTermWhatsapp from(JsonApiParser.ResourceObject obj) {
+        return new AcceptanceTermWhatsapp(obj);
+    }
 
     private AcceptanceTermWhatsapp(JsonApiParser.ResourceObject obj) {
         Map<String, Object> a = obj.attributes();
@@ -89,8 +93,8 @@ public final class AcceptanceTermWhatsapp {
             return Collections.unmodifiableList(result);
         }
 
-        public ResourceQuery<AcceptanceTermWhatsapp> filter() {
-            return new ResourceQuery<>(ENDPOINT, http, AcceptanceTermWhatsapp::new);
+        public AcceptanceTermWhatsappQuery filter() {
+            return new AcceptanceTermWhatsappQuery(http);
         }
 
         public AcceptanceTermWhatsapp retrieve(String id) {

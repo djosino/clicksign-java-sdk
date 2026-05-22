@@ -90,8 +90,21 @@ public final class JsonApiFixtures {
     }
 
     public static String requirement(String id, String action, String envelopeId) {
+        return requirementWithRole(id, action, null, envelopeId);
+    }
+
+    public static String requirementWithRole(String id, String action, String role, String envelopeId) {
+        String roleField = role != null ? "\"role\":\"" + role + "\"," : "";
         return "{\"data\":{\"id\":\"" + id + "\",\"type\":\"requirements\",\"attributes\":{" +
-            "\"action\":\"" + action + "\"," +
+            "\"action\":\"" + action + "\"," + roleField +
+            "\"created\":\"2026-01-01T00:00:00.000-03:00\"," +
+            "\"modified\":\"2026-01-01T00:00:00.000-03:00\"}," +
+            "\"relationships\":{\"envelope\":{\"data\":{\"type\":\"envelopes\",\"id\":\"" + envelopeId + "\"}}}}}";
+    }
+
+    public static String documentWithStatus(String id, String filename, String status, String envelopeId) {
+        return "{\"data\":{\"id\":\"" + id + "\",\"type\":\"documents\",\"attributes\":{" +
+            "\"filename\":\"" + filename + "\",\"status\":\"" + status + "\"," +
             "\"created\":\"2026-01-01T00:00:00.000-03:00\"," +
             "\"modified\":\"2026-01-01T00:00:00.000-03:00\"}," +
             "\"relationships\":{\"envelope\":{\"data\":{\"type\":\"envelopes\",\"id\":\"" + envelopeId + "\"}}}}}";

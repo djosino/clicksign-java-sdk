@@ -3,7 +3,7 @@ package com.clicksign.resources.notarial;
 import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
-import com.clicksign.jsonapi.ResourceQuery;
+import com.clicksign.jsonapi.EnvelopeQuery;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.DeadlinePartialSignatureAction;
 import com.clicksign.resources.types.EnvelopeLocale;
@@ -45,6 +45,11 @@ public final class Envelope {
     private final String modifiedAt;
 
     @SuppressWarnings("unchecked")
+    /** Parses a JSON:API resource object (used by {@link com.clicksign.jsonapi.EnvelopeQuery}). */
+    public static Envelope from(JsonApiParser.ResourceObject obj) {
+        return new Envelope(obj);
+    }
+
     private Envelope(JsonApiParser.ResourceObject obj) {
         Map<String, Object> a = obj.attributes();
         this.id                            = obj.id();
@@ -131,8 +136,8 @@ public final class Envelope {
         }
 
         /** Returns a fluent query builder for filtering, ordering, and paginating envelopes. */
-        public ResourceQuery<Envelope> filter() {
-            return new ResourceQuery<>(ENDPOINT, http, Envelope::new);
+        public EnvelopeQuery filter() {
+            return new EnvelopeQuery(http);
         }
 
         public Envelope retrieve(String id) {

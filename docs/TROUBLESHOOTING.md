@@ -70,6 +70,33 @@ Para erros 422 da API, confira [campos e regras](https://developers.clicksign.co
 
 ---
 
+### `ValidationException` ao ativar envelope (`running`)
+
+**Causa:** tentativa de ativar sem os requisitos mínimos — a API exige **pelo menos um `agree`** (com `role`) **e um `provide_evidence`** (com `auth`) para o par signatário/documento antes de `status: running`.
+
+**Correção:**
+
+```java
+import com.clicksign.resources.notarial.BulkRequirement;
+import com.clicksign.resources.notarial.Envelope;
+import com.clicksign.resources.types.EnvelopeStatus;
+import com.clicksign.resources.types.RequirementAuth;
+import com.clicksign.resources.types.RequirementRole;
+
+client.bulkRequirements().create(envelopeId, ops -> ops
+    .addAgree(signerId, documentId, RequirementRole.SIGN)
+    .addProvideEvidence(signerId, documentId, RequirementAuth.EMAIL));
+
+Envelope running = client.envelopes().update(envelopeId,
+    Envelope.UpdateParams.builder()
+        .status(EnvelopeStatus.RUNNING)
+        .build());
+```
+
+Fluxo completo: [WORKFLOW.md](WORKFLOW.md).
+
+---
+
 ### `BulkRequirement` retorna sucesso HTTP mas alguns slots falham
 
 **Causa:** respostas atômicas podem trazer `atomic:results` com erros por índice sem lançar exceção global.
@@ -78,7 +105,8 @@ Para erros 422 da API, confira [campos e regras](https://developers.clicksign.co
 
 ```java
 BulkRequirement.Response response = client.bulkRequirements().create(envelopeId, ops -> ops
-    .addAgree(signerId, documentId, "sign"));
+    .addAgree(signerId, documentId, "sign")
+    .addProvideEvidence(signerId, documentId, "email"));
 
 if (!response.isSuccess()) {
     for (BulkRequirement.OperationResult failure : response.failures()) {

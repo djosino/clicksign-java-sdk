@@ -3,7 +3,7 @@ package com.clicksign.resources.notarial;
 import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
-import com.clicksign.jsonapi.ResourceQuery;
+import com.clicksign.jsonapi.RequirementQuery;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.RequirementAction;
 import com.clicksign.resources.types.RequirementAuth;
@@ -27,6 +27,10 @@ public final class Requirement {
     private final String signerId;
     private final String createdAt;
     private final String modifiedAt;
+
+    public static Requirement from(JsonApiParser.ResourceObject obj, String parentEnvelopeId) {
+        return new Requirement(obj, parentEnvelopeId);
+    }
 
     private Requirement(JsonApiParser.ResourceObject obj, String parentEnvelopeId) {
         Map<String, Object> a = obj.attributes();
@@ -111,9 +115,8 @@ public final class Requirement {
         }
 
         /** Returns a fluent query builder for filtering and paginating requirements. */
-        public ResourceQuery<Requirement> filter(String envelopeId) {
-            return new ResourceQuery<>("/envelopes/" + envelopeId + "/requirements", http,
-                obj -> new Requirement(obj, envelopeId));
+        public RequirementQuery filter(String envelopeId) {
+            return new RequirementQuery(envelopeId, http);
         }
     }
 

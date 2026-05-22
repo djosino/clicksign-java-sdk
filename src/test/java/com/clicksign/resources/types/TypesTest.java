@@ -92,5 +92,13 @@ class TypesTest {
         assertEquals("account_name", SenderNameOption.ACCOUNT_NAME.apiValue());
         assertEquals("token_email", EventCustomKind.TOKEN_EMAIL.apiValue());
         assertEquals("sign", WebhookEventType.SIGN.apiValue());
+        assertEquals("admin", MembershipRole.ADMIN.apiValue());
+        assertEquals("member", MembershipRole.MEMBER.apiValue());
+    }
+
+    @Test
+    void membershipRoleParses() {
+        assertEquals(MembershipRole.ADMIN, ApiStringEnum.tryParse(MembershipRole.class, "admin"));
+        assertNull(ApiStringEnum.tryParse(MembershipRole.class, "owner"));
     }
 }

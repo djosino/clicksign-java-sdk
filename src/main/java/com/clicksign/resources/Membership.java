@@ -3,6 +3,9 @@ package com.clicksign.resources;
 import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
+import com.clicksign.jsonapi.MembershipQuery;
+import com.clicksign.resources.types.ApiStringEnum;
+import com.clicksign.resources.types.MembershipRole;
 
 import java.util.*;
 
@@ -18,6 +21,10 @@ public final class Membership {
     private final String createdAt;
     private final String modifiedAt;
 
+    public static Membership from(JsonApiParser.ResourceObject obj) {
+        return new Membership(obj);
+    }
+
     private Membership(JsonApiParser.ResourceObject obj) {
         Map<String, Object> a = obj.attributes();
         this.id                          = obj.id();
@@ -32,6 +39,9 @@ public final class Membership {
 
     public String id()                          { return id; }
     public String role()                        { return role; }
+    public MembershipRole roleAsEnum() {
+        return ApiStringEnum.tryParse(MembershipRole.class, role);
+    }
     public boolean consumptionAccessible()      { return consumptionAccessible; }
     public boolean trackingAccessible()         { return trackingAccessible; }
     public boolean folderManagementAccessible() { return folderManagementAccessible; }
@@ -61,6 +71,10 @@ public final class Membership {
             List<Membership> result = new ArrayList<>();
             for (JsonApiParser.ResourceObject obj : JsonApiParser.parse(raw).data()) result.add(new Membership(obj));
             return Collections.unmodifiableList(result);
+        }
+
+        public MembershipQuery filter() {
+            return new MembershipQuery(http);
         }
 
         public Membership retrieve(String id) {
@@ -135,6 +149,9 @@ public final class Membership {
             private Builder() {}
 
             public Builder role(String v)   { this.role = v; return this; }
+            public Builder role(MembershipRole v) {
+                return role(v != null ? v.apiValue() : null);
+            }
             public Builder userId(String v) { this.userId = v; return this; }
             public Builder consumptionAccessible(boolean v)      { this.consumptionAccessible = v; return this; }
             public Builder trackingAccessible(boolean v)         { this.trackingAccessible = v; return this; }
@@ -184,6 +201,9 @@ public final class Membership {
             private Builder() {}
 
             public Builder role(String v)                        { this.role = v; return this; }
+            public Builder role(MembershipRole v) {
+                return role(v != null ? v.apiValue() : null);
+            }
             public Builder consumptionAccessible(boolean v)      { this.consumptionAccessible = v; return this; }
             public Builder trackingAccessible(boolean v)         { this.trackingAccessible = v; return this; }
             public Builder folderManagementAccessible(boolean v) { this.folderManagementAccessible = v; return this; }

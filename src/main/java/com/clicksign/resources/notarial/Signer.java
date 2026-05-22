@@ -3,7 +3,7 @@ package com.clicksign.resources.notarial;
 import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
-import com.clicksign.jsonapi.ResourceQuery;
+import com.clicksign.jsonapi.SignerQuery;
 
 import java.util.*;
 
@@ -27,6 +27,10 @@ public final class Signer {
     private final String modifiedAt;
 
     @SuppressWarnings("unchecked")
+    public static Signer from(JsonApiParser.ResourceObject obj, String parentEnvelopeId) {
+        return new Signer(obj, parentEnvelopeId);
+    }
+
     private Signer(JsonApiParser.ResourceObject obj, String parentEnvelopeId) {
         Map<String, Object> a = obj.attributes();
         this.id                      = obj.id();
@@ -151,9 +155,8 @@ public final class Signer {
         }
 
         /** Returns a fluent query builder for filtering and paginating signers. */
-        public ResourceQuery<Signer> filter(String envelopeId) {
-            return new ResourceQuery<>("/envelopes/" + envelopeId + "/signers", http,
-                obj -> new Signer(obj, envelopeId));
+        public SignerQuery filter(String envelopeId) {
+            return new SignerQuery(envelopeId, http);
         }
 
         public Signer retrieve(String id, String envelopeId) {

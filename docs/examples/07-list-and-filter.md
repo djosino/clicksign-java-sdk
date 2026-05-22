@@ -8,15 +8,20 @@
 import com.clicksign.ClicksignClient;
 import com.clicksign.Environment;
 import com.clicksign.resources.notarial.Envelope;
+import com.clicksign.resources.types.AcceptanceTermStatus;
+import com.clicksign.resources.types.DocumentStatus;
+import com.clicksign.resources.types.EnvelopeStatus;
+import com.clicksign.resources.types.MembershipRole;
 
 ClicksignClient client = ClicksignClient.builder()
     .apiKey(System.getenv("CLICKSIGN_API_KEY"))
     .environment(Environment.SANDBOX)
     .build();
 
-// Uma página
+// Uma página — status + nome + ordenação
 java.util.List<Envelope> page1 = client.envelopes().filter()
-    .filter("status", "running")
+    .status(EnvelopeStatus.RUNNING)
+    .name("Contrato Q1")
     .order("-created")
     .page(1)
     .perPage(25)
@@ -24,27 +29,37 @@ java.util.List<Envelope> page1 = client.envelopes().filter()
 
 // Todas as páginas (segue links.next)
 java.util.List<Envelope> allRunning = client.envelopes().filter()
-    .filter("status", "running")
+    .status(EnvelopeStatus.RUNNING)
     .fetchAll();
 
 // Documentos de um envelope
 java.util.List<com.clicksign.resources.notarial.Document> docs =
     client.documents().filter("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
-        .filter("status", "draft")
+        .status(DocumentStatus.DRAFT)
         .fetch();
 
 // Aceites WhatsApp
 java.util.List<com.clicksign.resources.AcceptanceTermWhatsapp> whatsapps =
     client.acceptanceTermWhatsapps().filter()
-        .filter("status", "sent")
+        .status(AcceptanceTermStatus.SENT)
         .fetch();
+
+// Membros — role + usuário + sort
+java.util.List<com.clicksign.resources.Membership> admins = client.memberships().filter()
+    .role(MembershipRole.ADMIN)
+    .userId("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
+    .order("-created")
+    .fetch();
 
 // Incluir relacionamentos (quando a API suportar)
 client.envelopes().filter()
-    .filter("status", "running")
+    .status(EnvelopeStatus.RUNNING)
     .include("documents", "signers")
     .fields("envelopes", "name", "status")
     .fetch();
+
+// Legado: filter(String, String) ainda funciona
+client.envelopes().filter().filter("status", "running").fetch();
 ```
 
 ## O que está acontecendo

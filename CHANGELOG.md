@@ -17,6 +17,8 @@ All notable changes to this project are documented in this file.
 - Compilable `examples/` Gradle module mirroring cookbook recipes
 - `AutoSignatureTerm.retrieve(id)` — GET `/auto_signature/terms/{id}`
 - JaCoCo minimum 70% coverage for `com.clicksign.resources` and `com.clicksign.resources.types`
+- Typed list queries: `EnvelopeQuery`, `DocumentQuery`, `SignerQuery`, `RequirementQuery`, `AcceptanceTermWhatsappQuery`, `MembershipQuery`
+- `MembershipRole`, `Membership.filter()`, `Membership.roleAsEnum()`
 
 ### Changed
 

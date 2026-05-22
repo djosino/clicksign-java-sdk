@@ -3,7 +3,7 @@ package com.clicksign.resources.notarial;
 import com.clicksign.http.HttpClient;
 import com.clicksign.jsonapi.JsonApiParser;
 import com.clicksign.jsonapi.JsonApiSerializer;
-import com.clicksign.jsonapi.ResourceQuery;
+import com.clicksign.jsonapi.DocumentQuery;
 import com.clicksign.resources.types.ApiStringEnum;
 import com.clicksign.resources.types.DocumentDuplicate;
 import com.clicksign.resources.types.DocumentStatus;
@@ -34,6 +34,10 @@ public final class Document {
     private final String envelopeId;
     private final String createdAt;
     private final String modifiedAt;
+
+    public static Document from(JsonApiParser.ResourceObject obj, String parentEnvelopeId) {
+        return new Document(obj, parentEnvelopeId);
+    }
 
     private Document(JsonApiParser.ResourceObject obj, String parentEnvelopeId) {
         Map<String, Object> a = obj.attributes();
@@ -87,9 +91,8 @@ public final class Document {
         }
 
         /** Returns a fluent query builder for filtering and paginating documents. */
-        public ResourceQuery<Document> filter(String envelopeId) {
-            return new ResourceQuery<>("/envelopes/" + envelopeId + "/documents", http,
-                obj -> new Document(obj, envelopeId));
+        public DocumentQuery filter(String envelopeId) {
+            return new DocumentQuery(envelopeId, http);
         }
 
         public Document retrieve(String id, String envelopeId) {

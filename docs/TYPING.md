@@ -26,6 +26,7 @@ Padrão adotado em todas as entidades:
 | `AcceptanceTermStatus`, `SenderNameOption` | aceite WhatsApp |
 | `EventCustomKind` | eventos customizados |
 | `WebhookEventType` | eventos de webhook |
+| `MembershipRole` | papel de membro (`admin`, `member`) |
 
 ## Pacote `com.clicksign.resources.notarial`
 
@@ -48,13 +49,37 @@ Padrão adotado em todas as entidades:
 | `Webhook` | `eventsAsEnums` | `addEvent(WebhookEventType)` |
 | `AcceptanceTermWhatsapp` | `statusAsEnum`, `senderNameOptionAsEnum` | senderNameOption, status (update) |
 | `AutoSignatureTerm` | — | `signer(AutoSignatureSigner)` |
+| `Membership` | `roleAsEnum` | `role(MembershipRole)` |
 | `BulkRequirement.Operations` | — | role, auth (use `RubricateKind.apiValue()` para kind) |
+
+## Queries tipadas (`com.clicksign.jsonapi`)
+
+| Classe | Filtros nomeados |
+|--------|------------------|
+| `EnvelopeQuery` | `status`, `name`, `created`, `modified`, `deadlineAt`, `orderByName` |
+| `DocumentQuery` | `status`, `filename` |
+| `SignerQuery` | `name`, `email` |
+| `RequirementQuery` | `action`, `role` |
+| `AcceptanceTermWhatsappQuery` | `status` |
+| `MembershipQuery` | `role`, `userId` |
+
+Encadeamento (status + outro campo + order):
+
+```java
+client.envelopes().filter()
+    .status(EnvelopeStatus.RUNNING)
+    .name("Contrato Q1")
+    .order("-created")
+    .fetch();
+```
+
+`filter(String, String)` e `ResourceQuery` genérico continuam disponíveis em subclasses via herança.
 
 ## Entidades sem enum dedicado (por design)
 
 | Entidade | Motivo |
 |----------|--------|
-| `User`, `Group`, `Folder`, `Template`, `Membership` | poucos campos enumerados na API; IDs e textos livres |
+| `User`, `Group`, `Folder`, `Template` | poucos campos enumerados na API; IDs e textos livres |
 | `AccessControlList`, `EnvelopeBulkCreation` | payloads pequenos ou compostos |
 | `Notification` | DTO de resposta com `SummaryEntry` já tipado |
 

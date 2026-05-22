@@ -2,6 +2,7 @@ package com.clicksign.resources;
 
 import com.clicksign.ClientConfig;
 import com.clicksign.JsonApiFixtures;
+import com.clicksign.resources.types.MembershipRole;
 import com.clicksign.http.HttpClient;
 import com.clicksign.instrumentation.Instrumentation;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -61,13 +62,50 @@ class MembershipTest {
     }
 
     @Test
+    void createAcceptsMembershipRoleEnum() {
+        wireMock.stubFor(post(urlEqualTo("/memberships"))
+            .willReturn(aResponse().withStatus(201)
+                .withBody(JsonApiFixtures.membership("mem-new", "admin", "user-2"))));
+
+        Membership created = service.create(Membership.CreateParams.builder()
+            .role(MembershipRole.ADMIN)
+            .userId("user-2")
+            .build());
+
+        assertEquals(MembershipRole.ADMIN, created.roleAsEnum());
+        wireMock.verify(postRequestedFor(urlEqualTo("/memberships"))
+            .withRequestBody(matchingJsonPath("$.data.attributes.role", equalTo("admin"))));
+    }
+
+    @Test
+    void updateAcceptsMembershipRoleEnum() {
+        wireMock.stubFor(put(urlEqualTo("/memberships/mem-1"))
+            .willReturn(okJson(JsonApiFixtures.membership("mem-1", "member", "user-1"))));
+
+        Membership updated = service.update("mem-1",
+            Membership.UpdateParams.builder().role(MembershipRole.MEMBER).build());
+
+        assertEquals(MembershipRole.MEMBER, updated.roleAsEnum());
+        wireMock.verify(putRequestedFor(urlEqualTo("/memberships/mem-1"))
+            .withRequestBody(matchingJsonPath("$.data.attributes.role", equalTo("member"))));
+    }
+
+    @Test
+    void roleAsEnumReturnsNullForUnknownRole() {
+        wireMock.stubFor(get(urlEqualTo("/memberships/mem-x"))
+            .willReturn(okJson(JsonApiFixtures.membership("mem-x", "custom_role", "user-1"))));
+
+        assertNull(service.retrieve("mem-x").roleAsEnum());
+    }
+
+    @Test
     void createSendsAccessibilityFields() {
         wireMock.stubFor(post(urlEqualTo("/memberships"))
             .willReturn(aResponse().withStatus(201)
                 .withBody(JsonApiFixtures.membership("mem-new", "member", "user-2"))));
 
         service.create(Membership.CreateParams.builder()
-            .role("member")
+            .role(MembershipRole.MEMBER)
             .userId("user-2")
             .consumptionAccessible(true)
             .trackingAccessible(false)
@@ -78,6 +116,25 @@ class MembershipTest {
             .withRequestBody(matchingJsonPath("$.data.attributes.consumption_accessible", equalTo("true")))
             .withRequestBody(matchingJsonPath("$.data.attributes.tracking_accessible", equalTo("false")))
             .withRequestBody(matchingJsonPath("$.data.attributes.folder_management_accessible", equalTo("true"))));
+    }
+
+    @Test
+    void filterByRoleAndUserId() {
+        wireMock.stubFor(get(urlPathEqualTo("/memberships"))
+            .withQueryParam("filter[role]", equalTo("admin"))
+            .withQueryParam("filter[user.id]", equalTo("user-1"))
+            .withQueryParam("sort", equalTo("-created"))
+            .willReturn(okJson(JsonApiFixtures.membershipList(
+                JsonApiFixtures.membership("mem-1", "admin", "user-1")))));
+
+        List<Membership> memberships = service.filter()
+            .role(com.clicksign.resources.types.MembershipRole.ADMIN)
+            .userId("user-1")
+            .order("-created")
+            .fetch();
+
+        assertEquals(1, memberships.size());
+        assertEquals(MembershipRole.ADMIN, memberships.get(0).roleAsEnum());
     }
 
     @Test

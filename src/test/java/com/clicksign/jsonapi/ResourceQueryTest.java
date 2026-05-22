@@ -5,6 +5,7 @@ import com.clicksign.JsonApiFixtures;
 import com.clicksign.http.HttpClient;
 import com.clicksign.instrumentation.Instrumentation;
 import com.clicksign.resources.notarial.Document;
+import com.clicksign.resources.types.DocumentStatus;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.jupiter.api.*;
@@ -77,5 +78,77 @@ class ResourceQueryTest {
 
         var result = signers.filter(ENVELOPE_ID).filter("email", "joao@example.com").fetch();
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterWithEnumUsesApiValue() {
+        wireMock.stubFor(get(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .withQueryParam("filter[status]", equalTo("running"))
+            .willReturn(okJson(JsonApiFixtures.documentList(
+                JsonApiFixtures.documentWithStatus("doc-1", "a.pdf", "running", ENVELOPE_ID)))));
+
+        List<Document> docs = documentService.filter(ENVELOPE_ID)
+            .filter("status", DocumentStatus.RUNNING)
+            .fetch();
+
+        assertEquals(DocumentStatus.RUNNING, docs.get(0).statusAsEnum());
+    }
+
+    @Test
+    void duplicateFilterKeyOverwritesPreviousValue() {
+        wireMock.stubFor(get(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .withQueryParam("filter[status]", equalTo("closed"))
+            .willReturn(okJson(JsonApiFixtures.documentList(
+                JsonApiFixtures.documentWithStatus("doc-1", "a.pdf", "closed", ENVELOPE_ID)))));
+
+        documentService.filter(ENVELOPE_ID)
+            .filter("status", "draft")
+            .filter("status", DocumentStatus.CLOSED)
+            .fetch();
+
+        wireMock.verify(getRequestedFor(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .withQueryParam("filter[status]", equalTo("closed")));
+    }
+
+    @Test
+    void filterRejectsBlankKey() {
+        DocumentQuery query = documentService.filter(ENVELOPE_ID);
+        assertThrows(IllegalArgumentException.class, () -> query.filter(" ", "x"));
+    }
+
+    @Test
+    void filterRejectsNullValue() {
+        DocumentQuery query = documentService.filter(ENVELOPE_ID);
+        assertThrows(IllegalArgumentException.class, () -> query.filter("status", (String) null));
+        assertThrows(IllegalArgumentException.class, () -> query.filter("status", (DocumentStatus) null));
+    }
+
+    @Test
+    void includeMergesMultipleCalls() {
+        wireMock.stubFor(get(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .withQueryParam("include", equalTo("envelope,signers"))
+            .willReturn(okJson(JsonApiFixtures.documentList(
+                JsonApiFixtures.document("doc-1", "a.pdf", ENVELOPE_ID)))));
+
+        documentService.filter(ENVELOPE_ID)
+            .include("envelope")
+            .include("signers")
+            .fetch();
+
+        wireMock.verify(getRequestedFor(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .withQueryParam("include", equalTo("envelope,signers")));
+    }
+
+    @Test
+    void fieldsAddsSparseFieldset() {
+        wireMock.stubFor(get(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .withQueryParam("fields[documents]", equalTo("filename"))
+            .willReturn(okJson(JsonApiFixtures.documentList(
+                JsonApiFixtures.document("doc-1", "a.pdf", ENVELOPE_ID)))));
+
+        documentService.filter(ENVELOPE_ID).fields("documents", "filename").fetch();
+
+        wireMock.verify(getRequestedFor(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .withQueryParam("fields[documents]", equalTo("filename")));
     }
 }
