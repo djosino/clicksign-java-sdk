@@ -10,6 +10,14 @@ public interface ApiStringEnum {
      */
     String apiValue();
 
+    /**
+     * Parses API string to enum constant, returning null if unrecognized.
+     *
+     * @param <E> enum type
+     * @param type enum class
+     * @param value API string value
+     * @return matching enum constant, or {@code null} if not found
+     */
     static <E extends Enum<E> & ApiStringEnum> E tryParse(Class<E> type, String value) {
         if (value == null) {
             return null;
@@ -22,6 +30,15 @@ public interface ApiStringEnum {
         return null;
     }
 
+    /**
+     * Parses API string, throwing if unrecognized.
+     *
+     * @param <E> enum type
+     * @param type enum class
+     * @param value API string value
+     * @return matching enum constant
+     * @throws IllegalArgumentException if value is not recognized
+     */
     static <E extends Enum<E> & ApiStringEnum> E require(Class<E> type, String value) {
         E parsed = tryParse(type, value);
         if (parsed == null) {

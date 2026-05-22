@@ -35,6 +35,7 @@ public final class BulkRequirement {
 
     // ── Operations builder ───────────────────────────────────────────────────
 
+    /** Builder for atomic bulk operations on signing requirements. */
     public static final class Operations {
 
         private final AtomicOperations atomicOps = new AtomicOperations();
@@ -145,6 +146,7 @@ public final class BulkRequirement {
 
     // ── Response ─────────────────────────────────────────────────────────────
 
+    /** Result of a bulk requirement operation, containing per-operation results. */
     public static final class Response {
 
         private final String envelopeId;
@@ -195,6 +197,7 @@ public final class BulkRequirement {
 
     // ── OperationResult ───────────────────────────────────────────────────────
 
+    /** Result of a single atomic operation within a bulk request. */
     public static final class OperationResult {
 
         private final int index;
@@ -210,22 +213,47 @@ public final class BulkRequirement {
             this.errors      = errors != null ? Collections.unmodifiableList(errors) : Collections.emptyList();
         }
 
+        /**
+         * Returns the zero-based index of this operation in the batch.
+         *
+         * @return operation index
+         */
         public int index() {
             return index;
         }
 
+        /**
+         * Returns the operation type (e.g. {@code "add"} or {@code "remove"}).
+         *
+         * @return operation type
+         */
         public String op() {
             return op;
         }
 
+        /**
+         * Returns the resulting {@link Requirement}, or {@code null} if the operation failed.
+         *
+         * @return requirement or null
+         */
         public Requirement requirement() {
             return requirement;
         }
 
+        /**
+         * Returns the list of error objects for this operation, empty if successful.
+         *
+         * @return list of error maps
+         */
         public List<Map<String, Object>> errors() {
             return errors;
         }
 
+        /**
+         * Returns {@code true} if this operation produced no errors.
+         *
+         * @return true if successful
+         */
         public boolean isSuccess() {
             return errors.isEmpty();
         }
@@ -233,10 +261,16 @@ public final class BulkRequirement {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for BulkRequirement operations. */
     public static final class Service {
 
         private final BulkOperationsClient bulkClient;
 
+        /**
+         * Constructs service with the given bulk HTTP client.
+         *
+         * @param bulkClient bulk operations HTTP client
+         */
         public Service(BulkOperationsClient bulkClient) {
             this.bulkClient = bulkClient;
         }
