@@ -1,6 +1,8 @@
 package com.clicksign.jsonapi;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Minimal JSON:API v1.1 response parser — zero external dependencies.
