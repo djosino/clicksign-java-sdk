@@ -46,7 +46,7 @@ Cliente Java para a [Clicksign API v3](https://developers.clicksign.com/referenc
 
 ```kotlin
 dependencies {
-    implementation("br.com.josino.clicksign:clicksign-java-sdk:0.1.0")
+    implementation("br.com.josino.clicksign:clicksign-java-sdk:0.1.2")
 }
 ```
 
@@ -56,7 +56,7 @@ dependencies {
 <dependency>
   <groupId>br.com.josino.clicksign</groupId>
   <artifactId>clicksign-java-sdk</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.2</version>
 </dependency>
 ```
 

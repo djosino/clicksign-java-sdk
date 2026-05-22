@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [0.1.2]
+
+### Changed
+
+- Javadoc completo em todos os tipos e membros públicos — zero warnings com Java 21 (`-Xdoclint:all`)
+- Construtores de exceção documentados com `@param` em todas as subclasses de `ClicksignException`
+- Enums tipados (`EnvelopeStatus`, `DocumentStatus`, `RequirementAction`, `RequirementAuth`, `RequirementRole`, `MembershipRole`, `NotificationChannel`, `WebhookEventType`, entre outros) com comentário em cada constante
+- Builders documentados: `@param`/`@return` em todos os setters, `build()` e `builder()`
+- Services documentados: construtores, `list`, `retrieve`, `create`, `update`, `delete`, `filter` em todos os resources
+- Tipos auxiliares (`Metadata`, `CommunicateEvents`, `EmailCustomization`, `DocumentTemplate`, `DocumentDuplicate`, `SignatureHost`) com Javadoc completo
+- Camada HTTP/infraestrutura (`HttpClient`, `Instrumentation`, `ErrorMessageExtractor`, `JsonApiParser`, `JsonApiSerializer`, `ResourceQuery`, `TypedResourceQuery`) com Javadoc nos métodos públicos
+
 ### Added
 
 - `AcceptanceTermWhatsapp` — list, filter, retrieve, create, cancel (WhatsApp acceptance / Click.Agree)
