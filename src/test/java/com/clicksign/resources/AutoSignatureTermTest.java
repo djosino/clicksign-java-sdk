@@ -57,4 +57,17 @@ class AutoSignatureTermTest {
             .withRequestBody(matchingJsonPath("$.data.attributes.signer.name", equalTo("João Silva")))
             .withRequestBody(matchingJsonPath("$.data.attributes.api_email", equalTo("api@example.com"))));
     }
+
+    @Test
+    void retrieveReturnsTerm() {
+        wireMock.stubFor(get(urlEqualTo("/auto_signature/terms/term-1"))
+            .willReturn(aResponse().withStatus(200)
+                .withBody(JsonApiFixtures.autoSignatureTerm("term-1", "João Silva", "joao@example.com"))));
+
+        AutoSignatureTerm term = service.retrieve("term-1");
+
+        assertEquals("term-1", term.id());
+        assertEquals("João Silva", term.name());
+        wireMock.verify(getRequestedFor(urlEqualTo("/auto_signature/terms/term-1")));
+    }
 }

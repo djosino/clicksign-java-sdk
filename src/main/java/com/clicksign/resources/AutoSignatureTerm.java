@@ -53,6 +53,11 @@ public final class AutoSignatureTerm {
 
         public Service(HttpClient http) { this.http = http; }
 
+        public AutoSignatureTerm retrieve(String id) {
+            String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
+            return new AutoSignatureTerm(JsonApiParser.parse(raw).firstData());
+        }
+
         public AutoSignatureTerm create(CreateParams params) {
             String body = JsonApiSerializer.dump("auto_signature_terms", null, params.toAttributes(), null);
             String raw  = http.post(ENDPOINT, body);
