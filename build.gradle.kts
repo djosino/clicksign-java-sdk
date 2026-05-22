@@ -8,7 +8,7 @@ plugins {
     jacoco
 }
 
-group = "com.br.josino.clicksign"
+group = "br.com.josino.clicksign"
 version = Files.readString(rootProject.file("REVISION").toPath()).trim()
 
 java {
