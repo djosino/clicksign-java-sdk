@@ -1,9 +1,39 @@
+# Gradle
 .gradle/
 build/
+gradle-app.setting
+
+# Compiled
 *.class
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
+
+# IDE — IntelliJ
 .idea/
 *.iml
+*.ipr
+*.iws
 out/
+
+# IDE — Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# IDE — VS Code
+.vscode/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Claude
+.claude/exec.log
+.claude/settings.local.json
+
+docs/DOC_GUIDE.md
+docs/TODO.md

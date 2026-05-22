@@ -5,6 +5,7 @@ plugins {
     `maven-publish`
     signing
     checkstyle
+    jacoco
 }
 
 group = "com.clicksign"
@@ -23,12 +24,46 @@ repositories {
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
-    testImplementation("org.mockito:mockito-core:5.11.0")
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.2")
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        if (!project.hasProperty("includeIntegration")) {
+            excludeTags("integration")
+        }
+    }
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.jacocoTestReport)
+    violationRules {
+        rule {
+            element = "PACKAGE"
+            includes = listOf("com.clicksign.resources.notarial")
+            limit {
+                counter = "INSTRUCTION"
+                minimum = "0.70".toBigDecimal()
+            }
+        }
+    }
+}
+
+tasks.check {
+    dependsOn(tasks.jacocoTestCoverageVerification)
 }
 
 tasks.withType<JavaCompile> {
