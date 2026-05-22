@@ -18,17 +18,32 @@ public final class EnvelopeQuery extends TypedResourceQuery<Envelope, EnvelopeQu
         return filter("name", name);
     }
 
-    /** JSON:API date filter, e.g. {@code 2026-01-01,2026-12-31}. */
+    /**
+     * JSON:API date filter, e.g. {@code 2026-01-01,2026-12-31}.
+     *
+     * @param range date range string
+     * @return this query
+     */
     public EnvelopeQuery created(String range) {
         return filter("created", range);
     }
 
-    /** JSON:API date filter, e.g. {@code 2026-01-01,2026-12-31}. */
+    /**
+     * JSON:API date filter, e.g. {@code 2026-01-01,2026-12-31}.
+     *
+     * @param range date range string
+     * @return this query
+     */
     public EnvelopeQuery modified(String range) {
         return filter("modified", range);
     }
 
-    /** JSON:API date filter for {@code deadline_at}. */
+    /**
+     * JSON:API date filter for {@code deadline_at}.
+     *
+     * @param range date range string
+     * @return this query
+     */
     public EnvelopeQuery deadlineAt(String range) {
         return filter("deadline_at", range);
     }

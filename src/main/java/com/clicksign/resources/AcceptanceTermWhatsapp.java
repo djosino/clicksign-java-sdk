@@ -156,7 +156,12 @@ public final class AcceptanceTermWhatsapp {
             return new AcceptanceTermWhatsapp(JsonApiParser.parse(raw).firstData());
         }
 
-        /** Cancels a sent acceptance by setting {@code status} to {@code canceled}. */
+        /**
+         * Cancels a sent acceptance by setting {@code status} to {@code canceled}.
+         *
+         * @param id acceptance term id
+         * @return updated acceptance term
+         */
         public AcceptanceTermWhatsapp cancel(String id) {
             String body = JsonApiSerializer.dump("acceptance_term_whatsapps", id,
                 Map.of("status", AcceptanceTermStatus.CANCELED.apiValue()), null);
@@ -173,6 +178,7 @@ public final class AcceptanceTermWhatsapp {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating an acceptance term WhatsApp flow. */
     public static final class CreateParams {
 
         private final String title;

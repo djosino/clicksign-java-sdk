@@ -46,7 +46,11 @@ public final class JsonApiParser {
             return nextLink;
         }
 
-        /** Returns the first resource object, or throws if the response data is empty. */
+        /**
+         * Returns the first resource object, or throws if the response data is empty.
+         *
+         * @return first resource object
+         */
         public ResourceObject firstData() {
             if (data.isEmpty()) {
                 throw new IllegalStateException("API returned empty data");

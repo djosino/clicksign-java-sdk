@@ -55,7 +55,13 @@ public class ResourceQuery<T> {
         return this;
     }
 
-    /** Filters using an enum's {@link ApiStringEnum#apiValue()}. */
+    /**
+     * Filters using an enum's {@link ApiStringEnum#apiValue()}.
+     *
+     * @param key filter key
+     * @param value enum value
+     * @return this query
+     */
     public ResourceQuery<T> filter(String key, ApiStringEnum value) {
         if (value == null) {
             throw new IllegalArgumentException("filter value is required");
@@ -95,7 +101,11 @@ public class ResourceQuery<T> {
         return this;
     }
 
-    /** Fetches a single page with current params. */
+    /**
+     * Fetches a single page with current params.
+     *
+     * @return list of resources for the current page
+     */
     public List<T> fetch() {
         Map<String, String> queryParams = buildQueryParams();
         String raw = http.get(endpoint, queryParams);
@@ -109,6 +119,8 @@ public class ResourceQuery<T> {
     /**
      * Auto-paginates through all pages using {@code links.next}.
      * Falls back to item-count heuristic when API omits links.
+     *
+     * @return all resources across all pages
      */
     public List<T> fetchAll() {
         int pageSize;

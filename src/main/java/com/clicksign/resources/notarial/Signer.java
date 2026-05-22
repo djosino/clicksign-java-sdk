@@ -98,7 +98,11 @@ public final class Signer {
         return communicateEvents;
     }
 
-    /** Parsed view of {@link #communicateEvents()}; {@code null} when unset. */
+    /**
+     * Parsed view of {@link #communicateEvents()}; {@code null} when unset.
+     *
+     * @return parsed communicate events, or {@code null}
+     */
     public CommunicateEvents communicateEventsConfig() {
         return CommunicateEvents.fromMap(communicateEvents);
     }
@@ -230,7 +234,12 @@ public final class Signer {
             return Collections.unmodifiableList(result);
         }
 
-        /** Returns a fluent query builder for filtering and paginating signers. */
+        /**
+         * Returns a fluent query builder for filtering and paginating signers.
+         *
+         * @param envelopeId envelope id to scope the query
+         * @return query builder
+         */
         public SignerQuery filter(String envelopeId) {
             return new SignerQuery(envelopeId, http);
         }

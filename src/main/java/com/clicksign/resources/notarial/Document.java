@@ -126,7 +126,12 @@ public final class Document {
             return Collections.unmodifiableList(result);
         }
 
-        /** Returns a fluent query builder for filtering and paginating documents. */
+        /**
+         * Returns a fluent query builder for filtering and paginating documents.
+         *
+         * @param envelopeId envelope id to scope the query
+         * @return query builder
+         */
         public DocumentQuery filter(String envelopeId) {
             return new DocumentQuery(envelopeId, http);
         }

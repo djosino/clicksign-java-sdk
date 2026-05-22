@@ -22,7 +22,12 @@ public final class MinimalJsonParser {
         this.pos = 0;
     }
 
-    /** Parses a JSON object string and returns it as a Map. */
+    /**
+     * Parses a JSON object string and returns it as a Map.
+     *
+     * @param json JSON object string
+     * @return parsed map
+     */
     public static Map<String, Object> parseObject(String json) {
         return new MinimalJsonParser(json).parseObject();
     }
