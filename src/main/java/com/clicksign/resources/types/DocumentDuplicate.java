@@ -11,14 +11,31 @@ public final class DocumentDuplicate {
         this.id = id;
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Serializes to an API-compatible map.
+     *
+     * @return map representation
+     */
     public Map<String, Object> toMap() {
         return Map.of("id", id);
     }
 
+    /**
+     * Creates a new instance with the given document id.
+     *
+     * @param documentId document id
+     * @return new instance
+     * @throws IllegalArgumentException if documentId is blank
+     */
     public static DocumentDuplicate of(String documentId) {
         if (documentId == null || documentId.isBlank()) {
             throw new IllegalArgumentException("documentId is required");

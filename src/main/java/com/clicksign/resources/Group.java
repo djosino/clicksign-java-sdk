@@ -26,18 +26,38 @@ public final class Group {
         this.modifiedAt = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at timestamp.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -53,15 +73,26 @@ public final class Group {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for Group operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/groups";
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all resources.
+         *
+         * @return unmodifiable list
+         */
         public List<Group> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Group> result = new ArrayList<>();
@@ -71,27 +102,57 @@ public final class Group {
             return Collections.unmodifiableList(result);
         }
 
+        /**
+         * Retrieves resource by id.
+         *
+         * @param id resource id
+         * @return resource
+         */
         public Group retrieve(String id) {
             String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
             return new Group(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public Group create(CreateParams params) {
             String body = JsonApiSerializer.dump("groups", null, params.toAttributes(), null);
             String raw  = http.post(ENDPOINT, body);
             return new Group(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Updates resource.
+         *
+         * @param id     resource id
+         * @param params update parameters
+         * @return updated resource
+         */
         public Group update(String id, UpdateParams params) {
             String body = JsonApiSerializer.dump("groups", id, params.toAttributes(), null);
             String raw  = http.patch(ENDPOINT + "/" + id, body);
             return new Group(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Deletes resource by id.
+         *
+         * @param id resource id
+         */
         public void delete(String id) {
             http.delete(ENDPOINT + "/" + id, null);
         }
 
+        /**
+         * Adds users to the group.
+         *
+         * @param groupId group id
+         * @param userIds user ids to add
+         */
         public void addUsers(String groupId, List<String> userIds) {
             List<Map<String, Object>> data = new ArrayList<>();
             for (String uid : userIds) {
@@ -106,6 +167,12 @@ public final class Group {
                     JsonApiSerializer.toJson(body));
         }
 
+        /**
+         * Removes users from the group.
+         *
+         * @param groupId group id
+         * @param userIds user ids to remove
+         */
         public void removeUsers(String groupId, List<String> userIds) {
             List<Map<String, Object>> data = new ArrayList<>();
             for (String uid : userIds) {
@@ -123,6 +190,7 @@ public final class Group {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a group. */
     public static final class CreateParams {
 
         private final String name;
@@ -137,20 +205,38 @@ public final class Group {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String name;
 
             private Builder() {}
 
+            /**
+             * Sets name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder name(String v) {
                 this.name = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (name == null || name.isBlank()) {
                     throw new IllegalArgumentException("name is required");
@@ -162,6 +248,7 @@ public final class Group {
 
     // ── UpdateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for updating a group. */
     public static final class UpdateParams {
 
         private final String name;
@@ -178,20 +265,37 @@ public final class Group {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link UpdateParams}. */
         public static final class Builder {
             private String name;
 
             private Builder() {}
 
+            /**
+             * Sets name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder name(String v) {
                 this.name = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             */
             public UpdateParams build() {
                 return new UpdateParams(this);
             }

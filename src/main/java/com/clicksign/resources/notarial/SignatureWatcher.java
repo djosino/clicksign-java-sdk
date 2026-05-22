@@ -37,26 +37,56 @@ public final class SignatureWatcher {
         this.modifiedAt              = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the email.
+     *
+     * @return email
+     */
     public String email() {
         return email;
     }
 
+    /**
+     * Returns the kind.
+     *
+     * @return kind
+     */
     public String kind() {
         return kind;
     }
 
+    /**
+     * Returns the kind as an enum.
+     *
+     * @return kind enum
+     */
     public SignatureWatcherKind kindAsEnum() {
         return ApiStringEnum.tryParse(SignatureWatcherKind.class, kind);
     }
 
+    /**
+     * Returns whether attach documents is enabled.
+     *
+     * @return attach documents enabled flag
+     */
     public boolean attachDocumentsEnabled() {
         return attachDocumentsEnabled;
     }
 
+    /**
+     * Returns the communicate events map.
+     *
+     * @return communicate events map
+     */
     public Map<String, Object> communicateEvents() {
         return communicateEvents;
     }
@@ -70,14 +100,29 @@ public final class SignatureWatcher {
         return CommunicateEvents.fromMap(communicateEvents);
     }
 
+    /**
+     * Returns the envelope id.
+     *
+     * @return envelope id
+     */
     public String envelopeId() {
         return envelopeId;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at timestamp.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -105,14 +150,26 @@ public final class SignatureWatcher {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for SignatureWatcher operations. */
     public static final class Service {
 
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all resources for the given envelope.
+         *
+         * @param envelopeId envelope id
+         * @return unmodifiable list
+         */
         public List<SignatureWatcher> list(String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/signature_watchers", Collections.emptyMap());
             List<SignatureWatcher> result = new ArrayList<>();
@@ -122,17 +179,36 @@ public final class SignatureWatcher {
             return Collections.unmodifiableList(result);
         }
 
+        /**
+         * Retrieves resource by id.
+         *
+         * @param id         resource id
+         * @param envelopeId envelope id
+         * @return resource
+         */
         public SignatureWatcher retrieve(String id, String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/signature_watchers/" + id, Collections.emptyMap());
             return new SignatureWatcher(JsonApiParser.parse(raw).firstData(), envelopeId);
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public SignatureWatcher create(CreateParams params) {
             String body = JsonApiSerializer.dump("signature_watchers", null, params.toAttributes(), null);
             String raw  = http.post("/envelopes/" + params.envelopeId + "/signature_watchers", body);
             return new SignatureWatcher(JsonApiParser.parse(raw).firstData(), params.envelopeId);
         }
 
+        /**
+         * Deletes resource by id.
+         *
+         * @param id         resource id
+         * @param envelopeId envelope id
+         */
         public void delete(String id, String envelopeId) {
             http.delete("/envelopes/" + envelopeId + "/signature_watchers/" + id, null);
         }
@@ -140,6 +216,7 @@ public final class SignatureWatcher {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a signature watcher. */
     public static final class CreateParams {
 
         final String envelopeId;
@@ -170,10 +247,16 @@ public final class SignatureWatcher {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String envelopeId;
             private String email;
@@ -183,39 +266,87 @@ public final class SignatureWatcher {
 
             private Builder() {}
 
+            /**
+             * Sets envelope id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder envelopeId(String v) {
                 this.envelopeId = v;
                 return this;
             }
 
+            /**
+             * Sets email.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder email(String v) {
                 this.email = v;
                 return this;
             }
 
+            /**
+             * Sets kind.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder kind(String v) {
                 this.kind = v;
                 return this;
             }
 
+            /**
+             * Sets kind.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder kind(SignatureWatcherKind v) {
                 return kind(v.apiValue());
             }
 
+            /**
+             * Sets attach documents enabled flag.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder attachDocumentsEnabled(boolean v) {
                 this.attachDocumentsEnabled = v;
                 return this;
             }
 
+            /**
+             * Sets communicate events.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder communicateEvents(Map<String, Object> v) {
                 this.communicateEvents = v;
                 return this;
             }
 
+            /**
+             * Sets communicate events.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder communicateEvents(CommunicateEvents v) {
                 return communicateEvents(v != null ? v.toMap() : null);
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (envelopeId == null || envelopeId.isBlank()) {
                     throw new IllegalArgumentException("envelopeId is required");

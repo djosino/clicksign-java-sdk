@@ -18,6 +18,8 @@ import java.util.function.Function;
  * <p>All methods return {@code this} for chaining. Call {@link #fetch()} for one page
  * or {@link #fetchAll()} to follow {@code links.next}.
  *
+ * @param <T> resource type returned by this query
+ *
  * <pre>{@code
  * client.envelopes().filter()
  *     .status(EnvelopeStatus.RUNNING)
@@ -36,6 +38,13 @@ public class ResourceQuery<T> {
     private final Map<String, String> params = new LinkedHashMap<>();
     private String includeParam;
 
+    /**
+     * Constructs a query.
+     *
+     * @param endpoint API endpoint path
+     * @param http     HTTP client
+     * @param mapper   function mapping resource objects to typed instances
+     */
     public ResourceQuery(String endpoint,
                          com.clicksign.http.HttpClient http,
                          Function<JsonApiParser.ResourceObject, T> mapper) {
@@ -44,6 +53,13 @@ public class ResourceQuery<T> {
         this.mapper   = mapper;
     }
 
+    /**
+     * Adds a string filter parameter.
+     *
+     * @param key   filter key
+     * @param value filter value
+     * @return this query
+     */
     public ResourceQuery<T> filter(String key, String value) {
         if (key == null || key.isBlank()) {
             throw new IllegalArgumentException("filter key is required");
@@ -69,21 +85,45 @@ public class ResourceQuery<T> {
         return filter(key, value.apiValue());
     }
 
+    /**
+     * Sets the sort order.
+     *
+     * @param field sort field (prefix with {@code -} for descending)
+     * @return this query
+     */
     public ResourceQuery<T> order(String field) {
         params.put("sort", field);
         return this;
     }
 
+    /**
+     * Sets the page number.
+     *
+     * @param number page number (1-based)
+     * @return this query
+     */
     public ResourceQuery<T> page(int number) {
         params.put("page[number]", String.valueOf(number));
         return this;
     }
 
+    /**
+     * Sets the page size.
+     *
+     * @param size number of items per page
+     * @return this query
+     */
     public ResourceQuery<T> perPage(int size) {
         params.put("page[size]", String.valueOf(size));
         return this;
     }
 
+    /**
+     * Includes related resource types.
+     *
+     * @param types relationship type names to include
+     * @return this query
+     */
     public ResourceQuery<T> include(String... types) {
         String existing = includeParam;
         if (existing == null || existing.isBlank()) {
@@ -96,6 +136,13 @@ public class ResourceQuery<T> {
         return this;
     }
 
+    /**
+     * Requests sparse fieldsets for a resource type.
+     *
+     * @param type       resource type
+     * @param fieldNames field names to include
+     * @return this query
+     */
     public ResourceQuery<T> fields(String type, String... fieldNames) {
         params.put("fields[" + type + "]", String.join(",", fieldNames));
         return this;

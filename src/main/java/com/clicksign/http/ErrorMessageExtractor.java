@@ -14,10 +14,18 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 
+/** Utility for extracting error messages from JSON:API error responses. */
 public final class ErrorMessageExtractor {
 
     private ErrorMessageExtractor() {}
 
+    /**
+     * Extracts a human-readable error message from the response body.
+     *
+     * @param body     raw response body
+     * @param response HTTP response
+     * @return extracted error message
+     */
     public static String extract(String body, HttpResponse<String> response) {
         if (body == null || body.isBlank()) {
             return response.toString();
@@ -53,6 +61,16 @@ public final class ErrorMessageExtractor {
         }
     }
 
+    /**
+     * Builds the appropriate exception subclass for the given HTTP status.
+     *
+     * @param status            HTTP status code
+     * @param message           error message
+     * @param requestId         API request id
+     * @param body              raw response body
+     * @param retryAfterSeconds retry-after header value in seconds
+     * @return exception instance
+     */
     public static ClicksignException buildException(int status, String message, String requestId,
                                                     String body, Long retryAfterSeconds) {
         if (status == 401 || status == 403) {

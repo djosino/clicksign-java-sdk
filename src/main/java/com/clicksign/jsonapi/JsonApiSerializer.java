@@ -7,10 +7,26 @@ public final class JsonApiSerializer {
 
     private JsonApiSerializer() {}
 
+    /**
+     * Serializes a JSON:API request with type and attributes only.
+     *
+     * @param type       resource type
+     * @param attributes attribute map
+     * @return JSON string
+     */
     public static String dump(String type, Map<String, Object> attributes) {
         return dump(type, null, attributes, null);
     }
 
+    /**
+     * Serializes a full JSON:API request body.
+     *
+     * @param type          resource type
+     * @param id            resource id, or {@code null} for create
+     * @param attributes    attribute map
+     * @param relationships relationship map
+     * @return JSON string
+     */
     public static String dump(String type, String id,
             Map<String, Object> attributes,
             Map<String, Object> relationships) {
@@ -29,6 +45,12 @@ public final class JsonApiSerializer {
         return sb.toString();
     }
 
+    /**
+     * Converts an arbitrary value to its JSON representation.
+     *
+     * @param value value to serialize
+     * @return JSON string
+     */
     @SuppressWarnings("unchecked")
     public static String toJson(Object value) {
         if (value == null) {

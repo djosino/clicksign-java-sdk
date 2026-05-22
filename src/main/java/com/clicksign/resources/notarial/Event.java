@@ -37,23 +37,48 @@ public final class Event {
         this.createdAt = str(a.get("created"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the event name.
+     *
+     * @return name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the event data map.
+     *
+     * @return data
+     */
     public Map<String, Object> data() {
         return data;
     }
 
+    /**
+     * Returns the custom kind as an enum.
+     *
+     * @return custom kind enum, or {@code null} if not a custom event
+     */
     public EventCustomKind customKindAsEnum() {
         Object kind = data != null ? data.get("kind") : null;
         return kind != null ? ApiStringEnum.tryParse(EventCustomKind.class, kind.toString()) : null;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
@@ -73,14 +98,26 @@ public final class Event {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for Event operations. */
     public static final class Service {
 
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all events for an envelope.
+         *
+         * @param envelopeId envelope id
+         * @return unmodifiable list
+         */
         public List<Event> listForEnvelope(String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/events", Collections.emptyMap());
             List<Event> result = new ArrayList<>();
@@ -102,6 +139,12 @@ public final class Event {
             return new Event(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates an add-image event.
+         *
+         * @param params add-image parameters
+         * @return created event
+         */
         public Event createAddImage(AddImageParams params) {
             Map<String, Object> attrs = new LinkedHashMap<>();
             attrs.put("name", "add_image");
@@ -115,6 +158,12 @@ public final class Event {
             return new Event(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates a custom event.
+         *
+         * @param params custom event parameters
+         * @return created event
+         */
         public Event createCustom(CustomParams params) {
             if (ApiStringEnum.tryParse(EventCustomKind.class, params.kind) == null) {
                 throw new IllegalArgumentException(
@@ -141,6 +190,7 @@ public final class Event {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a generic event. */
     public static final class CreateParams {
 
         final String envelopeId;
@@ -169,10 +219,16 @@ public final class Event {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String envelopeId;
             private String documentId;
@@ -182,31 +238,67 @@ public final class Event {
 
             private Builder() {}
 
+            /**
+             * Sets envelope id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder envelopeId(String v) {
                 this.envelopeId = v;
                 return this;
             }
 
+            /**
+             * Sets document id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder documentId(String v) {
                 this.documentId = v;
                 return this;
             }
 
+            /**
+             * Sets event name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder name(String v) {
                 this.name = v;
                 return this;
             }
 
+            /**
+             * Sets event data.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder data(Map<String, Object> v) {
                 this.data = v;
                 return this;
             }
 
+            /**
+             * Sets content base64.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder contentBase64(String v) {
                 this.contentBase64 = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (envelopeId == null || envelopeId.isBlank()) {
                     throw new IllegalArgumentException("envelopeId is required");
@@ -224,6 +316,7 @@ public final class Event {
 
     // ── AddImageParams ───────────────────────────────────────────────────────
 
+    /** Parameters for creating an add-image event. */
     public static final class AddImageParams {
 
         final String envelopeId;
@@ -240,10 +333,16 @@ public final class Event {
             this.contentBase64 = b.contentBase64;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link AddImageParams}. */
         public static final class Builder {
             private String envelopeId;
             private String documentId;
@@ -253,31 +352,67 @@ public final class Event {
 
             private Builder() {}
 
+            /**
+             * Sets envelope id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder envelopeId(String v) {
                 this.envelopeId = v;
                 return this;
             }
 
+            /**
+             * Sets document id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder documentId(String v) {
                 this.documentId = v;
                 return this;
             }
 
+            /**
+             * Sets title.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder title(String v) {
                 this.title = v;
                 return this;
             }
 
+            /**
+             * Sets occurred at timestamp.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder occurredAt(String v) {
                 this.occurredAt = v;
                 return this;
             }
 
+            /**
+             * Sets content base64.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder contentBase64(String v) {
                 this.contentBase64 = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public AddImageParams build() {
                 if (envelopeId    == null || envelopeId.isBlank()) {
                     throw new IllegalArgumentException("envelopeId is required");
@@ -301,6 +436,7 @@ public final class Event {
 
     // ── CustomParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a custom signing-evidence event. */
     public static final class CustomParams {
 
         final String envelopeId;
@@ -321,10 +457,16 @@ public final class Event {
             this.signerPhoneNumber  = b.signerPhoneNumber;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CustomParams}. */
         public static final class Builder {
             private String envelopeId;
             private String documentId;
@@ -336,45 +478,99 @@ public final class Event {
 
             private Builder() {}
 
+            /**
+             * Sets envelope id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder envelopeId(String v) {
                 this.envelopeId = v;
                 return this;
             }
 
+            /**
+             * Sets document id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder documentId(String v) {
                 this.documentId = v;
                 return this;
             }
 
+            /**
+             * Sets event kind.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder kind(String v) {
                 this.kind = v;
                 return this;
             }
 
+            /**
+             * Sets event kind.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder kind(EventCustomKind v) {
                 return kind(v.apiValue());
             }
 
+            /**
+             * Sets occurred at timestamp.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder occurredAt(String v) {
                 this.occurredAt = v;
                 return this;
             }
 
+            /**
+             * Sets signer name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder signerName(String v) {
                 this.signerName = v;
                 return this;
             }
 
+            /**
+             * Sets signer email.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder signerEmail(String v) {
                 this.signerEmail = v;
                 return this;
             }
 
+            /**
+             * Sets signer phone number.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder signerPhoneNumber(String v) {
                 this.signerPhoneNumber = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CustomParams build() {
                 if (envelopeId == null || envelopeId.isBlank()) {
                     throw new IllegalArgumentException("envelopeId is required");

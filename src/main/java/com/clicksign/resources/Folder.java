@@ -52,34 +52,74 @@ public final class Folder {
         this.childFolderIds = Collections.unmodifiableList(childIds);
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the path.
+     *
+     * @return path
+     */
     public String path() {
         return path;
     }
 
+    /**
+     * Returns whether the folder is in the root.
+     *
+     * @return in-root flag
+     */
     public boolean inRoot() {
         return inRoot;
     }
 
+    /**
+     * Returns the parent folder id.
+     *
+     * @return folder id
+     */
     public String folderId() {
         return folderId;
     }
 
+    /**
+     * Returns the child folder ids.
+     *
+     * @return child folder ids
+     */
     public List<String> childFolderIds() {
         return childFolderIds;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at timestamp.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -99,15 +139,26 @@ public final class Folder {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for Folder operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/folders";
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all resources.
+         *
+         * @return unmodifiable list
+         */
         public List<Folder> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Folder> result = new ArrayList<>();
@@ -117,11 +168,23 @@ public final class Folder {
             return Collections.unmodifiableList(result);
         }
 
+        /**
+         * Retrieves resource by id.
+         *
+         * @param id resource id
+         * @return resource
+         */
         public Folder retrieve(String id) {
             String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
             return new Folder(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public Folder create(CreateParams params) {
             String body = JsonApiSerializer.dump("folders", null, params.toAttributes(), params.toRelationships());
             String raw  = http.post(ENDPOINT, body);
@@ -131,6 +194,7 @@ public final class Folder {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a folder. */
     public static final class CreateParams {
 
         private final String name;
@@ -161,26 +225,50 @@ public final class Folder {
             return rels;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String name;
             private String folderId;
 
             private Builder() {}
 
+            /**
+             * Sets name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder name(String v) {
                 this.name = v;
                 return this;
             }
 
+            /**
+             * Sets parent folder id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder folderId(String v) {
                 this.folderId = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (name == null || name.isBlank()) {
                     throw new IllegalArgumentException("name is required");

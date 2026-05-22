@@ -38,8 +38,19 @@ public final class BulkRequirement {
     /** Builder for atomic bulk operations on signing requirements. */
     public static final class Operations {
 
+        /** Creates a new empty operations builder. */
+        public Operations() {}
+
         private final AtomicOperations atomicOps = new AtomicOperations();
 
+        /**
+         * Adds an agree operation for the signer on the document.
+         *
+         * @param signerId signer id
+         * @param documentId document id
+         * @param role signing role (e.g. "sign")
+         * @return this operations builder
+         */
         public Operations addAgree(String signerId, String documentId, String role) {
             validateIds(signerId, documentId);
             if (role == null || role.isBlank()) {
@@ -49,10 +60,26 @@ public final class BulkRequirement {
             return this;
         }
 
+        /**
+         * Adds an agree operation using a typed role enum.
+         *
+         * @param signerId signer id
+         * @param documentId document id
+         * @param role signing role
+         * @return this operations builder
+         */
         public Operations addAgree(String signerId, String documentId, RequirementRole role) {
             return addAgree(signerId, documentId, role.apiValue());
         }
 
+        /**
+         * Adds a provide_evidence operation for the signer on the document.
+         *
+         * @param signerId signer id
+         * @param documentId document id
+         * @param auth authentication method (e.g. "email")
+         * @return this operations builder
+         */
         public Operations addProvideEvidence(String signerId, String documentId, String auth) {
             validateIds(signerId, documentId);
             if (auth == null || auth.isBlank()) {
@@ -62,10 +89,28 @@ public final class BulkRequirement {
             return this;
         }
 
+        /**
+         * Adds a provide_evidence operation using a typed auth enum.
+         *
+         * @param signerId signer id
+         * @param documentId document id
+         * @param auth authentication method
+         * @return this operations builder
+         */
         public Operations addProvideEvidence(String signerId, String documentId, RequirementAuth auth) {
             return addProvideEvidence(signerId, documentId, auth.apiValue());
         }
 
+        /**
+         * Adds a rubricate operation for the signer on the document.
+         *
+         * @param signerId signer id
+         * @param documentId document id
+         * @param pages comma-separated page numbers, or null
+         * @param rubricField rubric field identifier, or null
+         * @param kind rubricate kind, or null
+         * @return this operations builder
+         */
         public Operations addRubricate(String signerId, String documentId,
                                         String pages, String rubricField, String kind) {
             validateIds(signerId, documentId);
@@ -90,6 +135,12 @@ public final class BulkRequirement {
             return this;
         }
 
+        /**
+         * Removes (deletes) a requirement by id.
+         *
+         * @param requirementId requirement id to delete
+         * @return this operations builder
+         */
         public Operations remove(String requirementId) {
             if (requirementId == null || requirementId.isBlank()) {
                 throw new IllegalArgumentException("requirementId is required");
@@ -157,14 +208,29 @@ public final class BulkRequirement {
             this.results    = Collections.unmodifiableList(results);
         }
 
+        /**
+         * Returns the envelope id.
+         *
+         * @return envelope id
+         */
         public String envelopeId() {
             return envelopeId;
         }
 
+        /**
+         * Returns the results.
+         *
+         * @return results
+         */
         public List<OperationResult> results() {
             return results;
         }
 
+        /**
+         * Returns the is success.
+         *
+         * @return is success
+         */
         public boolean isSuccess() {
             for (OperationResult r : results) {
                 if (!r.isSuccess()) {
@@ -174,6 +240,11 @@ public final class BulkRequirement {
             return true;
         }
 
+        /**
+         * Returns the requirements.
+         *
+         * @return requirements
+         */
         public List<Requirement> requirements() {
             List<Requirement> list = new ArrayList<>();
             for (OperationResult r : results) {
@@ -184,6 +255,11 @@ public final class BulkRequirement {
             return Collections.unmodifiableList(list);
         }
 
+        /**
+         * Returns the failures.
+         *
+         * @return failures
+         */
         public List<OperationResult> failures() {
             List<OperationResult> list = new ArrayList<>();
             for (OperationResult r : results) {
@@ -275,11 +351,25 @@ public final class BulkRequirement {
             this.bulkClient = bulkClient;
         }
 
+        /** Functional interface for building bulk operations inline. */
         @FunctionalInterface
         public interface OperationsBuilder {
+            /**
+             * Builds the operations list.
+             *
+             * @param ops operations accumulator
+             * @return populated operations
+             */
             Operations build(Operations ops);
         }
 
+        /**
+         * Creates bulk requirements via atomic operations.
+         *
+         * @param envelopeId envelope id
+         * @param builder operations builder lambda
+         * @return bulk operation response
+         */
         public Response create(String envelopeId, OperationsBuilder builder) {
             Operations ops = builder.build(new Operations());
             String responseBody = bulkClient.post(

@@ -42,22 +42,47 @@ public final class Webhook {
         this.events = Collections.unmodifiableList(ev);
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the endpoint URL.
+     *
+     * @return endpoint
+     */
     public String endpoint() {
         return endpoint;
     }
 
+    /**
+     * Returns the status.
+     *
+     * @return status
+     */
     public String status() {
         return status;
     }
 
+    /**
+     * Returns the subscribed event types.
+     *
+     * @return events
+     */
     public List<String> events() {
         return events;
     }
 
+    /**
+     * Returns the subscribed event types as enums.
+     *
+     * @return events as enums
+     */
     public List<WebhookEventType> eventsAsEnums() {
         List<WebhookEventType> parsed = new ArrayList<>();
         for (String e : events) {
@@ -69,14 +94,29 @@ public final class Webhook {
         return Collections.unmodifiableList(parsed);
     }
 
+    /**
+     * Returns the secret.
+     *
+     * @return secret
+     */
     public String secret() {
         return secret;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at timestamp.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -92,15 +132,26 @@ public final class Webhook {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for Webhook operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/webhooks";
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all resources.
+         *
+         * @return unmodifiable list
+         */
         public List<Webhook> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Webhook> result = new ArrayList<>();
@@ -110,23 +161,47 @@ public final class Webhook {
             return Collections.unmodifiableList(result);
         }
 
+        /**
+         * Retrieves resource by id.
+         *
+         * @param id resource id
+         * @return resource
+         */
         public Webhook retrieve(String id) {
             String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
             return new Webhook(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public Webhook create(CreateParams params) {
             String body = JsonApiSerializer.dump("webhooks", null, params.toAttributes(), null);
             String raw  = http.post(ENDPOINT, body);
             return new Webhook(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Updates resource.
+         *
+         * @param id     resource id
+         * @param params update parameters
+         * @return updated resource
+         */
         public Webhook update(String id, UpdateParams params) {
             String body = JsonApiSerializer.dump("webhooks", id, params.toAttributes(), null);
             String raw  = http.patch(ENDPOINT + "/" + id, body);
             return new Webhook(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Deletes resource by id.
+         *
+         * @param id resource id
+         */
         public void delete(String id) {
             http.delete(ENDPOINT + "/" + id, null);
         }
@@ -134,6 +209,7 @@ public final class Webhook {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a webhook. */
     public static final class CreateParams {
 
         private final String endpoint;
@@ -161,10 +237,16 @@ public final class Webhook {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String endpoint;
             private List<String> events = new ArrayList<>();
@@ -173,35 +255,77 @@ public final class Webhook {
 
             private Builder() {}
 
+            /**
+             * Sets endpoint URL.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder endpoint(String v) {
                 this.endpoint = v;
                 return this;
             }
 
+            /**
+             * Sets event types.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder events(List<String> v) {
                 this.events = new ArrayList<>(v);
                 return this;
             }
 
+            /**
+             * Adds an event type.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder addEvent(String v) {
                 this.events.add(v);
                 return this;
             }
 
+            /**
+             * Adds an event type.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder addEvent(WebhookEventType v) {
                 return addEvent(v.apiValue());
             }
 
+            /**
+             * Sets status.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder status(String v) {
                 this.status = v;
                 return this;
             }
 
+            /**
+             * Sets secret.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder secret(String v) {
                 this.secret = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (endpoint == null || endpoint.isBlank()) {
                     throw new IllegalArgumentException("endpoint is required");
@@ -216,6 +340,7 @@ public final class Webhook {
 
     // ── UpdateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for updating a webhook. */
     public static final class UpdateParams {
 
         private final String endpoint;
@@ -242,10 +367,16 @@ public final class Webhook {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link UpdateParams}. */
         public static final class Builder {
             private String endpoint;
             private List<String> events;
@@ -253,21 +384,44 @@ public final class Webhook {
 
             private Builder() {}
 
+            /**
+             * Sets endpoint URL.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder endpoint(String v) {
                 this.endpoint = v;
                 return this;
             }
 
+            /**
+             * Sets event types.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder events(List<String> v) {
                 this.events = new ArrayList<>(v);
                 return this;
             }
 
+            /**
+             * Sets status.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder status(String v) {
                 this.status = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             */
             public UpdateParams build() {
                 return new UpdateParams(this);
             }

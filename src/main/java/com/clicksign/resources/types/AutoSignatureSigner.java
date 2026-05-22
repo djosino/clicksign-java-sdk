@@ -79,6 +79,10 @@ public final class AutoSignatureSigner {
 
     /** Builder for {@link AutoSignatureSigner}. */
     public static final class Builder {
+
+        /** Creates a new builder. */
+        public Builder() {}
+
         private String name;
         private String email;
         private String documentation;

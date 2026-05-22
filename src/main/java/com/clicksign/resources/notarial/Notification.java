@@ -41,18 +41,38 @@ public final class Notification {
         return new Notification(obj);
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the message.
+     *
+     * @return message
+     */
     public String message() {
         return message;
     }
 
+    /**
+     * Returns the notification summary entries.
+     *
+     * @return summary
+     */
     public List<SummaryEntry> summary() {
         return summary;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
@@ -70,20 +90,37 @@ public final class Notification {
         return Boolean.TRUE.equals(o) || "true".equals(str(o));
     }
 
+    /** Per-signer notification result entry. */
     public static final class SummaryEntry {
 
         private final String signerId;
         private final boolean notified;
 
+        /**
+         * Constructs a summary entry.
+         *
+         * @param signerId signer id
+         * @param notified whether the signer was notified
+         */
         public SummaryEntry(String signerId, boolean notified) {
             this.signerId = signerId;
             this.notified = notified;
         }
 
+        /**
+         * Returns the signer id.
+         *
+         * @return signer id
+         */
         public String signerId() {
             return signerId;
         }
 
+        /**
+         * Returns whether the signer was notified.
+         *
+         * @return notified flag
+         */
         public boolean notified() {
             return notified;
         }

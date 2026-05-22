@@ -103,82 +103,178 @@ public final class ClicksignClient {
         this.autoSignatureTerms      = new AutoSignatureTerm.Service(httpClient);
     }
 
+    /**
+     * Returns the envelopes.
+     *
+     * @return envelopes
+     */
     public Envelope.Service envelopes() {
         return envelopes;
     }
 
+    /**
+     * Returns the documents.
+     *
+     * @return documents
+     */
     public Document.Service documents() {
         return documents;
     }
 
+    /**
+     * Returns the signers.
+     *
+     * @return signers
+     */
     public Signer.Service signers() {
         return signers;
     }
 
+    /**
+     * Returns the requirements.
+     *
+     * @return requirements
+     */
     public Requirement.Service requirements() {
         return requirements;
     }
 
+    /**
+     * Returns the signature watchers.
+     *
+     * @return signature watchers
+     */
     public SignatureWatcher.Service signatureWatchers() {
         return signatureWatchers;
     }
 
+    /**
+     * Returns the events.
+     *
+     * @return events
+     */
     public Event.Service events() {
         return events;
     }
 
+    /**
+     * Returns the bulk requirements.
+     *
+     * @return bulk requirements
+     */
     public BulkRequirement.Service bulkRequirements() {
         return bulkRequirements;
     }
 
+    /**
+     * Returns the webhooks.
+     *
+     * @return webhooks
+     */
     public Webhook.Service webhooks() {
         return webhooks;
     }
 
+    /**
+     * Returns the folders.
+     *
+     * @return folders
+     */
     public Folder.Service folders() {
         return folders;
     }
 
+    /**
+     * Returns the users.
+     *
+     * @return users
+     */
     public User.Service users() {
         return users;
     }
 
+    /**
+     * Returns the templates.
+     *
+     * @return templates
+     */
     public Template.Service templates() {
         return templates;
     }
 
+    /**
+     * Returns the template fields.
+     *
+     * @return template fields
+     */
     public TemplateField.Service templateFields() {
         return templateFields;
     }
 
+    /**
+     * Returns the memberships.
+     *
+     * @return memberships
+     */
     public Membership.Service memberships() {
         return memberships;
     }
 
+    /**
+     * Returns the groups.
+     *
+     * @return groups
+     */
     public Group.Service groups() {
         return groups;
     }
 
+    /**
+     * Returns the access control lists.
+     *
+     * @return access control lists
+     */
     public AccessControlList.Service accessControlLists() {
         return accessControlLists;
     }
 
+    /**
+     * Returns the envelope bulk creations.
+     *
+     * @return envelope bulk creations
+     */
     public EnvelopeBulkCreation.Service envelopeBulkCreations() {
         return envelopeBulkCreations;
     }
 
+    /**
+     * Returns the acceptance term whatsapps.
+     *
+     * @return acceptance term whatsapps
+     */
     public AcceptanceTermWhatsapp.Service acceptanceTermWhatsapps() {
         return acceptanceTermWhatsapps;
     }
 
+    /**
+     * Returns the auto signature terms.
+     *
+     * @return auto signature terms
+     */
     public AutoSignatureTerm.Service autoSignatureTerms() {
         return autoSignatureTerms;
     }
 
+    /**
+     * Returns a new builder.
+     *
+     * @return new builder
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /** Builder. */
     public static final class Builder {
 
         private String apiKey;
@@ -191,11 +287,23 @@ public final class ClicksignClient {
 
         private Builder() {}
 
+        /**
+         * Sets api key.
+         *
+         * @param apiKey value
+         * @return this builder
+         */
         public Builder apiKey(String apiKey) {
             this.apiKey = apiKey;
             return this;
         }
 
+        /**
+         * Sets environment.
+         *
+         * @param environment value
+         * @return this builder
+         */
         public Builder environment(Environment environment) {
             this.environment = environment;
             return this;
@@ -212,36 +320,77 @@ public final class ClicksignClient {
             return this;
         }
 
+        /**
+         * Sets connect timeout ms.
+         *
+         * @param ms value
+         * @return this builder
+         */
         public Builder connectTimeoutMs(int ms) {
             this.connectTimeoutMs = ms;
             return this;
         }
 
+        /**
+         * Sets read timeout ms.
+         *
+         * @param ms value
+         * @return this builder
+         */
         public Builder readTimeoutMs(int ms) {
             this.readTimeoutMs = ms;
             return this;
         }
 
+        /**
+         * Sets max retries.
+         *
+         * @param maxRetries value
+         * @return this builder
+         */
         public Builder maxRetries(int maxRetries) {
             this.maxRetries = maxRetries;
             return this;
         }
 
+        /**
+         * Sets on request.
+         *
+         * @param listener value
+         * @return this builder
+         */
         public Builder onRequest(Consumer<RequestEvent> listener) {
             instrumentation.onRequest(listener);
             return this;
         }
 
+        /**
+         * Sets on retry.
+         *
+         * @param listener value
+         * @return this builder
+         */
         public Builder onRetry(Consumer<RetryEvent> listener) {
             instrumentation.onRetry(listener);
             return this;
         }
 
+        /**
+         * Sets on error.
+         *
+         * @param listener value
+         * @return this builder
+         */
         public Builder onError(Consumer<ErrorEvent> listener) {
             instrumentation.onError(listener);
             return this;
         }
 
+        /**
+         * Returns the build.
+         *
+         * @return build
+         */
         public ClicksignClient build() {
             if (apiKey == null || apiKey.isBlank()) {
                 throw new IllegalStateException("apiKey is required");
