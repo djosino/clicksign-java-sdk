@@ -103,7 +103,7 @@ publishing {
             pom {
                 name.set("Clicksign Java SDK")
                 description.set("Official Java SDK for the Clicksign e-signature API (v3)")
-                url.set("https://github.com/clicksign/clicksign-java-sdk")
+                url.set("https://github.com/djosino/clicksign-java-sdk")
                 licenses {
                     license {
                         name.set("MIT License")
@@ -117,10 +117,36 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/clicksign/clicksign-java-sdk.git")
-                    url.set("https://github.com/clicksign/clicksign-java-sdk")
+                    connection.set("scm:git:git://github.com/djosino/clicksign-java-sdk.git")
+                    url.set("https://github.com/djosino/clicksign-java-sdk")
                 }
             }
         }
+    }
+
+    repositories {
+        maven {
+            name = "MavenCentral"
+            val isRelease = !version.toString().endsWith("-SNAPSHOT")
+            url = uri(
+                if (isRelease)
+                    "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                else
+                    "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            )
+            credentials {
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
+            }
+        }
+    }
+}
+
+signing {
+    val key = System.getenv("SIGNING_KEY")
+    val password = System.getenv("SIGNING_PASSWORD")
+    if (key != null && password != null) {
+        useInMemoryPgpKeys(key, password)
+        sign(publishing.publications["maven"])
     }
 }
