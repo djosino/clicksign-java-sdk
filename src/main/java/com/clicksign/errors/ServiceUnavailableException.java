@@ -1,12 +1,12 @@
 package com.clicksign.errors;
 
-/** Raised on HTTP 429. Retryable. */
-public class RateLimitException extends ClicksignException {
+/** Raised on HTTP 503. Retryable. */
+public class ServiceUnavailableException extends ClicksignException {
 
     private final Long retryAfterSeconds;
 
-    public RateLimitException(String message, int statusCode, String requestId,
-                              String responseBody, Long retryAfterSeconds) {
+    public ServiceUnavailableException(String message, int statusCode, String requestId,
+                                       String responseBody, Long retryAfterSeconds) {
         super(message, statusCode, requestId, responseBody);
         this.retryAfterSeconds = retryAfterSeconds;
     }

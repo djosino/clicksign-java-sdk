@@ -1,6 +1,12 @@
 package com.clicksign;
 
 import com.clicksign.http.HttpClient;
+import com.clicksign.instrumentation.ErrorEvent;
+import com.clicksign.instrumentation.Instrumentation;
+import com.clicksign.instrumentation.RequestEvent;
+import com.clicksign.instrumentation.RetryEvent;
+import com.clicksign.jsonapi.BulkOperationsClient;
+import com.clicksign.resources.notarial.BulkRequirement;
 import com.clicksign.resources.notarial.Envelope;
 import com.clicksign.resources.notarial.Document;
 import com.clicksign.resources.notarial.Signer;
@@ -16,6 +22,10 @@ import com.clicksign.resources.Membership;
 import com.clicksign.resources.Group;
 import com.clicksign.resources.AccessControlList;
 import com.clicksign.resources.EnvelopeBulkCreation;
+import com.clicksign.resources.AcceptanceTermWhatsapp;
+import com.clicksign.resources.AutoSignatureTerm;
+
+import java.util.function.Consumer;
 
 /**
  * Entry point for the Clicksign Java SDK.
@@ -24,10 +34,11 @@ import com.clicksign.resources.EnvelopeBulkCreation;
  * ClicksignClient client = ClicksignClient.builder()
  *     .apiKey(System.getenv("CLICKSIGN_API_KEY"))
  *     .environment(Environment.SANDBOX)
+ *     .onRequest(e -> System.out.printf("%s %s %d%n", e.method(), e.path(), e.status()))
  *     .build();
  *
  * Envelope envelope = client.envelopes().create(
- *     EnvelopeCreateParams.builder()
+ *     Envelope.CreateParams.builder()
  *         .name("Contrato")
  *         .locale("pt-BR")
  *         .build()
@@ -37,6 +48,7 @@ import com.clicksign.resources.EnvelopeBulkCreation;
 public final class ClicksignClient {
 
     private final HttpClient httpClient;
+    private final BulkOperationsClient bulkClient;
 
     private final Envelope.Service envelopes;
     private final Document.Service documents;
@@ -44,6 +56,7 @@ public final class ClicksignClient {
     private final Requirement.Service requirements;
     private final SignatureWatcher.Service signatureWatchers;
     private final Event.Service events;
+    private final BulkRequirement.Service bulkRequirements;
     private final Webhook.Service webhooks;
     private final Folder.Service folders;
     private final User.Service users;
@@ -53,6 +66,8 @@ public final class ClicksignClient {
     private final Group.Service groups;
     private final AccessControlList.Service accessControlLists;
     private final EnvelopeBulkCreation.Service envelopeBulkCreations;
+    private final AcceptanceTermWhatsapp.Service acceptanceTermWhatsapps;
+    private final AutoSignatureTerm.Service autoSignatureTerms;
 
     private ClicksignClient(Builder builder) {
         ClientConfig config = ClientConfig.builder()
@@ -63,90 +78,89 @@ public final class ClicksignClient {
             .maxRetries(builder.maxRetries)
             .build();
 
-        this.httpClient = new HttpClient(config);
+        Instrumentation instrumentation = builder.instrumentation;
 
-        this.envelopes          = new Envelope.Service(httpClient);
-        this.documents          = new Document.Service(httpClient);
-        this.signers            = new Signer.Service(httpClient);
-        this.requirements       = new Requirement.Service(httpClient);
-        this.signatureWatchers  = new SignatureWatcher.Service(httpClient);
-        this.events             = new Event.Service(httpClient);
-        this.webhooks           = new Webhook.Service(httpClient);
-        this.folders            = new Folder.Service(httpClient);
-        this.users              = new User.Service(httpClient);
-        this.templates          = new Template.Service(httpClient);
-        this.templateFields     = new TemplateField.Service(httpClient);
-        this.memberships        = new Membership.Service(httpClient);
-        this.groups             = new Group.Service(httpClient);
-        this.accessControlLists = new AccessControlList.Service(httpClient);
+        this.httpClient = new HttpClient(config, instrumentation);
+        this.bulkClient = new BulkOperationsClient(config);
+
+        this.envelopes             = new Envelope.Service(httpClient);
+        this.documents             = new Document.Service(httpClient);
+        this.signers               = new Signer.Service(httpClient);
+        this.requirements          = new Requirement.Service(httpClient);
+        this.signatureWatchers     = new SignatureWatcher.Service(httpClient);
+        this.events                = new Event.Service(httpClient);
+        this.bulkRequirements      = new BulkRequirement.Service(bulkClient);
+        this.webhooks              = new Webhook.Service(httpClient);
+        this.folders               = new Folder.Service(httpClient);
+        this.users                 = new User.Service(httpClient);
+        this.templates             = new Template.Service(httpClient);
+        this.templateFields        = new TemplateField.Service(httpClient);
+        this.memberships           = new Membership.Service(httpClient);
+        this.groups                = new Group.Service(httpClient);
+        this.accessControlLists    = new AccessControlList.Service(httpClient);
         this.envelopeBulkCreations = new EnvelopeBulkCreation.Service(httpClient);
+        this.acceptanceTermWhatsapps = new AcceptanceTermWhatsapp.Service(httpClient);
+        this.autoSignatureTerms      = new AutoSignatureTerm.Service(httpClient);
     }
 
-    public Envelope.Service envelopes()           { return envelopes; }
-    public Document.Service documents()           { return documents; }
-    public Signer.Service signers()               { return signers; }
-    public Requirement.Service requirements()     { return requirements; }
-    public SignatureWatcher.Service signatureWatchers() { return signatureWatchers; }
-    public Event.Service events()                 { return events; }
-    public Webhook.Service webhooks()             { return webhooks; }
-    public Folder.Service folders()               { return folders; }
-    public User.Service users()                   { return users; }
-    public Template.Service templates()           { return templates; }
-    public TemplateField.Service templateFields() { return templateFields; }
-    public Membership.Service memberships()       { return memberships; }
-    public Group.Service groups()                 { return groups; }
-    public AccessControlList.Service accessControlLists() { return accessControlLists; }
-    public EnvelopeBulkCreation.Service envelopeBulkCreations() { return envelopeBulkCreations; }
+    public Envelope.Service envelopes()                        { return envelopes; }
+    public Document.Service documents()                        { return documents; }
+    public Signer.Service signers()                            { return signers; }
+    public Requirement.Service requirements()                  { return requirements; }
+    public SignatureWatcher.Service signatureWatchers()        { return signatureWatchers; }
+    public Event.Service events()                              { return events; }
+    public BulkRequirement.Service bulkRequirements()          { return bulkRequirements; }
+    public Webhook.Service webhooks()                          { return webhooks; }
+    public Folder.Service folders()                            { return folders; }
+    public User.Service users()                                { return users; }
+    public Template.Service templates()                        { return templates; }
+    public TemplateField.Service templateFields()              { return templateFields; }
+    public Membership.Service memberships()                    { return memberships; }
+    public Group.Service groups()                              { return groups; }
+    public AccessControlList.Service accessControlLists()      { return accessControlLists; }
+    public EnvelopeBulkCreation.Service envelopeBulkCreations(){ return envelopeBulkCreations; }
+    public AcceptanceTermWhatsapp.Service acceptanceTermWhatsapps() { return acceptanceTermWhatsapps; }
+    public AutoSignatureTerm.Service autoSignatureTerms()           { return autoSignatureTerms; }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    public static Builder builder() { return new Builder(); }
 
     public static final class Builder {
+
         private String apiKey;
-        private Environment environment = Environment.PRODUCTION;
+        private Environment environment    = Environment.PRODUCTION;
         private String baseUrl;
-        private int connectTimeoutMs = 2_000;
-        private int readTimeoutMs    = 10_000;
-        private int maxRetries       = 0;
+        private int connectTimeoutMs       = 2_000;
+        private int readTimeoutMs          = 10_000;
+        private int maxRetries             = 0;
+        private final Instrumentation instrumentation = new Instrumentation();
 
         private Builder() {}
 
-        public Builder apiKey(String apiKey) {
-            this.apiKey = apiKey;
-            return this;
-        }
-
-        public Builder environment(Environment environment) {
-            this.environment = environment;
-            return this;
-        }
-
+        public Builder apiKey(String apiKey)                { this.apiKey = apiKey; return this; }
+        public Builder environment(Environment environment) { this.environment = environment; return this; }
         /** Overrides environment URL — useful for tests or custom proxies. */
-        public Builder baseUrl(String baseUrl) {
-            this.baseUrl = baseUrl;
+        public Builder baseUrl(String baseUrl)              { this.baseUrl = baseUrl; return this; }
+        public Builder connectTimeoutMs(int ms)             { this.connectTimeoutMs = ms; return this; }
+        public Builder readTimeoutMs(int ms)                { this.readTimeoutMs = ms; return this; }
+        public Builder maxRetries(int maxRetries)           { this.maxRetries = maxRetries; return this; }
+
+        public Builder onRequest(Consumer<RequestEvent> listener) {
+            instrumentation.onRequest(listener);
             return this;
         }
 
-        public Builder connectTimeoutMs(int connectTimeoutMs) {
-            this.connectTimeoutMs = connectTimeoutMs;
+        public Builder onRetry(Consumer<RetryEvent> listener) {
+            instrumentation.onRetry(listener);
             return this;
         }
 
-        public Builder readTimeoutMs(int readTimeoutMs) {
-            this.readTimeoutMs = readTimeoutMs;
-            return this;
-        }
-
-        public Builder maxRetries(int maxRetries) {
-            this.maxRetries = maxRetries;
+        public Builder onError(Consumer<ErrorEvent> listener) {
+            instrumentation.onError(listener);
             return this;
         }
 
         public ClicksignClient build() {
-            if (apiKey == null || apiKey.isBlank()) {
-                throw new IllegalStateException("apiKey is required");
-            }
+            if (apiKey == null || apiKey.isBlank()) throw new IllegalStateException("apiKey is required");
             return new ClicksignClient(this);
         }
     }

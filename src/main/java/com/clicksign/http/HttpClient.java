@@ -2,6 +2,10 @@ package com.clicksign.http;
 
 import com.clicksign.ClientConfig;
 import com.clicksign.errors.*;
+import com.clicksign.instrumentation.ErrorEvent;
+import com.clicksign.instrumentation.Instrumentation;
+import com.clicksign.instrumentation.RequestEvent;
+import com.clicksign.instrumentation.RetryEvent;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,20 +19,23 @@ import java.util.concurrent.ThreadLocalRandom;
  * Low-level HTTP client backed by {@code java.net.http.HttpClient} (Java 11+).
  *
  * <p>Zero runtime dependencies. Handles retry with full-jitter exponential backoff,
- * JSON:API headers, and maps HTTP status codes to typed exceptions.
+ * JSON:API headers, maps HTTP status codes to typed exceptions, and publishes
+ * instrumentation events.
  */
 public final class HttpClient {
 
-    private static final String CONTENT_TYPE = "application/vnd.api+json";
+    private static final String CONTENT_TYPE        = "application/vnd.api+json";
     private static final double BACKOFF_BASE_SECONDS = 0.5;
     private static final double BACKOFF_CAP_SECONDS  = 30.0;
 
     private final ClientConfig config;
+    private final Instrumentation instrumentation;
     private final java.net.http.HttpClient delegate;
 
-    public HttpClient(ClientConfig config) {
-        this.config = config;
-        this.delegate = java.net.http.HttpClient.newBuilder()
+    public HttpClient(ClientConfig config, Instrumentation instrumentation) {
+        this.config          = config;
+        this.instrumentation = instrumentation;
+        this.delegate        = java.net.http.HttpClient.newBuilder()
             .connectTimeout(Duration.ofMillis(config.connectTimeoutMs()))
             .build();
     }
@@ -39,11 +46,11 @@ public final class HttpClient {
             .uri(URI.create(url))
             .timeout(Duration.ofMillis(config.readTimeoutMs()))
             .header("Content-Type", CONTENT_TYPE)
-            .header("Accept", CONTENT_TYPE)
+            .header("Accept",       CONTENT_TYPE)
             .header("Authorization", config.apiKey())
             .GET()
             .build();
-        return executeWithRetry(request);
+        return executeWithRetry(request, path);
     }
 
     public String post(String path, String body) {
@@ -51,11 +58,11 @@ public final class HttpClient {
             .uri(URI.create(config.baseUrl() + path))
             .timeout(Duration.ofMillis(config.readTimeoutMs()))
             .header("Content-Type", CONTENT_TYPE)
-            .header("Accept", CONTENT_TYPE)
+            .header("Accept",       CONTENT_TYPE)
             .header("Authorization", config.apiKey())
             .POST(HttpRequest.BodyPublishers.ofString(body))
             .build();
-        return executeWithRetry(request);
+        return executeWithRetry(request, path);
     }
 
     public String patch(String path, String body) {
@@ -63,11 +70,23 @@ public final class HttpClient {
             .uri(URI.create(config.baseUrl() + path))
             .timeout(Duration.ofMillis(config.readTimeoutMs()))
             .header("Content-Type", CONTENT_TYPE)
-            .header("Accept", CONTENT_TYPE)
+            .header("Accept",       CONTENT_TYPE)
             .header("Authorization", config.apiKey())
             .method("PATCH", HttpRequest.BodyPublishers.ofString(body))
             .build();
-        return executeWithRetry(request);
+        return executeWithRetry(request, path);
+    }
+
+    public String put(String path, String body) {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(config.baseUrl() + path))
+            .timeout(Duration.ofMillis(config.readTimeoutMs()))
+            .header("Content-Type", CONTENT_TYPE)
+            .header("Accept",       CONTENT_TYPE)
+            .header("Authorization", config.apiKey())
+            .PUT(HttpRequest.BodyPublishers.ofString(body))
+            .build();
+        return executeWithRetry(request, path);
     }
 
     public void delete(String path, String body) {
@@ -75,7 +94,7 @@ public final class HttpClient {
             .uri(URI.create(config.baseUrl() + path))
             .timeout(Duration.ofMillis(config.readTimeoutMs()))
             .header("Content-Type", CONTENT_TYPE)
-            .header("Accept", CONTENT_TYPE)
+            .header("Accept",       CONTENT_TYPE)
             .header("Authorization", config.apiKey());
 
         if (body != null && !body.isEmpty()) {
@@ -83,26 +102,56 @@ public final class HttpClient {
         } else {
             builder.method("DELETE", HttpRequest.BodyPublishers.noBody());
         }
-        executeWithRetry(builder.build());
+        executeWithRetry(builder.build(), path);
     }
 
-    private String executeWithRetry(HttpRequest request) {
+    private String executeWithRetry(HttpRequest request, String resourcePath) {
         int attempts = 0;
         while (true) {
             attempts++;
+            long start = System.nanoTime();
             try {
                 HttpResponse<String> response = delegate.send(request, HttpResponse.BodyHandlers.ofString());
-                return handleResponse(response);
+                double durationMs = elapsedMs(start);
+                int status = response.statusCode();
+
+                instrumentation.publishRequest(new RequestEvent(
+                    method(request), resourcePath, status, attempts, durationMs));
+
+                String result;
+                try {
+                    result = handleResponse(response);
+                } catch (ClicksignException e) {
+                    instrumentation.publishError(new ErrorEvent(
+                        method(request), resourcePath, status, e, durationMs));
+                    throw e;
+                }
+                return result;
+
             } catch (IOException e) {
+                double durationMs = elapsedMs(start);
                 TimeoutException timeout = new TimeoutException(e.getMessage(), e);
-                if (attempts > config.maxRetries()) throw timeout;
-                sleepJitter(attempts);
+                if (attempts > config.maxRetries()) {
+                    instrumentation.publishError(new ErrorEvent(
+                        method(request), resourcePath, 0, timeout, durationMs));
+                    throw timeout;
+                }
+                long waitMs = sleepBeforeRetry(attempts, null);
+                instrumentation.publishRetry(new RetryEvent(
+                    method(request), resourcePath, attempts, config.maxRetries(), timeout, waitMs));
+
             } catch (ClicksignException e) {
                 if (!e.isRetryable() || attempts > config.maxRetries()) throw e;
-                sleepJitter(attempts);
+                long waitMs = sleepBeforeRetry(attempts, retryAfterSeconds(e));
+                instrumentation.publishRetry(new RetryEvent(
+                    method(request), resourcePath, attempts, config.maxRetries(), e, waitMs));
+
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new TimeoutException("Request interrupted", e);
+                TimeoutException timeout = new TimeoutException("Request interrupted", e);
+                instrumentation.publishError(new ErrorEvent(
+                    method(request), resourcePath, 0, timeout, elapsedMs(start)));
+                throw timeout;
             }
         }
     }
@@ -116,24 +165,35 @@ public final class HttpClient {
         String requestId = response.headers().firstValue("x-request-id").orElse(null);
         String body      = response.body();
         String message   = ErrorMessageExtractor.extract(body, response);
-        throw buildException(status, message, requestId, body);
+        Long retryAfter  = ErrorMessageExtractor.parseRetryAfter(response);
+        throw ErrorMessageExtractor.buildException(status, message, requestId, body, retryAfter);
     }
 
-    private ClicksignException buildException(int status, String message, String requestId, String body) {
-        if (status == 401 || status == 403) return new AuthenticationException(message, status, requestId, body);
-        if (status == 404)                  return new NotFoundException(message, status, requestId, body);
-        if (status == 400 || status == 422) return new ValidationException(message, status, requestId, body);
-        if (status == 409)                  return new ConflictException(message, status, requestId, body);
-        if (status == 429)                  return new RateLimitException(message, status, requestId, body);
-        if (status >= 500)                  return new ServerException(message, status, requestId, body);
-        return new ClicksignException(message, status, requestId, body);
+    private static Long retryAfterSeconds(ClicksignException e) {
+        if (e instanceof RateLimitException) return ((RateLimitException) e).retryAfterSeconds();
+        if (e instanceof ServiceUnavailableException) return ((ServiceUnavailableException) e).retryAfterSeconds();
+        return null;
+    }
+
+    /** Uses {@code Retry-After} when provided; otherwise full-jitter exponential backoff. */
+    private static long sleepBeforeRetry(int attempt, Long retryAfterSeconds) {
+        if (retryAfterSeconds != null && retryAfterSeconds > 0) {
+            long millis = retryAfterSeconds * 1000;
+            try {
+                Thread.sleep(millis);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return millis;
+        }
+        return sleepJitter(attempt);
     }
 
     private String buildUrl(String path, Map<String, String> params) {
         StringBuilder url = new StringBuilder(config.baseUrl()).append(path);
         if (params != null && !params.isEmpty()) {
             url.append('?');
-            params.forEach((k, v) -> url.append(encode(k)).append('=').append(encode(v)).append('&'));
+            params.forEach((k, v) -> { if (v != null) url.append(encode(k)).append('=').append(encode(v)).append('&'); });
             url.setLength(url.length() - 1);
         }
         return url.toString();
@@ -147,7 +207,16 @@ public final class HttpClient {
         }
     }
 
-    private static void sleepJitter(int attempt) {
+    private static double elapsedMs(long startNano) {
+        return (System.nanoTime() - startNano) / 1_000_000.0;
+    }
+
+    private static String method(HttpRequest request) {
+        return request.method().toLowerCase();
+    }
+
+    /** Sleeps with full jitter and returns actual wait time in milliseconds. */
+    private static long sleepJitter(int attempt) {
         double ceiling = Math.min(BACKOFF_BASE_SECONDS * Math.pow(2, attempt - 1), BACKOFF_CAP_SECONDS);
         long millis = (long) (ThreadLocalRandom.current().nextDouble() * ceiling * 1000);
         try {
@@ -155,5 +224,6 @@ public final class HttpClient {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+        return millis;
     }
 }
