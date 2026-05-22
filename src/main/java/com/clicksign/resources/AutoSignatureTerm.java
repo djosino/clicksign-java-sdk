@@ -31,30 +31,65 @@ public final class AutoSignatureTerm {
         this.modifiedAt    = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the email.
+     *
+     * @return email
+     */
     public String email() {
         return email;
     }
 
+    /**
+     * Returns the documentation.
+     *
+     * @return documentation
+     */
     public String documentation() {
         return documentation;
     }
 
+    /**
+     * Returns the birthday.
+     *
+     * @return birthday
+     */
     public String birthday() {
         return birthday;
     }
 
+    /**
+     * Returns the createdAt.
+     *
+     * @return createdAt
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modifiedAt.
+     *
+     * @return modifiedAt
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -70,20 +105,38 @@ public final class AutoSignatureTerm {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for AutoSignatureTerm operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/auto_signature/terms";
         private final HttpClient http;
 
+        /**
+         * Constructs service with the given HTTP client.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Retrieves AutoSignatureTerm by id.
+         *
+         * @param id resource id
+         * @return AutoSignatureTerm
+         */
         public AutoSignatureTerm retrieve(String id) {
             String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
             return new AutoSignatureTerm(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates AutoSignatureTerm.
+         *
+         * @param params creation parameters
+         * @return created AutoSignatureTerm
+         */
         public AutoSignatureTerm create(CreateParams params) {
             String body = JsonApiSerializer.dump("auto_signature_terms", null, params.toAttributes(), null);
             String raw  = http.post(ENDPOINT, body);
@@ -93,6 +146,7 @@ public final class AutoSignatureTerm {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating an AutoSignatureTerm. */
     public static final class CreateParams {
 
         private final String signerName;
@@ -125,10 +179,16 @@ public final class AutoSignatureTerm {
             return m;
         }
 
+        /**
+         * Returns a new {@link Builder} for CreateParams.
+         *
+         * @return builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String signerName;
             private String signerEmail;
@@ -139,6 +199,12 @@ public final class AutoSignatureTerm {
 
             private Builder() {}
 
+            /**
+             * Sets all signer fields from an {@link AutoSignatureSigner}.
+             *
+             * @param signer signer value object
+             * @return this
+             */
             public Builder signer(AutoSignatureSigner signer) {
                 return signerName(signer.name())
                     .signerEmail(signer.email())
@@ -146,36 +212,78 @@ public final class AutoSignatureTerm {
                     .signerBirthday(signer.birthday());
             }
 
+            /**
+             * Sets signerName.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder signerName(String v) {
                 this.signerName = v;
                 return this;
             }
 
+            /**
+             * Sets signerEmail.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder signerEmail(String v) {
                 this.signerEmail = v;
                 return this;
             }
 
+            /**
+             * Sets signerDocumentation.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder signerDocumentation(String v) {
                 this.signerDocumentation = v;
                 return this;
             }
 
+            /**
+             * Sets signerBirthday.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder signerBirthday(String v) {
                 this.signerBirthday = v;
                 return this;
             }
 
+            /**
+             * Sets apiEmail.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder apiEmail(String v) {
                 this.apiEmail = v;
                 return this;
             }
 
+            /**
+             * Sets adminEmail.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder adminEmail(String v) {
                 this.adminEmail = v;
                 return this;
             }
 
+            /**
+             * Builds params, validating required fields.
+             *
+             * @return new params
+             * @throws IllegalArgumentException if required field is missing
+             */
             public CreateParams build() {
                 if (signerName == null || signerName.isBlank()) {
                     throw new IllegalArgumentException("signerName is required");

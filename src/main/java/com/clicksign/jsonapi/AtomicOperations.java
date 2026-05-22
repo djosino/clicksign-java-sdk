@@ -20,6 +20,12 @@ public final class AtomicOperations {
 
     private final List<Map<String, Object>> entries = new ArrayList<>();
 
+    /**
+     * Adds an 'add' operation.
+     *
+     * @param data resource data map
+     * @return this
+     */
     public AtomicOperations add(Map<String, Object> data) {
         Map<String, Object> op = new LinkedHashMap<>();
         op.put("op", "add");
@@ -28,6 +34,12 @@ public final class AtomicOperations {
         return this;
     }
 
+    /**
+     * Adds a 'remove' operation.
+     *
+     * @param ref resource ref map
+     * @return this
+     */
     public AtomicOperations remove(Map<String, Object> ref) {
         Map<String, Object> op = new LinkedHashMap<>();
         op.put("op", "remove");
@@ -36,10 +48,20 @@ public final class AtomicOperations {
         return this;
     }
 
+    /**
+     * Returns the list of operations.
+     *
+     * @return unmodifiable list of operations
+     */
     public List<Map<String, Object>> entries() {
         return Collections.unmodifiableList(entries);
     }
 
+    /**
+     * Serializes operations to JSON:API atomic operations payload.
+     *
+     * @return JSON string
+     */
     public String toJson() {
         Map<String, Object> root = new LinkedHashMap<>();
         root.put("atomic:operations", entries);

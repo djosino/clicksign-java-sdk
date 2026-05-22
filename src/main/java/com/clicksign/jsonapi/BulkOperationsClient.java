@@ -30,6 +30,11 @@ public final class BulkOperationsClient {
     private final ClientConfig config;
     private final java.net.http.HttpClient delegate;
 
+    /**
+     * Constructs a BulkOperationsClient using the provided configuration.
+     *
+     * @param config client configuration (base URL, API key, timeouts, retries)
+     */
     public BulkOperationsClient(ClientConfig config) {
         this.config   = config;
         this.delegate = java.net.http.HttpClient.newBuilder()
@@ -37,6 +42,13 @@ public final class BulkOperationsClient {
             .build();
     }
 
+    /**
+     * Sends a POST request to the given path with the specified JSON body.
+     *
+     * @param path relative API path
+     * @param body JSON request body
+     * @return raw response body
+     */
     public String post(String path, String body) {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(config.baseUrl() + path))

@@ -21,14 +21,29 @@ public final class AccessControlList {
         this.groupId  = obj.relationshipId("group");
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the folderId.
+     *
+     * @return folderId
+     */
     public String folderId() {
         return folderId;
     }
 
+    /**
+     * Returns the groupId.
+     *
+     * @return groupId
+     */
     public String groupId() {
         return groupId;
     }
@@ -40,15 +55,28 @@ public final class AccessControlList {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for AccessControlList operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/access_control_lists";
         private final HttpClient http;
 
+        /**
+         * Constructs service with the given HTTP client.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Creates an AccessControlList linking a folder to a group.
+         *
+         * @param folderId folder resource id
+         * @param groupId group resource id
+         * @return created AccessControlList
+         */
         public AccessControlList create(String folderId, String groupId) {
             Map<String, Object> rels = buildRelationships(folderId, groupId);
             String body = JsonApiSerializer.dump("access_control_lists", null, Collections.emptyMap(), rels);
@@ -56,6 +84,12 @@ public final class AccessControlList {
             return new AccessControlList(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Destroys the AccessControlList for the given folder and group.
+         *
+         * @param folderId folder resource id
+         * @param groupId group resource id
+         */
         public void destroy(String folderId, String groupId) {
             Map<String, Object> rels = buildRelationships(folderId, groupId);
             String body = JsonApiSerializer.dump("access_control_lists", null, Collections.emptyMap(), rels);

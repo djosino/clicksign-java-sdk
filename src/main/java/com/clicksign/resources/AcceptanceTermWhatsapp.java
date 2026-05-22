@@ -31,6 +31,12 @@ public final class AcceptanceTermWhatsapp {
     private final String createdAt;
     private final String modifiedAt;
 
+    /**
+     * Constructs from a parsed JSON:API resource object.
+     *
+     * @param obj resource object
+     * @return new instance
+     */
     public static AcceptanceTermWhatsapp from(JsonApiParser.ResourceObject obj) {
         return new AcceptanceTermWhatsapp(obj);
     }
@@ -52,62 +58,137 @@ public final class AcceptanceTermWhatsapp {
         this.modifiedAt        = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the title.
+     *
+     * @return title
+     */
     public String title() {
         return title;
     }
 
+    /**
+     * Returns the message.
+     *
+     * @return message
+     */
     public String message() {
         return message;
     }
 
+    /**
+     * Returns the signerName.
+     *
+     * @return signerName
+     */
     public String signerName() {
         return signerName;
     }
 
+    /**
+     * Returns the signerPhone.
+     *
+     * @return signerPhone
+     */
     public String signerPhone() {
         return signerPhone;
     }
 
+    /**
+     * Returns the senderPhone.
+     *
+     * @return senderPhone
+     */
     public String senderPhone() {
         return senderPhone;
     }
 
+    /**
+     * Returns the senderNameOption.
+     *
+     * @return senderNameOption
+     */
     public String senderNameOption() {
         return senderNameOption;
     }
 
+    /**
+     * Returns the senderName.
+     *
+     * @return senderName
+     */
     public String senderName() {
         return senderName;
     }
 
+    /**
+     * Returns the status.
+     *
+     * @return status
+     */
     public String status() {
         return status;
     }
 
+    /**
+     * Returns the status as an {@link AcceptanceTermStatus} enum, or {@code null} if unrecognized.
+     *
+     * @return AcceptanceTermStatus enum or null
+     */
     public AcceptanceTermStatus statusAsEnum() {
         return ApiStringEnum.tryParse(AcceptanceTermStatus.class, status);
     }
 
+    /**
+     * Returns the senderNameOption as a {@link SenderNameOption} enum, or {@code null} if unrecognized.
+     *
+     * @return SenderNameOption enum or null
+     */
     public SenderNameOption senderNameOptionAsEnum() {
         return ApiStringEnum.tryParse(SenderNameOption.class, senderNameOption);
     }
 
+    /**
+     * Returns the statusFlow.
+     *
+     * @return statusFlow
+     */
     public String statusFlow() {
         return statusFlow;
     }
 
+    /**
+     * Returns the sentAt.
+     *
+     * @return sentAt
+     */
     public String sentAt() {
         return sentAt;
     }
 
+    /**
+     * Returns the createdAt.
+     *
+     * @return createdAt
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modifiedAt.
+     *
+     * @return modifiedAt
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -123,15 +204,26 @@ public final class AcceptanceTermWhatsapp {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for AcceptanceTermWhatsapp operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/acceptance_term/whatsapps";
         private final HttpClient http;
 
+        /**
+         * Constructs service with the given HTTP client.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all AcceptanceTermWhatsapp.
+         *
+         * @return list of AcceptanceTermWhatsapp
+         */
         public List<AcceptanceTermWhatsapp> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<AcceptanceTermWhatsapp> result = new ArrayList<>();
@@ -141,15 +233,32 @@ public final class AcceptanceTermWhatsapp {
             return Collections.unmodifiableList(result);
         }
 
+        /**
+         * Returns a fluent query builder.
+         *
+         * @return query builder
+         */
         public AcceptanceTermWhatsappQuery filter() {
             return new AcceptanceTermWhatsappQuery(http);
         }
 
+        /**
+         * Retrieves AcceptanceTermWhatsapp by id.
+         *
+         * @param id resource id
+         * @return AcceptanceTermWhatsapp
+         */
         public AcceptanceTermWhatsapp retrieve(String id) {
             String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
             return new AcceptanceTermWhatsapp(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates AcceptanceTermWhatsapp.
+         *
+         * @param params creation parameters
+         * @return created AcceptanceTermWhatsapp
+         */
         public AcceptanceTermWhatsapp create(CreateParams params) {
             String body = JsonApiSerializer.dump("acceptance_term_whatsapps", null, params.toAttributes(), null);
             String raw  = http.post(ENDPOINT, body);
@@ -169,6 +278,13 @@ public final class AcceptanceTermWhatsapp {
             return new AcceptanceTermWhatsapp(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Updates AcceptanceTermWhatsapp.
+         *
+         * @param id resource id
+         * @param params update parameters
+         * @return updated AcceptanceTermWhatsapp
+         */
         public AcceptanceTermWhatsapp update(String id, UpdateParams params) {
             String body = JsonApiSerializer.dump("acceptance_term_whatsapps", id, params.toAttributes(), null);
             String raw  = http.patch(ENDPOINT + "/" + id, body);
@@ -210,10 +326,16 @@ public final class AcceptanceTermWhatsapp {
             return m;
         }
 
+        /**
+         * Returns a new {@link Builder} for CreateParams.
+         *
+         * @return builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String title;
             private String senderNameOption;
@@ -224,40 +346,88 @@ public final class AcceptanceTermWhatsapp {
 
             private Builder() {}
 
+            /**
+             * Sets title.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder title(String v) {
                 this.title = v;
                 return this;
             }
 
+            /**
+             * Sets senderNameOption.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder senderNameOption(String v) {
                 this.senderNameOption = v;
                 return this;
             }
 
+            /**
+             * Sets senderNameOption.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder senderNameOption(SenderNameOption v) {
                 return senderNameOption(v.apiValue());
             }
 
+            /**
+             * Sets senderPhone.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder senderPhone(String v) {
                 this.senderPhone = v;
                 return this;
             }
 
+            /**
+             * Sets message.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder message(String v) {
                 this.message = v;
                 return this;
             }
 
+            /**
+             * Sets signerPhone.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder signerPhone(String v) {
                 this.signerPhone = v;
                 return this;
             }
 
+            /**
+             * Sets signerName.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder signerName(String v) {
                 this.signerName = v;
                 return this;
             }
 
+            /**
+             * Builds params, validating required fields.
+             *
+             * @return new params
+             * @throws IllegalArgumentException if required field is missing
+             */
             public CreateParams build() {
                 if (title == null || title.isBlank()) {
                     throw new IllegalArgumentException("title is required");
@@ -281,6 +451,7 @@ public final class AcceptanceTermWhatsapp {
 
     // ── UpdateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for updating an AcceptanceTermWhatsapp. */
     public static final class UpdateParams {
 
         private final String status;
@@ -297,24 +468,48 @@ public final class AcceptanceTermWhatsapp {
             return m;
         }
 
+        /**
+         * Returns a new {@link Builder} for UpdateParams.
+         *
+         * @return builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link UpdateParams}. */
         public static final class Builder {
             private String status;
 
             private Builder() {}
 
+            /**
+             * Sets status.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder status(String v) {
                 this.status = v;
                 return this;
             }
 
+            /**
+             * Sets status.
+             *
+             * @param v value
+             * @return this
+             */
             public Builder status(AcceptanceTermStatus v) {
                 return status(v.apiValue());
             }
 
+            /**
+             * Builds params, validating required fields.
+             *
+             * @return new params
+             * @throws IllegalArgumentException if required field is missing
+             */
             public UpdateParams build() {
                 if (status == null || status.isBlank()) {
                     throw new IllegalArgumentException("status is required");
