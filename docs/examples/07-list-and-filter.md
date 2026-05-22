@@ -18,10 +18,9 @@ ClicksignClient client = ClicksignClient.builder()
     .environment(Environment.SANDBOX)
     .build();
 
-// Uma página — status + nome + ordenação
+// Uma página — status + ordenação
 java.util.List<Envelope> page1 = client.envelopes().filter()
     .status(EnvelopeStatus.RUNNING)
-    .name("Contrato Q1")
     .order("-created")
     .page(1)
     .perPage(25)
@@ -32,11 +31,15 @@ java.util.List<Envelope> allRunning = client.envelopes().filter()
     .status(EnvelopeStatus.RUNNING)
     .fetchAll();
 
-// Documentos de um envelope
-java.util.List<com.clicksign.resources.notarial.Document> docs =
-    client.documents().filter("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
-        .status(DocumentStatus.DRAFT)
-        .fetch();
+// Documentos — use um envelopeId real da sua conta (listar antes evita 404)
+java.util.List<Envelope> sample = client.envelopes().filter().page(1).perPage(1).fetch();
+if (!sample.isEmpty()) {
+    String envelopeId = sample.get(0).id();
+    java.util.List<com.clicksign.resources.notarial.Document> docs =
+        client.documents().filter(envelopeId)
+            .status(DocumentStatus.DRAFT)
+            .fetch();
+}
 
 // Aceites WhatsApp
 java.util.List<com.clicksign.resources.AcceptanceTermWhatsapp> whatsapps =
@@ -73,6 +76,7 @@ client.envelopes().filter().filter("status", "running").fetch();
 
 ## Erros comuns
 
+- UUID placeholder (`aaaaaaaa-...`) em `documents().filter(envelopeId)` — **404** se o envelope não existir; liste envelopes e use `sample.get(0).id()`
 - `fetchAll()` em contas com milhões de registros sem filtro — pode ser lento; prefira filtros estreitos
 - Assumir ordem estável entre páginas sem `order()` explícito
 - Confundir `list()` (primeira página padrão da API) com `filter().fetchAll()` (todas as páginas)

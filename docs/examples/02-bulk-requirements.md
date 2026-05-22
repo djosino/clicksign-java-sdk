@@ -17,16 +17,18 @@ ClicksignClient client = ClicksignClient.builder()
     .environment(Environment.SANDBOX)
     .build();
 
-String envelopeId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
-String signerId   = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
-String documentId = "cccccccc-cccc-cccc-cccc-cccccccccccc";
+// Crie envelope, documento (content_url ou data URI em content_base64) e signatário reais
+// Ver examples/BulkRequirementsExample.java — usa content_url com PDF público
+String envelopeId = "...";
+String signerId   = "...";
+String documentId = "...";
 
 BulkRequirement.Response response = client.bulkRequirements().create(
     envelopeId,
     ops -> ops
         .addAgree(signerId, documentId, RequirementRole.SIGN)
         .addProvideEvidence(signerId, documentId, RequirementAuth.EMAIL)
-        .addRubricate(signerId, documentId, "1-3", null, RubricateKind.INITIALS.apiValue())
+        .addRubricate(signerId, documentId, "all", null, RubricateKind.INITIALS.apiValue())
 );
 
 if (response.isSuccess()) {
@@ -56,6 +58,10 @@ client.bulkRequirements().create(envelopeId,
 - Assumir exceção quando um slot falha — verifique `failures()`
 - Reenviar o lote inteiro após timeout sem checar o que já foi criado — bulk só retenta timeout, não 5xx
 - Omitir `documentId`/`signerId` nas operações `add` — relationships são obrigatórias
-- Ativar o envelope só com `addAgree` — antes de `update` com `status` `running` (ou `activate`), inclua também `addProvideEvidence` para o mesmo par signatário/documento
+- `pages` em rubrica: formato inválido (ex.: `"1-3"`) → 422; prefira `"all"` ou o formato documentado pela API
+- UUID placeholder → 404; o exemplo executável em `examples/` cria recursos no sandbox antes do bulk
+- Ativar o envelope só com `addAgree` — inclua também `addProvideEvidence` para o mesmo par signatário/documento
+
+Executável: `./gradlew :examples:runBulkRequirements` (requer `CLICKSIGN_API_KEY`).
 
 Arquitetura: [ARCHITECTURE.md](../ARCHITECTURE.md#operações-em-massa-bulk).
