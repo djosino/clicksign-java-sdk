@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MinimalJsonParserTest {
 
@@ -66,8 +68,8 @@ class MinimalJsonParserTest {
 
     @Test
     void parsesSingleResourceResponse() {
-        String json = "{\"data\":{\"id\":\"1\",\"type\":\"envelopes\"," +
-            "\"attributes\":{\"name\":\"Test\",\"status\":\"draft\"},\"relationships\":{}}}";
+        String json = "{\"data\":{\"id\":\"1\",\"type\":\"envelopes\","
+            + "\"attributes\":{\"name\":\"Test\",\"status\":\"draft\"},\"relationships\":{}}}";
         JsonApiParser.ParsedResponse parsed = JsonApiParser.parse(json);
         assertEquals(1, parsed.data().size());
         assertEquals("1", parsed.data().get(0).id());
@@ -76,10 +78,10 @@ class MinimalJsonParserTest {
 
     @Test
     void parsesCollectionResponse() {
-        String json = "{\"data\":[" +
-            "{\"id\":\"1\",\"type\":\"envelopes\",\"attributes\":{\"name\":\"A\"},\"relationships\":{}}," +
-            "{\"id\":\"2\",\"type\":\"envelopes\",\"attributes\":{\"name\":\"B\"},\"relationships\":{}}" +
-            "]}";
+        String json = "{\"data\":["
+            + "{\"id\":\"1\",\"type\":\"envelopes\",\"attributes\":{\"name\":\"A\"},\"relationships\":{}},"
+            + "{\"id\":\"2\",\"type\":\"envelopes\",\"attributes\":{\"name\":\"B\"},\"relationships\":{}}"
+            + "]}";
         JsonApiParser.ParsedResponse parsed = JsonApiParser.parse(json);
         assertEquals(2, parsed.data().size());
         assertEquals("A", parsed.data().get(0).attributes().get("name"));
@@ -113,9 +115,9 @@ class MinimalJsonParserTest {
 
     @Test
     void parsesRelationshipId() {
-        String json = "{\"data\":{\"id\":\"r1\",\"type\":\"requirements\"," +
-            "\"attributes\":{}," +
-            "\"relationships\":{\"envelope\":{\"data\":{\"type\":\"envelopes\",\"id\":\"env1\"}}}}}";
+        String json = "{\"data\":{\"id\":\"r1\",\"type\":\"requirements\","
+            + "\"attributes\":{},"
+            + "\"relationships\":{\"envelope\":{\"data\":{\"type\":\"envelopes\",\"id\":\"env1\"}}}}}";
         JsonApiParser.ParsedResponse parsed = JsonApiParser.parse(json);
         assertEquals("env1", parsed.data().get(0).relationshipId("envelope"));
     }
