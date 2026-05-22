@@ -8,14 +8,19 @@ import java.util.*;
  * <p>Handles the full JSON spec needed for JSON:API responses:
  * objects, arrays, strings (with escapes), numbers, booleans, null.
  */
-final class MinimalJsonParser {
+public final class MinimalJsonParser {
 
     private final String input;
     private int pos;
 
-    private MinimalJsonParser(String input) {
+    MinimalJsonParser(String input) {
         this.input = input;
         this.pos   = 0;
+    }
+
+    /** Parses a JSON object string and returns it as a Map. */
+    public static Map<String, Object> parseObject(String json) {
+        return new MinimalJsonParser(json).parseObject();
     }
 
     static JsonApiParser.ParsedResponse parseResponse(String json) {
@@ -167,8 +172,10 @@ final class MinimalJsonParser {
                input.charAt(pos) == 'E' || input.charAt(pos) == '+' ||
                input.charAt(pos) == '-')) pos++;
         String num = input.substring(start, pos);
-        return num.contains(".") || num.contains("e") || num.contains("E")
-            ? Double.parseDouble(num) : Long.parseLong(num);
+        if (num.contains(".") || num.contains("e") || num.contains("E")) {
+            return Double.parseDouble(num);
+        }
+        return Long.parseLong(num);
     }
 
     private void skipWhitespace() {

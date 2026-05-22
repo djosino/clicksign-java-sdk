@@ -28,7 +28,7 @@ public final class JsonApiSerializer {
     }
 
     @SuppressWarnings("unchecked")
-    static String toJson(Object value) {
+    public static String toJson(Object value) {
         if (value == null)              return "null";
         if (value instanceof String)    return quote((String) value);
         if (value instanceof Boolean)   return value.toString();
