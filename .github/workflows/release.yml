@@ -1,8 +1,8 @@
 # Release: push em release/<version> → validate → test → lint → publish → tag
 #
 # Secrets necessários (Settings → Secrets → Actions):
-#   OSSRH_USERNAME    — login do Sonatype Central Portal (https://s01.oss.sonatype.org)
-#   OSSRH_PASSWORD    — senha ou token do Sonatype
+#   CENTRAL_USERNAME  — token username do Sonatype Central Portal (central.sonatype.com → Account → Access Tokens)
+#   CENTRAL_PASSWORD  — token password do Sonatype Central Portal
 #   SIGNING_KEY       — chave GPG armored: gpg --armor --export-secret-keys <KEY_ID>
 #   SIGNING_PASSWORD  — passphrase da chave GPG
 
@@ -103,13 +103,27 @@ jobs:
         id: version
         run: echo "version=$(tr -d '[:space:]' < REVISION)" >> "$GITHUB_OUTPUT"
 
-      - name: Publish to Maven Central
+      - name: Publish to local staging directory
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+        run: ./gradlew publishMavenPublicationToLocalBundleRepository
+
+      - name: Create bundle ZIP
+        run: |
+          cd build/staging-deploy
+          zip -r ../../bundle.zip .
+
+      - name: Upload bundle to Maven Central
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+        run: |
+          response=$(curl --silent --show-error --fail \
+            -u "$CENTRAL_USERNAME:$CENTRAL_PASSWORD" \
+            -F "bundle=@bundle.zip" \
+            "https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC")
+          echo "Upload response: $response"
 
       - name: Tag release
         env:
