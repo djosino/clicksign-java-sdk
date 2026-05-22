@@ -11,28 +11,57 @@ Código Java espelhando o cookbook em [docs/examples/](../docs/examples/).
 | `ListAndFilterExample` | [07-list-and-filter.md](../docs/examples/07-list-and-filter.md) |
 | `ProductionLimitationsExample` | [08-production-limitations.md](../docs/examples/08-production-limitations.md) |
 
+## Variáveis de ambiente
+
+| Variável | Obrigatória | Padrão | Descrição |
+|----------|-------------|--------|-----------|
+| `CLICKSIGN_API_KEY` | Sim* | — | Access token da conta |
+| `CLICKSIGN_ENVIRONMENT` | Não | `sandbox` | `sandbox` ou `production` |
+
+\* `runWebhooks` não precisa de API key para os passos 1–2 (HMAC local). Passo 3 (criar webhook) é opcional.
+
+| Variável extra (`runWebhooks`) | Padrão | Descrição |
+|-------------------------------|--------|-----------|
+| `CLICKSIGN_WEBHOOK_SECRET` | `test-secret` | Secret usado no HMAC de demonstração |
+| `CLICKSIGN_WEBHOOK_BODY` | `{"event":"sign"}` | Payload bruto para validar |
+| `CLICKSIGN_REGISTER_WEBHOOK` | (off) | `true` tenta `webhooks().create()` — pode falhar se a conta não suporta `secret` |
+
+**Não é necessário passar parâmetros no Gradle** — só exportar as variáveis no mesmo shell:
+
+```bash
+export CLICKSIGN_API_KEY="seu-token-sandbox"
+export CLICKSIGN_ENVIRONMENT=sandbox   # opcional; já é o padrão
+
+./gradlew :examples:runRetries
+```
+
+Para produção:
+
+```bash
+export CLICKSIGN_API_KEY="token-producao"
+export CLICKSIGN_ENVIRONMENT=production
+./gradlew :examples:runRetries
+```
+
 ## Compilar (CI)
 
 ```bash
 ./gradlew :examples:compileJava
-# ou, com verificação completa do projeto:
-./gradlew check
 ```
 
-## Executar
-
-A maioria dos exemplos exige `CLICKSIGN_API_KEY` (sandbox ou produção).
+## Executar todos
 
 ```bash
 export CLICKSIGN_API_KEY=seu-token
 
-./gradlew :examples:runRetries
-./gradlew :examples:runBulkRequirements
-./gradlew :examples:runListAndFilter
-
-# Webhook (validação local, sem API key obrigatória):
 ./gradlew :examples:runWebhooks
-
-# Multi-tenant (só instancia clientes, sem chamada HTTP):
+# opcional: tentar criar webhook na API (pode retornar "secret não está disponível")
+# CLICKSIGN_REGISTER_WEBHOOK=true ./gradlew :examples:runWebhooks
 ./gradlew :examples:runMultiClient
+./gradlew :examples:runListAndFilter
+./gradlew :examples:runBulkRequirements
+./gradlew :examples:runRetries
+./gradlew :examples:runProductionLimitations
 ```
+
+Listar tarefas: `./gradlew tasks --group=examples`
