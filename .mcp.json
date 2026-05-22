@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "gradle": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "caveman-shrink",
+        "jbang",
+        "run",
+        "--quiet",
+        "gradle-mcp@rnett"
+      ],
+      "env": {
+        "GRADLE_MCP_PROJECT_ROOT": "${CLAUDE_PROJECT_DIR}"
+      }
+    }
+  }
+}
