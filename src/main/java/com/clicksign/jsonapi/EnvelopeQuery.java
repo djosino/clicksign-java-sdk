@@ -6,14 +6,31 @@ import com.clicksign.resources.types.EnvelopeStatus;
 /** Typed filters for {@code GET /envelopes}. */
 public final class EnvelopeQuery extends TypedResourceQuery<Envelope, EnvelopeQuery> {
 
+    /**
+     * Constructs this query.
+     *
+     * @param http HTTP client
+     */
     public EnvelopeQuery(com.clicksign.http.HttpClient http) {
         super("/envelopes", http, Envelope::from);
     }
 
+    /**
+     * Filters by envelope status.
+     *
+     * @param status envelope status
+     * @return this query
+     */
     public EnvelopeQuery status(EnvelopeStatus status) {
         return filter("status", status);
     }
 
+    /**
+     * Filters by envelope name.
+     *
+     * @param name envelope name
+     * @return this query
+     */
     public EnvelopeQuery name(String name) {
         return filter("name", name);
     }
@@ -48,6 +65,12 @@ public final class EnvelopeQuery extends TypedResourceQuery<Envelope, EnvelopeQu
         return filter("deadline_at", range);
     }
 
+    /**
+     * Orders results by name.
+     *
+     * @param descending true for descending order
+     * @return this query
+     */
     public EnvelopeQuery orderByName(boolean descending) {
         return order(descending ? "-name" : "name");
     }

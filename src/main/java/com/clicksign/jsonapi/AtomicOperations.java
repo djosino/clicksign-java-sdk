@@ -18,6 +18,9 @@ import java.util.Map;
  */
 public final class AtomicOperations {
 
+    /** Creates an empty operations builder. */
+    public AtomicOperations() {}
+
     private final List<Map<String, Object>> entries = new ArrayList<>();
 
     /**

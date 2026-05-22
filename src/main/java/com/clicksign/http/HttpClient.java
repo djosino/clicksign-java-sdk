@@ -35,6 +35,12 @@ public final class HttpClient {
     private final Instrumentation instrumentation;
     private final java.net.http.HttpClient delegate;
 
+    /**
+     * Constructs the HTTP client.
+     *
+     * @param config          client configuration
+     * @param instrumentation instrumentation registry
+     */
     public HttpClient(ClientConfig config, Instrumentation instrumentation) {
         this.config = config;
         this.instrumentation = instrumentation;
@@ -43,6 +49,13 @@ public final class HttpClient {
             .build();
     }
 
+    /**
+     * Performs a GET request.
+     *
+     * @param path   API path
+     * @param params query parameters
+     * @return response body
+     */
     public String get(String path, Map<String, String> params) {
         String url = buildUrl(path, params);
         HttpRequest request = HttpRequest.newBuilder()
@@ -56,6 +69,13 @@ public final class HttpClient {
         return executeWithRetry(request, path);
     }
 
+    /**
+     * Performs a POST request.
+     *
+     * @param path API path
+     * @param body request body
+     * @return response body
+     */
     public String post(String path, String body) {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(config.baseUrl() + path))
@@ -68,6 +88,13 @@ public final class HttpClient {
         return executeWithRetry(request, path);
     }
 
+    /**
+     * Performs a PATCH request.
+     *
+     * @param path API path
+     * @param body request body
+     * @return response body
+     */
     public String patch(String path, String body) {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(config.baseUrl() + path))
@@ -80,6 +107,13 @@ public final class HttpClient {
         return executeWithRetry(request, path);
     }
 
+    /**
+     * Performs a PUT request.
+     *
+     * @param path API path
+     * @param body request body
+     * @return response body
+     */
     public String put(String path, String body) {
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(config.baseUrl() + path))
@@ -92,6 +126,12 @@ public final class HttpClient {
         return executeWithRetry(request, path);
     }
 
+    /**
+     * Performs a DELETE request.
+     *
+     * @param path API path
+     * @param body optional request body
+     */
     public void delete(String path, String body) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
             .uri(URI.create(config.baseUrl() + path))

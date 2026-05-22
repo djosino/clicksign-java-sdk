@@ -22,18 +22,36 @@ public final class CommunicateEvents {
         this.documentSigned    = b.documentSigned;
     }
 
+    /**
+     * Returns the signature request.
+     *
+     * @return signature request
+     */
     public NotificationChannel signatureRequest() {
         return signatureRequest;
     }
 
+    /**
+     * Returns the signature reminder.
+     *
+     * @return signature reminder
+     */
     public NotificationChannel signatureReminder() {
         return signatureReminder;
     }
 
+    /**
+     * Returns the document signed.
+     *
+     * @return document signed
+     */
     public NotificationChannel documentSigned() {
         return documentSigned;
     }
 
+    /** Serializes to an API-compatible map.
+     * @return map representation
+     */
     public Map<String, Object> toMap() {
         Map<String, Object> m = new LinkedHashMap<>();
         if (signatureRequest  != null) {
@@ -48,6 +66,12 @@ public final class CommunicateEvents {
         return Collections.unmodifiableMap(m);
     }
 
+    /**
+     * Constructs from a raw API map.
+     *
+     * @param raw map from JSON:API attributes
+     * @return new instance, or {@code null} if the map is empty
+     */
     @SuppressWarnings("unchecked")
     public static CommunicateEvents fromMap(Map<String, Object> raw) {
         if (raw == null || raw.isEmpty()) {
@@ -69,10 +93,16 @@ public final class CommunicateEvents {
         return b.build();
     }
 
+    /**
+     * Returns a new builder.
+     *
+     * @return new builder
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /** Builder. */
     public static final class Builder {
         private NotificationChannel signatureRequest;
         private NotificationChannel signatureReminder;
@@ -80,21 +110,44 @@ public final class CommunicateEvents {
 
         private Builder() {}
 
+        /**
+         * Sets signature request.
+         *
+         * @param v value
+         * @return this builder
+         */
         public Builder signatureRequest(NotificationChannel v) {
             this.signatureRequest = v;
             return this;
         }
 
+        /**
+         * Sets signature reminder.
+         *
+         * @param v value
+         * @return this builder
+         */
         public Builder signatureReminder(NotificationChannel v) {
             this.signatureReminder = v;
             return this;
         }
 
+        /**
+         * Sets document signed.
+         *
+         * @param v value
+         * @return this builder
+         */
         public Builder documentSigned(NotificationChannel v) {
             this.documentSigned = v;
             return this;
         }
 
+        /**
+         * Returns the build.
+         *
+         * @return build
+         */
         public CommunicateEvents build() {
             if (signatureRequest == null && signatureReminder == null && documentSigned == null) {
                 throw new IllegalArgumentException("at least one channel is required");

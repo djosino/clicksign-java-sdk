@@ -30,26 +30,56 @@ public final class TemplateField {
         this.modifiedAt = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the kind.
+     *
+     * @return kind
+     */
     public String kind() {
         return kind;
     }
 
+    /**
+     * Returns the template id.
+     *
+     * @return template id
+     */
     public String templateId() {
         return templateId;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at timestamp.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -69,15 +99,26 @@ public final class TemplateField {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for TemplateField operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/template_fields";
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all resources.
+         *
+         * @return unmodifiable list
+         */
         public List<TemplateField> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<TemplateField> result = new ArrayList<>();
@@ -87,12 +128,24 @@ public final class TemplateField {
             return Collections.unmodifiableList(result);
         }
 
+        /**
+         * Updates resource.
+         *
+         * @param id     resource id
+         * @param params update parameters
+         * @return updated resource
+         */
         public TemplateField update(String id, UpdateParams params) {
             String body = JsonApiSerializer.dump("template_fields", id, params.toAttributes(), null);
             String raw  = http.patch(ENDPOINT + "/" + id, body);
             return new TemplateField(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Deletes resource by id.
+         *
+         * @param id resource id
+         */
         public void delete(String id) {
             http.delete(ENDPOINT + "/" + id, null);
         }
@@ -100,6 +153,7 @@ public final class TemplateField {
 
     // ── UpdateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for updating a template field. */
     public static final class UpdateParams {
 
         private final String name;
@@ -116,20 +170,37 @@ public final class TemplateField {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link UpdateParams}. */
         public static final class Builder {
             private String name;
 
             private Builder() {}
 
+            /**
+             * Sets name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder name(String v) {
                 this.name = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             */
             public UpdateParams build() {
                 return new UpdateParams(this);
             }

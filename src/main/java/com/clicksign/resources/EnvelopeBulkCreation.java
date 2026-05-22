@@ -24,14 +24,29 @@ public final class EnvelopeBulkCreation {
         this.enqueuedAt  = str(a.get("enqueued_at"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the job id.
+     *
+     * @return job id
+     */
     public String jobId() {
         return jobId;
     }
 
+    /**
+     * Returns the enqueued at timestamp.
+     *
+     * @return enqueued at
+     */
     public String enqueuedAt() {
         return enqueuedAt;
     }
@@ -47,15 +62,27 @@ public final class EnvelopeBulkCreation {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for EnvelopeBulkCreation operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/envelope_bulk_creations";
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public EnvelopeBulkCreation create(CreateParams params) {
             String body = JsonApiSerializer.dump("envelope_bulk_creations", null, params.toAttributes(), null);
             String raw  = http.post(ENDPOINT, body);
@@ -65,6 +92,7 @@ public final class EnvelopeBulkCreation {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating an envelope bulk creation job. */
     public static final class CreateParams {
 
         private final Map<String, Object> envelope;
@@ -85,10 +113,16 @@ public final class EnvelopeBulkCreation {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private Map<String, Object> envelope;
             private Map<String, Object> document;
@@ -96,26 +130,56 @@ public final class EnvelopeBulkCreation {
 
             private Builder() {}
 
+            /**
+             * Sets envelope attributes.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder envelope(Map<String, Object> v) {
                 this.envelope = v;
                 return this;
             }
 
+            /**
+             * Sets document attributes.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder document(Map<String, Object> v) {
                 this.document = v;
                 return this;
             }
 
+            /**
+             * Sets the signers list.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder signers(List<Map<String, Object>> v) {
                 this.signers = new ArrayList<>(v);
                 return this;
             }
 
+            /**
+             * Adds a signer to the list.
+             *
+             * @param v signer attributes
+             * @return this builder
+             */
             public Builder addSigner(Map<String, Object> v) {
                 this.signers.add(v);
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (envelope == null) {
                     throw new IllegalArgumentException("envelope is required");

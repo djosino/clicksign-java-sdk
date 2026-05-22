@@ -48,8 +48,13 @@ public final class Envelope {
     private final String createdAt;
     private final String modifiedAt;
 
+    /**
+     * Constructs from a JSON:API resource object.
+     *
+     * @param obj resource object
+     * @return new instance
+     */
     @SuppressWarnings("unchecked")
-    /** Parses a JSON:API resource object (used by {@link com.clicksign.jsonapi.EnvelopeQuery}). */
     public static Envelope from(JsonApiParser.ResourceObject obj) {
         return new Envelope(obj);
     }
@@ -73,78 +78,173 @@ public final class Envelope {
         this.modifiedAt                    = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the status.
+     *
+     * @return status
+     */
     public String status() {
         return status;
     }
 
+    /**
+     * Returns the locale.
+     *
+     * @return locale
+     */
     public String locale() {
         return locale;
     }
 
+    /**
+     * Returns whether the envelope auto-closes.
+     *
+     * @return auto-close flag
+     */
     public boolean autoClose() {
         return autoClose;
     }
 
+    /**
+     * Returns whether the envelope blocks after refusal.
+     *
+     * @return block-after-refusal flag
+     */
     public boolean blockAfterRefusal() {
         return blockAfterRefusal;
     }
 
+    /**
+     * Returns the metadata map.
+     *
+     * @return metadata map
+     */
     public Map<String, Object> metadata() {
         return metadata;
     }
 
+    /**
+     * Returns the metadata typed.
+     *
+     * @return metadata typed
+     */
     public Metadata metadataTyped() {
         return Metadata.fromMap(metadata);
     }
 
+    /**
+     * Returns the status as an enum.
+     *
+     * @return status enum
+     */
     public EnvelopeStatus statusAsEnum() {
         return ApiStringEnum.tryParse(EnvelopeStatus.class, status);
     }
 
+    /**
+     * Returns the locale as an enum.
+     *
+     * @return locale enum
+     */
     public EnvelopeLocale localeAsEnum() {
         return ApiStringEnum.tryParse(EnvelopeLocale.class, locale);
     }
 
+    /**
+     * Returns the deadline partial signature action as an enum.
+     *
+     * @return action enum
+     */
     public DeadlinePartialSignatureAction deadlinePartialSignatureActionAsEnum() {
         return ApiStringEnum.tryParse(DeadlinePartialSignatureAction.class, deadlinePartialSignatureAction);
     }
 
+    /**
+     * Returns the remind interval.
+     *
+     * @return remind interval
+     */
     public Integer remindInterval() {
         return remindInterval;
     }
 
+    /**
+     * Returns the deadline at.
+     *
+     * @return deadline at
+     */
     public String deadlineAt() {
         return deadlineAt;
     }
 
+    /**
+     * Returns the deadline partial signature action.
+     *
+     * @return deadline partial signature action
+     */
     public String deadlinePartialSignatureAction() {
         return deadlinePartialSignatureAction;
     }
 
+    /**
+     * Returns the default subject.
+     *
+     * @return default subject
+     */
     public String defaultSubject() {
         return defaultSubject;
     }
 
+    /**
+     * Returns the default message.
+     *
+     * @return default message
+     */
     public String defaultMessage() {
         return defaultMessage;
     }
 
+    /**
+     * Returns the folder id.
+     *
+     * @return folder id
+     */
     public String folderId() {
         return folderId;
     }
 
+    /**
+     * Returns the created at.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -186,15 +286,26 @@ public final class Envelope {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for Envelope operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/envelopes";
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all resources.
+         *
+         * @return unmodifiable list
+         */
         public List<Envelope> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Envelope> result = new ArrayList<>();
@@ -213,27 +324,57 @@ public final class Envelope {
             return new EnvelopeQuery(http);
         }
 
+        /**
+         * Retrieves resource by id.
+         *
+         * @param id resource id
+         * @return resource
+         */
         public Envelope retrieve(String id) {
             String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
             return new Envelope(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public Envelope create(CreateParams params) {
             String body = JsonApiSerializer.dump("envelopes", null, params.toAttributes(), params.toRelationships());
             String raw  = http.post(ENDPOINT, body);
             return new Envelope(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Updates resource.
+         *
+         * @param id resource id
+         * @param params update parameters
+         * @return updated resource
+         */
         public Envelope update(String id, UpdateParams params) {
             String body = JsonApiSerializer.dump("envelopes", id, params.toAttributes(), null);
             String raw  = http.patch(ENDPOINT + "/" + id, body);
             return new Envelope(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Deletes resource by id.
+         *
+         * @param id resource id
+         */
         public void delete(String id) {
             http.delete(ENDPOINT + "/" + id, null);
         }
 
+        /**
+         * Activates an envelope.
+         *
+         * @param id envelope id
+         * @return updated envelope
+         */
         public Envelope activate(String id) {
             String body = JsonApiSerializer.dump("envelopes", id, Collections.emptyMap(), null);
             String raw  = http.post(ENDPOINT + "/" + id + "/activate", body);
@@ -257,6 +398,7 @@ public final class Envelope {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating an envelope. */
     public static final class CreateParams {
 
         private final String name;
@@ -335,10 +477,16 @@ public final class Envelope {
             return rels;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String name;
             private String locale;
@@ -354,73 +502,163 @@ public final class Envelope {
 
             private Builder() {}
 
+            /**
+             * Sets name.
+             *
+             * @param name value
+             * @return this builder
+             */
             public Builder name(String name) {
                 this.name = name;
                 return this;
             }
 
+            /**
+             * Sets locale.
+             *
+             * @param locale value
+             * @return this builder
+             */
             public Builder locale(String locale) {
                 this.locale = locale;
                 return this;
             }
 
+            /**
+             * Sets locale.
+             *
+             * @param locale value
+             * @return this builder
+             */
             public Builder locale(EnvelopeLocale locale) {
                 return locale(locale.apiValue());
             }
 
+            /**
+             * Sets auto-close flag.
+             *
+             * @param autoClose value
+             * @return this builder
+             */
             public Builder autoClose(boolean autoClose) {
                 this.autoClose = autoClose;
                 return this;
             }
 
+            /**
+             * Sets block-after-refusal flag.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder blockAfterRefusal(boolean v) {
                 this.blockAfterRefusal = v;
                 return this;
             }
 
+            /**
+             * Sets remind interval in days.
+             *
+             * @param days value
+             * @return this builder
+             */
             public Builder remindInterval(int days) {
                 this.remindInterval = days;
                 return this;
             }
 
+            /**
+             * Sets metadata.
+             *
+             * @param metadata value
+             * @return this builder
+             */
             public Builder metadata(Map<String, Object> metadata) {
                 this.metadata = metadata;
                 return this;
             }
 
+            /**
+             * Sets metadata.
+             *
+             * @param metadata value
+             * @return this builder
+             */
             public Builder metadata(Metadata metadata) {
                 return metadata(metadata != null ? metadata.toMap() : null);
             }
 
+            /**
+             * Sets deadline at.
+             *
+             * @param deadlineAt value
+             * @return this builder
+             */
             public Builder deadlineAt(String deadlineAt) {
                 this.deadlineAt = deadlineAt;
                 return this;
             }
 
+            /**
+             * Sets deadline partial signature action.
+             *
+             * @param action value
+             * @return this builder
+             */
             public Builder deadlinePartialSignatureAction(String action) {
                 this.deadlinePartialSignatureAction = action;
                 return this;
             }
 
+            /**
+             * Sets deadline partial signature action.
+             *
+             * @param action value
+             * @return this builder
+             */
             public Builder deadlinePartialSignatureAction(DeadlinePartialSignatureAction action) {
                 return deadlinePartialSignatureAction(action.apiValue());
             }
 
+            /**
+             * Sets default subject.
+             *
+             * @param subject value
+             * @return this builder
+             */
             public Builder defaultSubject(String subject) {
                 this.defaultSubject = subject;
                 return this;
             }
 
+            /**
+             * Sets default message.
+             *
+             * @param message value
+             * @return this builder
+             */
             public Builder defaultMessage(String message) {
                 this.defaultMessage = message;
                 return this;
             }
 
+            /**
+             * Sets folder id.
+             *
+             * @param folderId value
+             * @return this builder
+             */
             public Builder folderId(String folderId) {
                 this.folderId = folderId;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (name == null || name.isBlank()) {
                     throw new IllegalArgumentException("name is required");
@@ -434,6 +672,7 @@ public final class Envelope {
 
     // ── UpdateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for updating an envelope. */
     public static final class UpdateParams {
 
         private final String name;
@@ -501,10 +740,16 @@ public final class Envelope {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link UpdateParams}. */
         public static final class Builder {
             private String name;
             private String status;
@@ -520,77 +765,173 @@ public final class Envelope {
 
             private Builder() {}
 
+            /**
+             * Sets name.
+             *
+             * @param name value
+             * @return this builder
+             */
             public Builder name(String name) {
                 this.name = name;
                 return this;
             }
 
+            /**
+             * Sets status.
+             *
+             * @param status value
+             * @return this builder
+             */
             public Builder status(String status) {
                 this.status = status;
                 return this;
             }
 
+            /**
+             * Sets status.
+             *
+             * @param status value
+             * @return this builder
+             */
             public Builder status(EnvelopeStatus status) {
                 return status(status.apiValue());
             }
 
+            /**
+             * Sets locale.
+             *
+             * @param locale value
+             * @return this builder
+             */
             public Builder locale(String locale) {
                 this.locale = locale;
                 return this;
             }
 
+            /**
+             * Sets locale.
+             *
+             * @param locale value
+             * @return this builder
+             */
             public Builder locale(EnvelopeLocale locale) {
                 return locale(locale.apiValue());
             }
 
+            /**
+             * Sets auto-close flag.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder autoClose(boolean v) {
                 this.autoClose = v;
                 return this;
             }
 
+            /**
+             * Sets block-after-refusal flag.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder blockAfterRefusal(boolean v) {
                 this.blockAfterRefusal = v;
                 return this;
             }
 
+            /**
+             * Sets remind interval in days.
+             *
+             * @param days value
+             * @return this builder
+             */
             public Builder remindInterval(int days) {
                 this.remindInterval = days;
                 return this;
             }
 
+            /**
+             * Sets metadata.
+             *
+             * @param metadata value
+             * @return this builder
+             */
             public Builder metadata(Map<String, Object> metadata) {
                 this.metadata = metadata;
                 return this;
             }
 
+            /**
+             * Sets metadata.
+             *
+             * @param metadata value
+             * @return this builder
+             */
             public Builder metadata(Metadata metadata) {
                 return metadata(metadata != null ? metadata.toMap() : null);
             }
 
+            /**
+             * Sets deadline at.
+             *
+             * @param deadlineAt value
+             * @return this builder
+             */
             public Builder deadlineAt(String deadlineAt) {
                 this.deadlineAt = deadlineAt;
                 return this;
             }
 
+            /**
+             * Sets deadline partial signature action.
+             *
+             * @param action value
+             * @return this builder
+             */
             public Builder deadlinePartialSignatureAction(String action) {
                 this.deadlinePartialSignatureAction = action;
                 return this;
             }
 
+            /**
+             * Sets deadline partial signature action.
+             *
+             * @param action value
+             * @return this builder
+             */
             public Builder deadlinePartialSignatureAction(DeadlinePartialSignatureAction action) {
                 return deadlinePartialSignatureAction(action.apiValue());
             }
 
+            /**
+             * Sets default subject.
+             *
+             * @param subject value
+             * @return this builder
+             */
             public Builder defaultSubject(String subject) {
                 this.defaultSubject = subject;
                 return this;
             }
 
+            /**
+             * Sets default message.
+             *
+             * @param message value
+             * @return this builder
+             */
             public Builder defaultMessage(String message) {
                 this.defaultMessage = message;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public UpdateParams build() {
                 EnvelopeValidation.validateOptionalFields(
                     locale, remindInterval, deadlineAt, deadlinePartialSignatureAction, defaultSubject);

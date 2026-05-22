@@ -30,6 +30,13 @@ public final class Signer {
     private final String createdAt;
     private final String modifiedAt;
 
+    /**
+     * Constructs from a JSON:API resource object.
+     *
+     * @param obj              resource object
+     * @param parentEnvelopeId envelope id
+     * @return new instance
+     */
     @SuppressWarnings("unchecked")
     public static Signer from(JsonApiParser.ResourceObject obj, String parentEnvelopeId) {
         return new Signer(obj, parentEnvelopeId);
@@ -54,46 +61,101 @@ public final class Signer {
         this.modifiedAt              = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the email.
+     *
+     * @return email
+     */
     public String email() {
         return email;
     }
 
+    /**
+     * Returns the phone number.
+     *
+     * @return phone number
+     */
     public String phoneNumber() {
         return phoneNumber;
     }
 
+    /**
+     * Returns the birthday.
+     *
+     * @return birthday
+     */
     public String birthday() {
         return birthday;
     }
 
+    /**
+     * Returns whether the signer can refuse.
+     *
+     * @return refusable flag
+     */
     public boolean refusable() {
         return refusable;
     }
 
+    /**
+     * Returns whether location is required.
+     *
+     * @return location required enabled flag
+     */
     public boolean locationRequiredEnabled() {
         return locationRequiredEnabled;
     }
 
+    /**
+     * Returns whether the signer has documentation.
+     *
+     * @return has documentation flag
+     */
     public boolean hasDocumentation() {
         return hasDocumentation;
     }
 
+    /**
+     * Returns the documentation.
+     *
+     * @return documentation
+     */
     public String documentation() {
         return documentation;
     }
 
+    /**
+     * Returns the signature host.
+     *
+     * @return signature host
+     */
     public SignatureHost signatureHost() {
         return signatureHost;
     }
 
+    /**
+     * Returns the communicate events map.
+     *
+     * @return communicate events map
+     */
     public Map<String, Object> communicateEvents() {
         return communicateEvents;
     }
@@ -107,18 +169,38 @@ public final class Signer {
         return CommunicateEvents.fromMap(communicateEvents);
     }
 
+    /**
+     * Returns the group number.
+     *
+     * @return group
+     */
     public Integer group() {
         return group;
     }
 
+    /**
+     * Returns the envelope id.
+     *
+     * @return envelope id
+     */
     public String envelopeId() {
         return envelopeId;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at timestamp.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -177,6 +259,13 @@ public final class Signer {
         private final String email;
         private final Map<String, Object> communicateEvents;
 
+        /**
+         * Constructs a signature host.
+         *
+         * @param name              host name
+         * @param email             host email
+         * @param communicateEvents communicate events map
+         */
         public SignatureHost(String name, String email, Map<String, Object> communicateEvents) {
             this.name = name;
             this.email = email;
@@ -184,18 +273,40 @@ public final class Signer {
                 ? Collections.unmodifiableMap(new LinkedHashMap<>(communicateEvents)) : null;
         }
 
+        /**
+         * Constructs a signature host.
+         *
+         * @param name              host name
+         * @param email             host email
+         * @param communicateEvents communicate events configuration
+         */
         public SignatureHost(String name, String email, CommunicateEvents communicateEvents) {
             this(name, email, communicateEvents != null ? communicateEvents.toMap() : null);
         }
 
+        /**
+         * Returns the name.
+         *
+         * @return name
+         */
         public String name() {
             return name;
         }
 
+        /**
+         * Returns the email.
+         *
+         * @return email
+         */
         public String email() {
             return email;
         }
 
+        /**
+         * Returns the communicate events map.
+         *
+         * @return communicate events map
+         */
         public Map<String, Object> communicateEvents() {
             return communicateEvents;
         }
@@ -217,14 +328,26 @@ public final class Signer {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for Signer operations. */
     public static final class Service {
 
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all resources for the given envelope.
+         *
+         * @param envelopeId envelope id
+         * @return unmodifiable list
+         */
         public List<Signer> list(String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/signers", Collections.emptyMap());
             List<Signer> result = new ArrayList<>();
@@ -244,21 +367,47 @@ public final class Signer {
             return new SignerQuery(envelopeId, http);
         }
 
+        /**
+         * Retrieves resource by id.
+         *
+         * @param id         resource id
+         * @param envelopeId envelope id
+         * @return resource
+         */
         public Signer retrieve(String id, String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/signers/" + id, Collections.emptyMap());
             return new Signer(JsonApiParser.parse(raw).firstData(), envelopeId);
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public Signer create(CreateParams params) {
             String body = JsonApiSerializer.dump("signers", null, params.toAttributes(), null);
             String raw  = http.post("/envelopes/" + params.envelopeId + "/signers", body);
             return new Signer(JsonApiParser.parse(raw).firstData(), params.envelopeId);
         }
 
+        /**
+         * Deletes resource by id.
+         *
+         * @param id         resource id
+         * @param envelopeId envelope id
+         */
         public void delete(String id, String envelopeId) {
             http.delete("/envelopes/" + envelopeId + "/signers/" + id, null);
         }
 
+        /**
+         * Sends a notification to a signer.
+         *
+         * @param id         signer id
+         * @param envelopeId envelope id
+         * @param params     notification parameters
+         */
         public void notify(String id, String envelopeId, NotificationParams params) {
             String body = JsonApiSerializer.dump("notifications", null, params.toAttributes(), null);
             http.post("/envelopes/" + envelopeId + "/signers/" + id + "/notifications", body);
@@ -267,6 +416,7 @@ public final class Signer {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a signer. */
     public static final class CreateParams {
 
         final String envelopeId;
@@ -336,10 +486,16 @@ public final class Signer {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String envelopeId;
             private String name;
@@ -356,70 +512,154 @@ public final class Signer {
 
             private Builder() {}
 
+            /**
+             * Sets envelope id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder envelopeId(String v) {
                 this.envelopeId = v;
                 return this;
             }
 
+            /**
+             * Sets name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder name(String v) {
                 this.name = v;
                 return this;
             }
 
+            /**
+             * Sets email.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder email(String v) {
                 this.email = v;
                 return this;
             }
 
+            /**
+             * Sets phone number.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder phoneNumber(String v) {
                 this.phoneNumber = v;
                 return this;
             }
 
+            /**
+             * Sets birthday.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder birthday(String v) {
                 this.birthday = v;
                 return this;
             }
 
+            /**
+             * Sets refusable flag.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder refusable(boolean v) {
                 this.refusable = v;
                 return this;
             }
 
+            /**
+             * Sets location required enabled flag.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder locationRequiredEnabled(boolean v) {
                 this.locationRequiredEnabled = v;
                 return this;
             }
 
+            /**
+             * Sets has documentation flag.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder hasDocumentation(boolean v) {
                 this.hasDocumentation = v;
                 return this;
             }
 
+            /**
+             * Sets documentation.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder documentation(String v) {
                 this.documentation = v;
                 return this;
             }
 
+            /**
+             * Sets signature host.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder signatureHost(SignatureHost v) {
                 this.signatureHost = v;
                 return this;
             }
 
+            /**
+             * Sets communicate events.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder communicateEvents(Map<String, Object> v) {
                 this.communicateEvents = v;
                 return this;
             }
 
+            /**
+             * Sets communicate events.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder communicateEvents(CommunicateEvents v) {
                 return communicateEvents(v != null ? v.toMap() : null);
             }
 
+            /**
+             * Sets group number.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder group(int v) {
                 this.group = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (envelopeId == null || envelopeId.isBlank()) {
                     throw new IllegalArgumentException("envelopeId is required");

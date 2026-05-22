@@ -32,6 +32,13 @@ public final class Requirement {
     private final String createdAt;
     private final String modifiedAt;
 
+    /**
+     * Constructs from a JSON:API resource object.
+     *
+     * @param obj              resource object
+     * @param parentEnvelopeId envelope id
+     * @return new instance
+     */
     public static Requirement from(JsonApiParser.ResourceObject obj, String parentEnvelopeId) {
         return new Requirement(obj, parentEnvelopeId);
     }
@@ -52,66 +59,146 @@ public final class Requirement {
         this.modifiedAt  = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the action.
+     *
+     * @return action
+     */
     public String action() {
         return action;
     }
 
+    /**
+     * Returns the role.
+     *
+     * @return role
+     */
     public String role() {
         return role;
     }
 
+    /**
+     * Returns the auth method.
+     *
+     * @return auth
+     */
     public String auth() {
         return auth;
     }
 
+    /**
+     * Returns the pages.
+     *
+     * @return pages
+     */
     public String pages() {
         return pages;
     }
 
+    /**
+     * Returns the kind.
+     *
+     * @return kind
+     */
     public String kind() {
         return kind;
     }
 
+    /**
+     * Returns the rubric field.
+     *
+     * @return rubric field
+     */
     public String rubricField() {
         return rubricField;
     }
 
+    /**
+     * Returns the envelope id.
+     *
+     * @return envelope id
+     */
     public String envelopeId() {
         return envelopeId;
     }
 
+    /**
+     * Returns the document id.
+     *
+     * @return document id
+     */
     public String documentId() {
         return documentId;
     }
 
+    /**
+     * Returns the signer id.
+     *
+     * @return signer id
+     */
     public String signerId() {
         return signerId;
     }
 
+    /**
+     * Returns the action as an enum.
+     *
+     * @return action enum
+     */
     public RequirementAction actionAsEnum() {
         return ApiStringEnum.tryParse(RequirementAction.class, action);
     }
 
+    /**
+     * Returns the role as an enum.
+     *
+     * @return role enum
+     */
     public RequirementRole roleAsEnum() {
         return ApiStringEnum.tryParse(RequirementRole.class, role);
     }
 
+    /**
+     * Returns the auth method as an enum.
+     *
+     * @return auth enum
+     */
     public RequirementAuth authAsEnum() {
         return ApiStringEnum.tryParse(RequirementAuth.class, auth);
     }
 
+    /**
+     * Returns the kind as an enum.
+     *
+     * @return kind enum
+     */
     public RubricateKind kindAsEnum() {
         return ApiStringEnum.tryParse(RubricateKind.class, kind);
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at timestamp.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -131,35 +218,74 @@ public final class Requirement {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for Requirement operations. */
     public static final class Service {
 
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Retrieves resource by id.
+         *
+         * @param id         resource id
+         * @param envelopeId envelope id
+         * @return resource
+         */
         public Requirement retrieve(String id, String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/requirements/" + id, Collections.emptyMap());
             return new Requirement(JsonApiParser.parse(raw).firstData(), envelopeId);
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public Requirement create(CreateParams params) {
             String body = JsonApiSerializer.dump("requirements", null, params.toAttributes(), params.toRelationships());
             String raw  = http.post("/envelopes/" + params.envelopeId + "/requirements", body);
             return new Requirement(JsonApiParser.parse(raw).firstData(), params.envelopeId);
         }
 
+        /**
+         * Updates resource.
+         *
+         * @param id         resource id
+         * @param envelopeId envelope id
+         * @param params     update parameters
+         * @return updated resource
+         */
         public Requirement update(String id, String envelopeId, UpdateParams params) {
             String body = JsonApiSerializer.dump("requirements", id, params.toAttributes(), null);
             String raw  = http.patch("/envelopes/" + envelopeId + "/requirements/" + id, body);
             return new Requirement(JsonApiParser.parse(raw).firstData(), envelopeId);
         }
 
+        /**
+         * Deletes resource by id.
+         *
+         * @param id         resource id
+         * @param envelopeId envelope id
+         */
         public void delete(String id, String envelopeId) {
             http.delete("/envelopes/" + envelopeId + "/requirements/" + id, null);
         }
 
+        /**
+         * Lists all resources for the given envelope.
+         *
+         * @param envelopeId envelope id
+         * @return unmodifiable list
+         */
         public List<Requirement> list(String envelopeId) {
             String raw = http.get("/envelopes/" + envelopeId + "/requirements", Collections.emptyMap());
             List<Requirement> result = new ArrayList<>();
@@ -182,6 +308,7 @@ public final class Requirement {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a requirement. */
     public static final class CreateParams {
 
         final String envelopeId;
@@ -248,10 +375,16 @@ public final class Requirement {
             return rels;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String envelopeId;
             private String action;
@@ -265,67 +398,151 @@ public final class Requirement {
 
             private Builder() {}
 
+            /**
+             * Sets envelope id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder envelopeId(String v) {
                 this.envelopeId = v;
                 return this;
             }
 
+            /**
+             * Sets action.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder action(String v) {
                 this.action = v;
                 return this;
             }
 
+            /**
+             * Sets action.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder action(RequirementAction v) {
                 return action(v.apiValue());
             }
 
+            /**
+             * Sets role.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder role(String v) {
                 this.role = v;
                 return this;
             }
 
+            /**
+             * Sets role.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder role(RequirementRole v) {
                 return role(v.apiValue());
             }
 
+            /**
+             * Sets auth method.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder auth(String v) {
                 this.auth = v;
                 return this;
             }
 
+            /**
+             * Sets auth method.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder auth(RequirementAuth v) {
                 return auth(v.apiValue());
             }
 
+            /**
+             * Sets pages.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder pages(String v) {
                 this.pages = v;
                 return this;
             }
 
+            /**
+             * Sets kind.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder kind(String v) {
                 this.kind = v;
                 return this;
             }
 
+            /**
+             * Sets kind.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder kind(RubricateKind v) {
                 return kind(v.apiValue());
             }
 
+            /**
+             * Sets rubric field.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder rubricField(String v) {
                 this.rubricField = v;
                 return this;
             }
 
+            /**
+             * Sets document id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder documentId(String v) {
                 this.documentId = v;
                 return this;
             }
 
+            /**
+             * Sets signer id.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder signerId(String v) {
                 this.signerId = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (envelopeId == null || envelopeId.isBlank()) {
                     throw new IllegalArgumentException("envelopeId is required");
@@ -346,6 +563,7 @@ public final class Requirement {
 
     // ── UpdateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for updating a requirement. */
     public static final class UpdateParams {
 
         private final String action;
@@ -372,10 +590,16 @@ public final class Requirement {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link UpdateParams}. */
         public static final class Builder {
             private String action;
             private String role;
@@ -383,33 +607,74 @@ public final class Requirement {
 
             private Builder() {}
 
+            /**
+             * Sets action.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder action(String v) {
                 this.action = v;
                 return this;
             }
 
+            /**
+             * Sets action.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder action(RequirementAction v) {
                 return action(v.apiValue());
             }
 
+            /**
+             * Sets role.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder role(String v) {
                 this.role = v;
                 return this;
             }
 
+            /**
+             * Sets role.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder role(RequirementRole v) {
                 return role(v.apiValue());
             }
 
+            /**
+             * Sets auth method.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder auth(String v) {
                 this.auth = v;
                 return this;
             }
 
+            /**
+             * Sets auth method.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder auth(RequirementAuth v) {
                 return auth(v.apiValue());
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             */
             public UpdateParams build() {
                 return new UpdateParams(this);
             }

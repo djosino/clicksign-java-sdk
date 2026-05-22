@@ -14,6 +14,12 @@ public final class JsonApiParser {
 
     private JsonApiParser() {}
 
+    /**
+     * Parses a JSON:API response string.
+     *
+     * @param json JSON string
+     * @return parsed response
+     */
     public static ParsedResponse parse(String json) {
         if (json == null || json.isBlank()) {
             return new ParsedResponse(Collections.emptyList(), Collections.emptyList(), null);
@@ -21,12 +27,20 @@ public final class JsonApiParser {
         return MinimalJsonParser.parseResponse(json);
     }
 
+    /** Parsed JSON:API response containing data, included, and pagination links. */
     public static final class ParsedResponse {
 
         private final List<ResourceObject> data;
         private final List<ResourceObject> included;
         private final String nextLink;
 
+        /**
+         * Constructs a parsed response.
+         *
+         * @param data     primary data
+         * @param included included resources
+         * @param nextLink next page link, or {@code null}
+         */
         public ParsedResponse(List<ResourceObject> data, List<ResourceObject> included,
                 String nextLink) {
             this.data = Collections.unmodifiableList(data);
@@ -34,14 +48,29 @@ public final class JsonApiParser {
             this.nextLink = nextLink;
         }
 
+        /**
+         * Returns the primary data list.
+         *
+         * @return data
+         */
         public List<ResourceObject> data() {
             return data;
         }
 
+        /**
+         * Returns the included resources.
+         *
+         * @return included
+         */
         public List<ResourceObject> included() {
             return included;
         }
 
+        /**
+         * Returns the next page link.
+         *
+         * @return next link, or {@code null}
+         */
         public String nextLink() {
             return nextLink;
         }
@@ -59,6 +88,7 @@ public final class JsonApiParser {
         }
     }
 
+    /** A single JSON:API resource object with id, type, attributes and relationships. */
     public static final class ResourceObject {
 
         private final String id;
@@ -66,6 +96,14 @@ public final class JsonApiParser {
         private final Map<String, Object> attributes;
         private final Map<String, Object> relationships;
 
+        /**
+         * Constructs a resource object.
+         *
+         * @param id            resource id
+         * @param type          resource type
+         * @param attributes    attribute map
+         * @param relationships relationship map
+         */
         public ResourceObject(String id, String type,
                 Map<String, Object> attributes,
                 Map<String, Object> relationships) {
@@ -75,22 +113,48 @@ public final class JsonApiParser {
             this.relationships = Collections.unmodifiableMap(relationships);
         }
 
+        /**
+         * Returns the resource id.
+         *
+         * @return id
+         */
         public String id() {
             return id;
         }
 
+        /**
+         * Returns the resource type.
+         *
+         * @return type
+         */
         public String type() {
             return type;
         }
 
+        /**
+         * Returns the attribute map.
+         *
+         * @return attributes
+         */
         public Map<String, Object> attributes() {
             return attributes;
         }
 
+        /**
+         * Returns the relationship map.
+         *
+         * @return relationships
+         */
         public Map<String, Object> relationships() {
             return relationships;
         }
 
+        /**
+         * Extracts the id of a to-one relationship by name.
+         *
+         * @param name relationship name
+         * @return relationship id, or {@code null} if not present
+         */
         @SuppressWarnings("unchecked")
         public String relationshipId(String name) {
             Object rel = relationships.get(name);

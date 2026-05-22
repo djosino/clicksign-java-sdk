@@ -29,42 +29,86 @@ public final class NotificationParams {
         return m;
     }
 
+    /**
+     * Returns the message.
+     *
+     * @return message
+     */
     public String message() {
         return message;
     }
 
+    /**
+     * Returns the email customization map.
+     *
+     * @return email customization map
+     */
     public Map<String, Object> emailCustomization() {
         return emailCustomization;
     }
 
+    /**
+     * Returns the email customization typed.
+     *
+     * @return email customization typed
+     */
     public EmailCustomization emailCustomizationTyped() {
         return EmailCustomization.fromMap(emailCustomization);
     }
 
+    /**
+     * Returns a new builder.
+     *
+     * @return new builder
+     */
     public static Builder builder() {
         return new Builder();
     }
 
+    /** Builder for {@link NotificationParams}. */
     public static final class Builder {
         private String message;
         private Map<String, Object> emailCustomization;
 
         private Builder() {}
 
+        /**
+         * Sets message.
+         *
+         * @param message value
+         * @return this builder
+         */
         public Builder message(String message) {
             this.message = message;
             return this;
         }
 
+        /**
+         * Sets email customization.
+         *
+         * @param customization value
+         * @return this builder
+         */
         public Builder emailCustomization(Map<String, Object> customization) {
             this.emailCustomization = customization;
             return this;
         }
 
+        /**
+         * Sets email customization.
+         *
+         * @param customization value
+         * @return this builder
+         */
         public Builder emailCustomization(EmailCustomization customization) {
             return emailCustomization(customization != null ? customization.toMap() : null);
         }
 
+        /**
+         * Builds and validates.
+         *
+         * @return new instance
+         */
         public NotificationParams build() {
             return new NotificationParams(this);
         }

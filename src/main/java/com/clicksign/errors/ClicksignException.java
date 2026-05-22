@@ -7,10 +7,19 @@ package com.clicksign.errors;
  */
 public class ClicksignException extends RuntimeException {
 
+    /** HTTP status code. */
     private final int statusCode;
+    /** API request id. */
     private final String requestId;
+    /** Raw response body. */
     private final String responseBody;
 
+    /** Constructs a new exception.
+     * @param message detail message
+     * @param statusCode HTTP status code
+     * @param requestId API request id
+     * @param responseBody raw response body
+     */
     public ClicksignException(String message, int statusCode, String requestId, String responseBody) {
         super(message);
         this.statusCode   = statusCode;
@@ -18,6 +27,10 @@ public class ClicksignException extends RuntimeException {
         this.responseBody = responseBody;
     }
 
+    /** Constructs a new exception.
+     * @param message detail message
+     * @param cause the cause
+     */
     public ClicksignException(String message, Throwable cause) {
         super(message, cause);
         this.statusCode   = 0;
@@ -25,14 +38,29 @@ public class ClicksignException extends RuntimeException {
         this.responseBody = null;
     }
 
+    /**
+     * Returns the status code.
+     *
+     * @return status code
+     */
     public int statusCode() {
         return statusCode;
     }
 
+    /**
+     * Returns the request id.
+     *
+     * @return request id
+     */
     public String requestId() {
         return requestId;
     }
 
+    /**
+     * Returns the response body.
+     *
+     * @return response body
+     */
     public String responseBody() {
         return responseBody;
     }

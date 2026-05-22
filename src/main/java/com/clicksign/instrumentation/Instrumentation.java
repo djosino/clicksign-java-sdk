@@ -29,30 +29,63 @@ public final class Instrumentation {
     private final List<Consumer<RetryEvent>>   retryListeners   = new CopyOnWriteArrayList<>();
     private final List<Consumer<ErrorEvent>>   errorListeners   = new CopyOnWriteArrayList<>();
 
+    /** Creates a new instance. */
+    public Instrumentation() {}
+
+    /**
+     * Registers a request event listener.
+     *
+     * @param listener listener to add
+     */
     public void onRequest(Consumer<RequestEvent> listener) {
         requestListeners.add(listener);
     }
 
+    /**
+     * Registers a retry event listener.
+     *
+     * @param listener listener to add
+     */
     public void onRetry(Consumer<RetryEvent> listener) {
         retryListeners.add(listener);
     }
 
+    /**
+     * Registers an error event listener.
+     *
+     * @param listener listener to add
+     */
     public void onError(Consumer<ErrorEvent> listener) {
         errorListeners.add(listener);
     }
 
+    /**
+     * Publishes a request event to all registered listeners.
+     *
+     * @param event event to publish
+     */
     public void publishRequest(RequestEvent event) {
         for (Consumer<RequestEvent> l : requestListeners) {
             safeInvoke(l, event);
         }
     }
 
+    /**
+     * Publishes a retry event to all registered listeners.
+     *
+     * @param event event to publish
+     */
     public void publishRetry(RetryEvent event) {
         for (Consumer<RetryEvent> l : retryListeners) {
             safeInvoke(l, event);
         }
     }
 
+    /**
+     * Publishes an error event to all registered listeners.
+     *
+     * @param event event to publish
+     */
     public void publishError(ErrorEvent event) {
         for (Consumer<ErrorEvent> l : errorListeners) {
             safeInvoke(l, event);

@@ -28,22 +28,47 @@ public final class Template {
         this.modifiedAt = str(a.get("modified"));
     }
 
+    /**
+     * Returns the id.
+     *
+     * @return id
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the name.
+     *
+     * @return name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the color.
+     *
+     * @return color
+     */
     public String color() {
         return color;
     }
 
+    /**
+     * Returns the created at timestamp.
+     *
+     * @return created at
+     */
     public String createdAt() {
         return createdAt;
     }
 
+    /**
+     * Returns the modified at timestamp.
+     *
+     * @return modified at
+     */
     public String modifiedAt() {
         return modifiedAt;
     }
@@ -59,15 +84,26 @@ public final class Template {
 
     // ── Service ─────────────────────────────────────────────────────────────
 
+    /** HTTP service for Template operations. */
     public static final class Service {
 
         private static final String ENDPOINT = "/templates";
         private final HttpClient http;
 
+        /**
+         * Constructs service.
+         *
+         * @param http HTTP client
+         */
         public Service(HttpClient http) {
             this.http = http;
         }
 
+        /**
+         * Lists all resources.
+         *
+         * @return unmodifiable list
+         */
         public List<Template> list() {
             String raw = http.get(ENDPOINT, Collections.emptyMap());
             List<Template> result = new ArrayList<>();
@@ -77,27 +113,57 @@ public final class Template {
             return Collections.unmodifiableList(result);
         }
 
+        /**
+         * Retrieves resource by id.
+         *
+         * @param id resource id
+         * @return resource
+         */
         public Template retrieve(String id) {
             String raw = http.get(ENDPOINT + "/" + id, Collections.emptyMap());
             return new Template(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Creates resource.
+         *
+         * @param params creation parameters
+         * @return created resource
+         */
         public Template create(CreateParams params) {
             String body = JsonApiSerializer.dump("templates", null, params.toAttributes(), null);
             String raw  = http.post(ENDPOINT, body);
             return new Template(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Updates resource.
+         *
+         * @param id     resource id
+         * @param params update parameters
+         * @return updated resource
+         */
         public Template update(String id, UpdateParams params) {
             String body = JsonApiSerializer.dump("templates", id, params.toAttributes(), null);
             String raw  = http.patch(ENDPOINT + "/" + id, body);
             return new Template(JsonApiParser.parse(raw).firstData());
         }
 
+        /**
+         * Deletes resource by id.
+         *
+         * @param id resource id
+         */
         public void delete(String id) {
             http.delete(ENDPOINT + "/" + id, null);
         }
 
+        /**
+         * Lists template fields for the given template.
+         *
+         * @param templateId template id
+         * @return unmodifiable list
+         */
         public List<TemplateField> listTemplateFields(String templateId) {
             String raw = http.get(ENDPOINT + "/" + templateId + "/template_fields", Collections.emptyMap());
             List<TemplateField> result = new ArrayList<>();
@@ -110,6 +176,7 @@ public final class Template {
 
     // ── CreateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for creating a template. */
     public static final class CreateParams {
 
         private final String name;
@@ -132,10 +199,16 @@ public final class Template {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link CreateParams}. */
         public static final class Builder {
             private String name;
             private String color;
@@ -143,21 +216,45 @@ public final class Template {
 
             private Builder() {}
 
+            /**
+             * Sets name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder name(String v) {
                 this.name = v;
                 return this;
             }
 
+            /**
+             * Sets color.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder color(String v) {
                 this.color = v;
                 return this;
             }
 
+            /**
+             * Sets content base64.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder contentBase64(String v) {
                 this.contentBase64 = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             * @throws IllegalArgumentException if required fields are missing
+             */
             public CreateParams build() {
                 if (name == null || name.isBlank()) {
                     throw new IllegalArgumentException("name is required");
@@ -172,6 +269,7 @@ public final class Template {
 
     // ── UpdateParams ─────────────────────────────────────────────────────────
 
+    /** Parameters for updating a template. */
     public static final class UpdateParams {
 
         private final String name;
@@ -193,26 +291,49 @@ public final class Template {
             return m;
         }
 
+        /**
+         * Returns a new builder.
+         *
+         * @return new builder
+         */
         public static Builder builder() {
             return new Builder();
         }
 
+        /** Builder for {@link UpdateParams}. */
         public static final class Builder {
             private String name;
             private String color;
 
             private Builder() {}
 
+            /**
+             * Sets name.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder name(String v) {
                 this.name = v;
                 return this;
             }
 
+            /**
+             * Sets color.
+             *
+             * @param v value
+             * @return this builder
+             */
             public Builder color(String v) {
                 this.color = v;
                 return this;
             }
 
+            /**
+             * Builds and validates.
+             *
+             * @return new instance
+             */
             public UpdateParams build() {
                 return new UpdateParams(this);
             }
