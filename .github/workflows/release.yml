@@ -109,7 +109,7 @@ jobs:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publishMavenPublicationToMavenCentralRepository
+        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
 
       - name: Tag release
         env:
