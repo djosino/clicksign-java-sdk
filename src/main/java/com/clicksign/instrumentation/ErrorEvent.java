@@ -25,7 +25,11 @@ public final class ErrorEvent {
         return path;
     }
 
-    /** HTTP status code, or 0 for network/timeout errors. */
+    /**
+     * HTTP status code, or 0 for network/timeout errors.
+     *
+     * @return HTTP status code
+     */
     public int status() {
         return status;
     }

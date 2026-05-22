@@ -28,7 +28,10 @@ public final class WebhookValidator {
     /**
      * Verifies the webhook signature.
      *
-     * @throws WebhookSignatureException if signature is null, empty, or does not match.
+     * @param payload raw request body
+     * @param signature value of the {@code X-Clicksign-Hmac-SHA256} header
+     * @param secret webhook secret configured in the Clicksign dashboard
+     * @throws WebhookSignatureException if signature is null, empty, or does not match
      */
     public static void verifySignature(String payload, String signature, String secret) {
         if (signature == null || signature.isBlank()) {
@@ -40,7 +43,14 @@ public final class WebhookValidator {
         }
     }
 
-    /** Returns true if valid, false otherwise — does not throw. */
+    /**
+     * Returns true if valid, false otherwise — does not throw.
+     *
+     * @param payload raw request body
+     * @param signature value of the {@code X-Clicksign-Hmac-SHA256} header
+     * @param secret webhook secret configured in the Clicksign dashboard
+     * @return {@code true} if the signature is valid
+     */
     public static boolean isValidSignature(String payload, String signature, String secret) {
         try {
             verifySignature(payload, signature, secret);
@@ -50,7 +60,13 @@ public final class WebhookValidator {
         }
     }
 
-    /** Computes the expected {@code sha256=<hex>} signature for a given payload and secret. */
+    /**
+     * Computes the expected {@code sha256=<hex>} signature for a given payload and secret.
+     *
+     * @param payload raw request body
+     * @param secret webhook secret
+     * @return expected signature string
+     */
     public static String computeSignature(String payload, String secret) {
         try {
             Mac mac = Mac.getInstance(ALGORITHM);

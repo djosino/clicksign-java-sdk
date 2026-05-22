@@ -90,7 +90,12 @@ public final class Event {
             return Collections.unmodifiableList(result);
         }
 
-        /** Low-level creation — any event name and data payload. */
+        /**
+         * Low-level creation — any event name and data payload.
+         *
+         * @param params event creation parameters
+         * @return created event
+         */
         public Event create(CreateParams params) {
             String body = JsonApiSerializer.dump("events", null, params.toAttributes(), null);
             String raw  = http.post("/envelopes/" + params.envelopeId + "/documents/" + params.documentId + "/events", body);

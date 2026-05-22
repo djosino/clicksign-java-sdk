@@ -3,6 +3,11 @@ package com.clicksign.resources.types;
 /** API string value carried by SDK enums. */
 public interface ApiStringEnum {
 
+    /**
+     * Returns the API string value for this enum constant.
+     *
+     * @return API string value
+     */
     String apiValue();
 
     static <E extends Enum<E> & ApiStringEnum> E tryParse(Class<E> type, String value) {

@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * <p>Unlike the main {@code HttpClient}, this client:
  * <ul>
- *   <li>Only retries on {@link TimeoutException}, not on {@link ServerException}.</li>
+ *   <li>Only retries on {@link TimeoutException}, not on {@link com.clicksign.errors.ServerException}.</li>
  *   <li>Returns the raw response body even on 4xx/5xx when {@code atomic:results} is present.</li>
  * </ul>
  */

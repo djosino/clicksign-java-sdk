@@ -61,7 +61,11 @@ public final class SignatureWatcher {
         return communicateEvents;
     }
 
-    /** Parsed view of {@link #communicateEvents()}; {@code null} when unset. */
+    /**
+     * Parsed view of {@link #communicateEvents()}; {@code null} when unset.
+     *
+     * @return parsed communicate events, or {@code null}
+     */
     public CommunicateEvents communicateEventsConfig() {
         return CommunicateEvents.fromMap(communicateEvents);
     }

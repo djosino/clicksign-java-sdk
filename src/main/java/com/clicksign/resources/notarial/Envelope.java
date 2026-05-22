@@ -204,7 +204,11 @@ public final class Envelope {
             return Collections.unmodifiableList(result);
         }
 
-        /** Returns a fluent query builder for filtering, ordering, and paginating envelopes. */
+        /**
+         * Returns a fluent query builder for filtering, ordering, and paginating envelopes.
+         *
+         * @return query builder
+         */
         public EnvelopeQuery filter() {
             return new EnvelopeQuery(http);
         }
@@ -239,6 +243,9 @@ public final class Envelope {
         /**
          * Notifies all signers on the envelope.
          *
+         * @param envelopeId envelope id
+         * @param params notification parameters
+         * @return notification resource
          * @see <a href="https://developers.clicksign.com/reference/api-notificar-envelope">Notificar Signatários do Envelope</a>
          */
         public Notification notifyAll(String envelopeId, NotificationParams params) {

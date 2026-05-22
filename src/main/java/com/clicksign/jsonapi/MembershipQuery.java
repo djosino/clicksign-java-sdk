@@ -14,7 +14,12 @@ public final class MembershipQuery extends TypedResourceQuery<Membership, Member
         return filter("role", role);
     }
 
-    /** Filter by related user id ({@code filter[user.id]}). */
+    /**
+     * Filter by related user id ({@code filter[user.id]}).
+     *
+     * @param userId user id to filter by
+     * @return this query
+     */
     public MembershipQuery userId(String userId) {
         return filter("user.id", userId);
     }

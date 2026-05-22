@@ -11,7 +11,11 @@ public class ServiceUnavailableException extends ClicksignException {
         this.retryAfterSeconds = retryAfterSeconds;
     }
 
-    /** Seconds from {@code Retry-After} header, if present. */
+    /**
+     * Seconds from {@code Retry-After} header, if present.
+     *
+     * @return retry delay in seconds, or {@code null} if header was absent
+     */
     public Long retryAfterSeconds() {
         return retryAfterSeconds;
     }

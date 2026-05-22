@@ -201,7 +201,12 @@ public final class ClicksignClient {
             return this;
         }
 
-        /** Overrides environment URL — useful for tests or custom proxies. */
+        /**
+         * Overrides environment URL — useful for tests or custom proxies.
+         *
+         * @param baseUrl base URL to use instead of the environment default
+         * @return this builder
+         */
         public Builder baseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
             return this;

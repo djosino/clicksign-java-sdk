@@ -169,7 +169,12 @@ public final class Requirement {
             return Collections.unmodifiableList(result);
         }
 
-        /** Returns a fluent query builder for filtering and paginating requirements. */
+        /**
+         * Returns a fluent query builder for filtering and paginating requirements.
+         *
+         * @param envelopeId envelope id to scope the query
+         * @return query builder
+         */
         public RequirementQuery filter(String envelopeId) {
             return new RequirementQuery(envelopeId, http);
         }

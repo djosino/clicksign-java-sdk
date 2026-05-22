@@ -37,7 +37,11 @@ public class ClicksignException extends RuntimeException {
         return responseBody;
     }
 
-    /** Whether this error is safe to retry. */
+    /**
+     * Whether this error is safe to retry.
+     *
+     * @return {@code true} if the request can be retried
+     */
     public boolean isRetryable() {
         return false;
     }
