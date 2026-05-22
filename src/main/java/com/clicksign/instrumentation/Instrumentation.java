@@ -8,8 +8,9 @@ import java.util.logging.Logger;
 /**
  * SDK-wide instrumentation registry.
  *
- * <p>Register callbacks via {@link ClicksignClient#onRequest}, {@link ClicksignClient#onRetry},
- * {@link ClicksignClient#onError}. Callbacks are invoked synchronously on the request thread.
+ * <p>Register callbacks via {@link com.clicksign.ClicksignClient.Builder#onRequest},
+ * {@link com.clicksign.ClicksignClient.Builder#onRetry},
+ * {@link com.clicksign.ClicksignClient.Builder#onError}. Callbacks are invoked synchronously on the request thread.
  * Exceptions thrown by callbacks are caught and logged — they do not propagate.
  *
  * <pre>{@code
