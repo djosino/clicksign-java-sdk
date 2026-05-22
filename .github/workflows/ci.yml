@@ -27,7 +27,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build and test
-        run: ./gradlew test
+        run: ./gradlew check
 
   lint:
     name: Checkstyle

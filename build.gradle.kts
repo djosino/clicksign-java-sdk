@@ -59,11 +59,27 @@ tasks.jacocoTestCoverageVerification {
                 minimum = "0.70".toBigDecimal()
             }
         }
+        rule {
+            element = "PACKAGE"
+            includes = listOf("com.clicksign.resources")
+            limit {
+                counter = "INSTRUCTION"
+                minimum = "0.70".toBigDecimal()
+            }
+        }
+        rule {
+            element = "PACKAGE"
+            includes = listOf("com.clicksign.resources.types")
+            limit {
+                counter = "INSTRUCTION"
+                minimum = "0.70".toBigDecimal()
+            }
+        }
     }
 }
 
 tasks.check {
-    dependsOn(tasks.jacocoTestCoverageVerification)
+    dependsOn(tasks.jacocoTestCoverageVerification, ":examples:compileJava")
 }
 
 tasks.withType<JavaCompile> {
