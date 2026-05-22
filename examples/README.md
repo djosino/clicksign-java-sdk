@@ -29,7 +29,6 @@ export CLICKSIGN_API_KEY=seu-token
 ./gradlew :examples:runRetries
 ./gradlew :examples:runBulkRequirements
 ./gradlew :examples:runListAndFilter
-# ...
 
 # Webhook (validação local, sem API key obrigatória):
 ./gradlew :examples:runWebhooks

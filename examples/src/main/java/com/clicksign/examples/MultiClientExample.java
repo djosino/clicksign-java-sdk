@@ -24,11 +24,13 @@ public final class MultiClientExample {
     }
 
     public ClicksignClient forTenant(String tenantId) {
-        return switch (tenantId) {
-            case "A" -> tenantA;
-            case "B" -> tenantB;
-            default -> throw new IllegalArgumentException("tenant desconhecido: " + tenantId);
-        };
+        if ("A".equals(tenantId)) {
+            return tenantA;
+        }
+        if ("B".equals(tenantId)) {
+            return tenantB;
+        }
+        throw new IllegalArgumentException("tenant desconhecido: " + tenantId);
     }
 
     public static void main(String[] args) {
