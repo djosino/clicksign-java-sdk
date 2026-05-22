@@ -6,7 +6,6 @@ plugins {
     signing
     checkstyle
     jacoco
-    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 }
 
 group = "br.com.josino.clicksign"
@@ -124,15 +123,11 @@ publishing {
             }
         }
     }
-}
 
-nexusPublishing {
     repositories {
-        sonatype {
-            nexusUrl.set(uri("https://ossrh.central.sonatype.com/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://ossrh.central.sonatype.com/content/repositories/snapshots/"))
-            username.set(System.getenv("OSSRH_USERNAME") ?: "")
-            password.set(System.getenv("OSSRH_PASSWORD") ?: "")
+        maven {
+            name = "LocalBundle"
+            url = uri(layout.buildDirectory.dir("staging-deploy"))
         }
     }
 }
