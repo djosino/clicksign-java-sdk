@@ -28,16 +28,16 @@ public final class ErrorMessageExtractor {
      */
     public static String extract(String body, HttpResponse<String> response) {
         if (body == null || body.isBlank()) {
-            return response.toString();
+            return "HTTP " + response.statusCode();
         }
         try {
             if (!body.contains("\"errors\"")) {
-                return response.toString();
+                return "HTTP " + response.statusCode();
             }
             Map<String, Object> root = MinimalJsonParser.parseObject(body);
             Object errors = root.get("errors");
             if (!(errors instanceof List)) {
-                return response.toString();
+                return "HTTP " + response.statusCode();
             }
 
             StringBuilder messages = new StringBuilder();
@@ -55,9 +55,9 @@ public final class ErrorMessageExtractor {
                     messages.append(part);
                 }
             }
-            return messages.length() > 0 ? messages.toString() : response.toString();
+            return messages.length() > 0 ? messages.toString() : "HTTP " + response.statusCode();
         } catch (Exception e) {
-            return response.toString();
+            return "HTTP " + response.statusCode();
         }
     }
 

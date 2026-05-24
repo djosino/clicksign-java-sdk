@@ -419,7 +419,7 @@ public final class Signer {
     /** Parameters for creating a signer. */
     public static final class CreateParams {
 
-        final String envelopeId;
+        private final String envelopeId;
         private final String name;
         private final String email;
         private final String phoneNumber;

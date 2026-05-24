@@ -375,7 +375,7 @@ public final class AcceptanceTermWhatsapp {
              * @return this
              */
             public Builder senderNameOption(SenderNameOption v) {
-                return senderNameOption(v.apiValue());
+                return senderNameOption(v != null ? v.apiValue() : null);
             }
 
             /**
@@ -501,7 +501,7 @@ public final class AcceptanceTermWhatsapp {
              * @return this
              */
             public Builder status(AcceptanceTermStatus v) {
-                return status(v.apiValue());
+                return status(v != null ? v.apiValue() : null);
             }
 
             /**

@@ -42,7 +42,7 @@ public final class DocumentTemplate {
     public Map<String, Object> toMap() {
         Map<String, Object> m = new LinkedHashMap<>(fields);
         m.put("id", id);
-        return m;
+        return Collections.unmodifiableMap(m);
     }
 
     /**

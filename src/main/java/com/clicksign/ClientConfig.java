@@ -54,7 +54,9 @@ public final class ClientConfig {
     }
 
     /**
-     * Returns the max retries.
+     * Returns the maximum number of retries after the first attempt.
+     * A value of {@code 0} means no retries (one attempt total); {@code N} means
+     * up to N+1 total attempts.
      *
      * @return max retries
      */
@@ -126,9 +128,11 @@ public final class ClientConfig {
         }
 
         /**
-         * Sets max retries.
+         * Sets the maximum number of retries after the first attempt.
+         * {@code 0} (default) means no retries. {@code N} means N extra attempts
+         * for a total of N+1.
          *
-         * @param maxRetries value
+         * @param maxRetries number of retries (0 = no retry)
          * @return this builder
          */
         public Builder maxRetries(int maxRetries) {

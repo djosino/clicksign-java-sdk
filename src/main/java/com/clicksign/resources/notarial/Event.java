@@ -193,8 +193,8 @@ public final class Event {
     /** Parameters for creating a generic event. */
     public static final class CreateParams {
 
-        final String envelopeId;
-        final String documentId;
+        private final String envelopeId;
+        private final String documentId;
         private final String name;
         private final Map<String, Object> data;
         private final String contentBase64;
@@ -319,11 +319,11 @@ public final class Event {
     /** Parameters for creating an add-image event. */
     public static final class AddImageParams {
 
-        final String envelopeId;
-        final String documentId;
-        final String title;
-        final String occurredAt;
-        final String contentBase64;
+        private final String envelopeId;
+        private final String documentId;
+        private final String title;
+        private final String occurredAt;
+        private final String contentBase64;
 
         private AddImageParams(Builder b) {
             this.envelopeId    = b.envelopeId;
@@ -439,13 +439,13 @@ public final class Event {
     /** Parameters for creating a custom signing-evidence event. */
     public static final class CustomParams {
 
-        final String envelopeId;
-        final String documentId;
-        final String kind;
-        final String occurredAt;
-        final String signerName;
-        final String signerEmail;
-        final String signerPhoneNumber;
+        private final String envelopeId;
+        private final String documentId;
+        private final String kind;
+        private final String occurredAt;
+        private final String signerName;
+        private final String signerEmail;
+        private final String signerPhoneNumber;
 
         private CustomParams(Builder b) {
             this.envelopeId         = b.envelopeId;
@@ -518,7 +518,7 @@ public final class Event {
              * @return this builder
              */
             public Builder kind(EventCustomKind v) {
-                return kind(v.apiValue());
+                return kind(v != null ? v.apiValue() : null);
             }
 
             /**

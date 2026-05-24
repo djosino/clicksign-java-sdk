@@ -219,7 +219,7 @@ public final class SignatureWatcher {
     /** Parameters for creating a signature watcher. */
     public static final class CreateParams {
 
-        final String envelopeId;
+        private final String envelopeId;
         private final String email;
         private final String kind;
         private final Boolean attachDocumentsEnabled;
@@ -306,7 +306,7 @@ public final class SignatureWatcher {
              * @return this builder
              */
             public Builder kind(SignatureWatcherKind v) {
-                return kind(v.apiValue());
+                return kind(v != null ? v.apiValue() : null);
             }
 
             /**

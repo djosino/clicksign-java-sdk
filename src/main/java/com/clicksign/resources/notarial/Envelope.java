@@ -531,7 +531,7 @@ public final class Envelope {
              * @return this builder
              */
             public Builder locale(EnvelopeLocale locale) {
-                return locale(locale.apiValue());
+                return locale(locale != null ? locale.apiValue() : null);
             }
 
             /**
@@ -617,7 +617,7 @@ public final class Envelope {
              * @return this builder
              */
             public Builder deadlinePartialSignatureAction(DeadlinePartialSignatureAction action) {
-                return deadlinePartialSignatureAction(action.apiValue());
+                return deadlinePartialSignatureAction(action != null ? action.apiValue() : null);
             }
 
             /**
@@ -794,7 +794,7 @@ public final class Envelope {
              * @return this builder
              */
             public Builder status(EnvelopeStatus status) {
-                return status(status.apiValue());
+                return status(status != null ? status.apiValue() : null);
             }
 
             /**
@@ -815,7 +815,7 @@ public final class Envelope {
              * @return this builder
              */
             public Builder locale(EnvelopeLocale locale) {
-                return locale(locale.apiValue());
+                return locale(locale != null ? locale.apiValue() : null);
             }
 
             /**
@@ -901,7 +901,7 @@ public final class Envelope {
              * @return this builder
              */
             public Builder deadlinePartialSignatureAction(DeadlinePartialSignatureAction action) {
-                return deadlinePartialSignatureAction(action.apiValue());
+                return deadlinePartialSignatureAction(action != null ? action.apiValue() : null);
             }
 
             /**

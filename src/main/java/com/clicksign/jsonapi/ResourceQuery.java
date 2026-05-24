@@ -19,15 +19,6 @@ import java.util.function.Function;
  * or {@link #fetchAll()} to follow {@code links.next}.
  *
  * @param <T> resource type returned by this query
- *
- * <pre>{@code
- * client.envelopes().filter()
- *     .status(EnvelopeStatus.RUNNING)
- *     .name("Contrato")
- *     .order("-created")
- *     .page(1).perPage(20)
- *     .fetch();
- * }</pre>
  */
 public class ResourceQuery<T> {
 
@@ -125,14 +116,11 @@ public class ResourceQuery<T> {
      * @return this query
      */
     public ResourceQuery<T> include(String... types) {
-        String existing = includeParam;
-        if (existing == null || existing.isBlank()) {
-            includeParam = String.join(",", types);
-        } else {
-            Set<String> all = new LinkedHashSet<>(Arrays.asList(existing.split(",")));
-            Collections.addAll(all, types);
-            includeParam = String.join(",", all);
-        }
+        Set<String> all = includeParam == null || includeParam.isBlank()
+            ? new LinkedHashSet<>()
+            : new LinkedHashSet<>(Arrays.asList(includeParam.split(",")));
+        Collections.addAll(all, types);
+        includeParam = String.join(",", all);
         return this;
     }
 

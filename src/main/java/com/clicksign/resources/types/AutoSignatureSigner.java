@@ -1,5 +1,6 @@
 package com.clicksign.resources.types;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ public final class AutoSignatureSigner {
         m.put("email", email);
         m.put("documentation", documentation);
         m.put("birthday", birthday);
-        return m;
+        return Collections.unmodifiableMap(m);
     }
 
     /**

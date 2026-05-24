@@ -272,7 +272,7 @@ public final class Document {
     /** CreateParams. */
     public static final class CreateParams {
 
-        final String envelopeId;
+        private final String envelopeId;
         private final String filename;
         private final String contentBase64;
         private final String contentUrl;

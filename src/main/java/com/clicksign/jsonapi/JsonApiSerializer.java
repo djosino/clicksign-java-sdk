@@ -89,6 +89,12 @@ public final class JsonApiSerializer {
     }
 
     private static String quote(String s) {
-        return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+        return "\"" + s.replace("\\", "\\\\")
+                       .replace("\"", "\\\"")
+                       .replace("\n", "\\n")
+                       .replace("\r", "\\r")
+                       .replace("\t", "\\t")
+                       .replace("\b", "\\b")
+                       .replace("\f", "\\f") + "\"";
     }
 }

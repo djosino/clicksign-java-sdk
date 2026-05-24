@@ -203,7 +203,11 @@ public final class MinimalJsonParser {
                 } else if (esc == 'f') {
                     mapped = '\f';
                 } else if (esc == 'u') {
-                    mapped = (char) Integer.parseInt(input.substring(pos, pos += 4), 16);
+                    if (pos + 4 > input.length()) {
+                        throw new IllegalStateException("Incomplete \\uXXXX escape at " + pos);
+                    }
+                    mapped = (char) Integer.parseInt(input.substring(pos, pos + 4), 16);
+                    pos += 4;
                 } else {
                     mapped = esc;
                 }

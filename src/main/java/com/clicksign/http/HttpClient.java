@@ -23,7 +23,8 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * <p>Zero runtime dependencies. Handles retry with full-jitter exponential backoff,
  * JSON:API headers, maps HTTP status codes to typed exceptions, and publishes
- * instrumentation events.
+ * instrumentation events. {@code maxRetries=N} means N retries after the first
+ * attempt (N+1 total attempts).
  */
 public final class HttpClient {
 

@@ -69,7 +69,7 @@ public final class BulkRequirement {
          * @return this operations builder
          */
         public Operations addAgree(String signerId, String documentId, RequirementRole role) {
-            return addAgree(signerId, documentId, role.apiValue());
+            return addAgree(signerId, documentId, role != null ? role.apiValue() : null);
         }
 
         /**
@@ -98,7 +98,7 @@ public final class BulkRequirement {
          * @return this operations builder
          */
         public Operations addProvideEvidence(String signerId, String documentId, RequirementAuth auth) {
-            return addProvideEvidence(signerId, documentId, auth.apiValue());
+            return addProvideEvidence(signerId, documentId, auth != null ? auth.apiValue() : null);
         }
 
         /**

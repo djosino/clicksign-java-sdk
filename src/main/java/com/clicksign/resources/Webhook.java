@@ -295,7 +295,7 @@ public final class Webhook {
              * @return this builder
              */
             public Builder addEvent(WebhookEventType v) {
-                return addEvent(v.apiValue());
+                return addEvent(v != null ? v.apiValue() : null);
             }
 
             /**

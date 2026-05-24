@@ -311,7 +311,7 @@ public final class Requirement {
     /** Parameters for creating a requirement. */
     public static final class CreateParams {
 
-        final String envelopeId;
+        private final String envelopeId;
         private final String action;
         private final String role;
         private final String auth;
@@ -427,7 +427,7 @@ public final class Requirement {
              * @return this builder
              */
             public Builder action(RequirementAction v) {
-                return action(v.apiValue());
+                return action(v != null ? v.apiValue() : null);
             }
 
             /**
@@ -448,7 +448,7 @@ public final class Requirement {
              * @return this builder
              */
             public Builder role(RequirementRole v) {
-                return role(v.apiValue());
+                return role(v != null ? v.apiValue() : null);
             }
 
             /**
@@ -469,7 +469,7 @@ public final class Requirement {
              * @return this builder
              */
             public Builder auth(RequirementAuth v) {
-                return auth(v.apiValue());
+                return auth(v != null ? v.apiValue() : null);
             }
 
             /**
@@ -501,7 +501,7 @@ public final class Requirement {
              * @return this builder
              */
             public Builder kind(RubricateKind v) {
-                return kind(v.apiValue());
+                return kind(v != null ? v.apiValue() : null);
             }
 
             /**
@@ -625,7 +625,7 @@ public final class Requirement {
              * @return this builder
              */
             public Builder action(RequirementAction v) {
-                return action(v.apiValue());
+                return action(v != null ? v.apiValue() : null);
             }
 
             /**
@@ -646,7 +646,7 @@ public final class Requirement {
              * @return this builder
              */
             public Builder role(RequirementRole v) {
-                return role(v.apiValue());
+                return role(v != null ? v.apiValue() : null);
             }
 
             /**
@@ -667,7 +667,7 @@ public final class Requirement {
              * @return this builder
              */
             public Builder auth(RequirementAuth v) {
-                return auth(v.apiValue());
+                return auth(v != null ? v.apiValue() : null);
             }
 
             /**
