@@ -21,6 +21,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
@@ -130,5 +131,66 @@ class AcceptanceTermWhatsappTest {
             .fetch();
 
         assertEquals(com.clicksign.resources.types.AcceptanceTermStatus.COMPLETED, result.get(0).statusAsEnum());
+    }
+
+    @Test
+    void createRequiresTitle() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AcceptanceTermWhatsapp.CreateParams.builder()
+                .senderNameOption("account_name")
+                .message("Mensagem.")
+                .signerPhone("11987654321")
+                .signerName("João")
+                .build());
+    }
+
+    @Test
+    void createRequiresSenderNameOption() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AcceptanceTermWhatsapp.CreateParams.builder()
+                .title("Título")
+                .message("Mensagem.")
+                .signerPhone("11987654321")
+                .signerName("João")
+                .build());
+    }
+
+    @Test
+    void createRequiresMessage() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AcceptanceTermWhatsapp.CreateParams.builder()
+                .title("Título")
+                .senderNameOption("account_name")
+                .signerPhone("11987654321")
+                .signerName("João")
+                .build());
+    }
+
+    @Test
+    void createRequiresSignerPhone() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AcceptanceTermWhatsapp.CreateParams.builder()
+                .title("Título")
+                .senderNameOption("account_name")
+                .message("Mensagem.")
+                .signerName("João")
+                .build());
+    }
+
+    @Test
+    void createRequiresSignerName() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AcceptanceTermWhatsapp.CreateParams.builder()
+                .title("Título")
+                .senderNameOption("account_name")
+                .message("Mensagem.")
+                .signerPhone("11987654321")
+                .build());
+    }
+
+    @Test
+    void cancelRequiresStatus() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AcceptanceTermWhatsapp.UpdateParams.builder().build());
     }
 }

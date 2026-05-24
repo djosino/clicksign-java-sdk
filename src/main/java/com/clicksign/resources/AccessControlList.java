@@ -78,6 +78,12 @@ public final class AccessControlList {
          * @return created AccessControlList
          */
         public AccessControlList create(String folderId, String groupId) {
+            if (folderId == null || folderId.isBlank()) {
+                throw new IllegalArgumentException("folderId is required");
+            }
+            if (groupId == null || groupId.isBlank()) {
+                throw new IllegalArgumentException("groupId is required");
+            }
             Map<String, Object> rels = buildRelationships(folderId, groupId);
             String body = JsonApiSerializer.dump("access_control_lists", null, Collections.emptyMap(), rels);
             String raw  = http.post(ENDPOINT, body);
@@ -91,6 +97,12 @@ public final class AccessControlList {
          * @param groupId group resource id
          */
         public void destroy(String folderId, String groupId) {
+            if (folderId == null || folderId.isBlank()) {
+                throw new IllegalArgumentException("folderId is required");
+            }
+            if (groupId == null || groupId.isBlank()) {
+                throw new IllegalArgumentException("groupId is required");
+            }
             Map<String, Object> rels = buildRelationships(folderId, groupId);
             String body = JsonApiSerializer.dump("access_control_lists", null, Collections.emptyMap(), rels);
             http.delete(ENDPOINT, body);

@@ -17,6 +17,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
@@ -75,5 +76,25 @@ class AccessControlListTest {
         wireMock.verify(deleteRequestedFor(urlEqualTo("/access_control_lists"))
             .withRequestBody(matchingJsonPath("$.data.relationships.folder.data.id", equalTo("fld-1")))
             .withRequestBody(matchingJsonPath("$.data.relationships.group.data.id", equalTo("grp-1"))));
+    }
+
+    @Test
+    void createRequiresFolderId() {
+        assertThrows(IllegalArgumentException.class, () -> service.create(null, "grp-1"));
+    }
+
+    @Test
+    void createRequiresGroupId() {
+        assertThrows(IllegalArgumentException.class, () -> service.create("fld-1", null));
+    }
+
+    @Test
+    void destroyRequiresFolderId() {
+        assertThrows(IllegalArgumentException.class, () -> service.destroy("", "grp-1"));
+    }
+
+    @Test
+    void destroyRequiresGroupId() {
+        assertThrows(IllegalArgumentException.class, () -> service.destroy("fld-1", ""));
     }
 }

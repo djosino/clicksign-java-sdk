@@ -78,6 +78,8 @@ class AutoSignatureTermTest {
                 .signerEmail("joao@example.com")
                 .signerDocumentation("123.456.789-10")
                 .signerBirthday("1990-01-01")
+                .apiEmail("api@example.com")
+                .adminEmail("admin@example.com")
                 .build());
     }
 
@@ -88,6 +90,8 @@ class AutoSignatureTermTest {
                 .signerName("João Silva")
                 .signerDocumentation("123.456.789-10")
                 .signerBirthday("1990-01-01")
+                .apiEmail("api@example.com")
+                .adminEmail("admin@example.com")
                 .build());
     }
 
@@ -98,6 +102,8 @@ class AutoSignatureTermTest {
                 .signerName("João Silva")
                 .signerEmail("joao@example.com")
                 .signerBirthday("1990-01-01")
+                .apiEmail("api@example.com")
+                .adminEmail("admin@example.com")
                 .build());
     }
 
@@ -108,6 +114,32 @@ class AutoSignatureTermTest {
                 .signerName("João Silva")
                 .signerEmail("joao@example.com")
                 .signerDocumentation("123.456.789-10")
+                .apiEmail("api@example.com")
+                .adminEmail("admin@example.com")
+                .build());
+    }
+
+    @Test
+    void createRequiresApiEmail() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AutoSignatureTerm.CreateParams.builder()
+                .signerName("João Silva")
+                .signerEmail("joao@example.com")
+                .signerDocumentation("123.456.789-10")
+                .signerBirthday("1990-01-01")
+                .adminEmail("admin@example.com")
+                .build());
+    }
+
+    @Test
+    void createRequiresAdminEmail() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AutoSignatureTerm.CreateParams.builder()
+                .signerName("João Silva")
+                .signerEmail("joao@example.com")
+                .signerDocumentation("123.456.789-10")
+                .signerBirthday("1990-01-01")
+                .apiEmail("api@example.com")
                 .build());
     }
 

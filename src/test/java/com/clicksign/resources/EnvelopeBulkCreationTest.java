@@ -74,4 +74,45 @@ class EnvelopeBulkCreationTest {
         assertThrows(IllegalArgumentException.class, () ->
             EnvelopeBulkCreation.CreateParams.builder().build());
     }
+
+    @Test
+    void createRequiresEnvelope() {
+        assertThrows(IllegalArgumentException.class, () ->
+            EnvelopeBulkCreation.CreateParams.builder()
+                .document(Map.of("filename", "contrato.pdf"))
+                .signers(List.of(Map.of("name", "João Silva")))
+                .build());
+    }
+
+    @Test
+    void createRequiresDocument() {
+        assertThrows(IllegalArgumentException.class, () ->
+            EnvelopeBulkCreation.CreateParams.builder()
+                .envelope(Map.of("name", "Lote"))
+                .signers(List.of(Map.of("name", "João Silva")))
+                .build());
+    }
+
+    @Test
+    void createRequiresAtLeastOneSigner() {
+        assertThrows(IllegalArgumentException.class, () ->
+            EnvelopeBulkCreation.CreateParams.builder()
+                .envelope(Map.of("name", "Lote"))
+                .document(Map.of("filename", "contrato.pdf"))
+                .build());
+    }
+
+    @Test
+    void createThrowsValidationException() {
+        wireMock.stubFor(post(urlEqualTo("/envelope_bulk_creations"))
+            .willReturn(aResponse().withStatus(422)
+                .withBody(JsonApiFixtures.errorBody("envelope is invalid"))));
+
+        assertThrows(com.clicksign.errors.ValidationException.class, () ->
+            service.create(EnvelopeBulkCreation.CreateParams.builder()
+                .envelope(Map.of("name", "Lote"))
+                .document(Map.of("filename", "contrato.pdf"))
+                .signers(List.of(Map.of("name", "João Silva")))
+                .build()));
+    }
 }
