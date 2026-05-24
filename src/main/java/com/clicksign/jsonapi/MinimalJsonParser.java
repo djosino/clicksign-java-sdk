@@ -209,7 +209,12 @@ public final class MinimalJsonParser {
                     if (pos + 4 > input.length()) {
                         throw new IllegalStateException("Incomplete \\uXXXX escape at " + pos);
                     }
-                    mapped = (char) Integer.parseInt(input.substring(pos, pos + 4), 16);
+                    try {
+                        mapped = (char) Integer.parseInt(input.substring(pos, pos + 4), 16);
+                    } catch (NumberFormatException e) {
+                        throw new IllegalStateException(
+                            "Invalid \\uXXXX escape: " + input.substring(pos, pos + 4), e);
+                    }
                     pos += 4;
                 } else {
                     mapped = esc;

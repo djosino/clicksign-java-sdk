@@ -138,8 +138,8 @@ class MinimalJsonParserTest {
 
     @Test
     void throwsOnNonHexUnicodeEscape() {
-        // "12}" is read as the 4-char substring — parseInt fails on non-hex char
-        assertThrows(NumberFormatException.class, () ->
+        // 4-char window contains non-hex chars — now wrapped in IllegalStateException
+        assertThrows(IllegalStateException.class, () ->
             MinimalJsonParser.parseObject("{\"v\":\"\\u12\"}"));
     }
 
