@@ -101,4 +101,16 @@ class JsonApiSerializerTest {
         String json = JsonApiSerializer.dump("envelopes", attrs);
         assertTrue(json.contains("\"col1\\tcol2\""), "tab must be escaped as \\t");
     }
+
+    @Test
+    void escapesC0ControlCharacters() {
+        String soh = String.valueOf((char) 1);
+        String us  = String.valueOf((char) 31);
+        Map<String, Object> attrs = new LinkedHashMap<>();
+        attrs.put("soh", "a" + soh + "b");
+        attrs.put("us",  "a" + us  + "b");
+        String json = JsonApiSerializer.dump("envelopes", attrs);
+        assertTrue(json.contains("\\u0001"), "SOH (U+0001) must be escaped");
+        assertTrue(json.contains("\\u001f"), "US (U+001F) must be escaped");
+    }
 }

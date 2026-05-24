@@ -15,6 +15,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import com.clicksign.resources.types.WebhookEventType;
 import static com.github.tomakehurst.wiremock.client.WireMock.patch;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -123,6 +124,15 @@ class WebhookTest {
     void createRequiresAtLeastOneEvent() {
         assertThrows(IllegalArgumentException.class, () ->
             Webhook.CreateParams.builder().endpoint("https://example.com/hook").build());
+    }
+
+    @Test
+    void addNullEventTypeThrows() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Webhook.CreateParams.builder()
+                .endpoint("https://example.com/hook")
+                .addEvent((WebhookEventType) null)
+                .build());
     }
 
     @Test

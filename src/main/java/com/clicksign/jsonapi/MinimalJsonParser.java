@@ -184,6 +184,9 @@ public final class MinimalJsonParser {
                 break;
             }
             if (c == '\\') {
+                if (pos >= input.length()) {
+                    throw new IllegalStateException("Truncated escape sequence at end of input");
+                }
                 char esc = input.charAt(pos++);
                 char mapped;
                 if (esc == '"') {

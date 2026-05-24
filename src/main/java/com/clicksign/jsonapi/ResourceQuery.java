@@ -198,7 +198,7 @@ public class ResourceQuery<T> {
 
     private Map<String, String> buildQueryParams() {
         Map<String, String> p = new LinkedHashMap<>(params);
-        if (includeParam != null) {
+        if (includeParam != null && !includeParam.isBlank()) {
             p.put("include", includeParam);
         }
         return p;

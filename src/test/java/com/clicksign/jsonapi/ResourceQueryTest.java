@@ -18,6 +18,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
@@ -175,5 +176,21 @@ class ResourceQueryTest {
 
         wireMock.verify(getRequestedFor(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
             .withQueryParam("fields[documents]", equalTo("filename")));
+    }
+
+    @Test
+    void includeWithZeroArgsDoesNotEmitIncludeParam() {
+        wireMock.stubFor(get(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .willReturn(okJson(JsonApiFixtures.documentList(
+                JsonApiFixtures.document("doc-1", "a.pdf", ENVELOPE_ID)))));
+
+        documentService.filter(ENVELOPE_ID).include().fetch();
+
+        // Verify no request had the 'include' query parameter at all
+        List<com.github.tomakehurst.wiremock.verification.LoggedRequest> requests =
+            wireMock.findAll(getRequestedFor(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents")));
+        assertEquals(1, requests.size());
+        String url = requests.get(0).getUrl();
+        assertFalse(url.contains("include="), "include param must not be emitted when no types given");
     }
 }

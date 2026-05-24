@@ -295,7 +295,10 @@ public final class Webhook {
              * @return this builder
              */
             public Builder addEvent(WebhookEventType v) {
-                return addEvent(v != null ? v.apiValue() : null);
+                if (v == null) {
+                    throw new IllegalArgumentException("event type must not be null");
+                }
+                return addEvent(v.apiValue());
             }
 
             /**

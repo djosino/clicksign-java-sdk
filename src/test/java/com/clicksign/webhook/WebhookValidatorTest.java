@@ -102,4 +102,28 @@ class WebhookValidatorTest {
         String validHmac = WebhookValidator.computeSignature(PAYLOAD, SECRET).substring(7);
         assertFalse(WebhookValidator.isValidSignature(PAYLOAD, "sha1=" + validHmac, SECRET));
     }
+
+    @Test
+    void isValidSignatureReturnsFalseForNullPayload() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertFalse(WebhookValidator.isValidSignature(null, sig, SECRET));
+    }
+
+    @Test
+    void isValidSignatureReturnsFalseForNullSecret() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertFalse(WebhookValidator.isValidSignature(PAYLOAD, sig, null));
+    }
+
+    @Test
+    void computeSignatureThrowsForNullPayload() {
+        assertThrows(IllegalArgumentException.class,
+            () -> WebhookValidator.computeSignature(null, SECRET));
+    }
+
+    @Test
+    void computeSignatureThrowsForNullSecret() {
+        assertThrows(IllegalArgumentException.class,
+            () -> WebhookValidator.computeSignature(PAYLOAD, null));
+    }
 }

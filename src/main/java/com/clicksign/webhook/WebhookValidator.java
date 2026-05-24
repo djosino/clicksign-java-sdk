@@ -52,6 +52,9 @@ public final class WebhookValidator {
      * @return {@code true} if the signature is valid
      */
     public static boolean isValidSignature(String payload, String signature, String secret) {
+        if (payload == null || secret == null) {
+            return false;
+        }
         try {
             verifySignature(payload, signature, secret);
             return true;

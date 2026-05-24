@@ -161,4 +161,10 @@ class MinimalJsonParserTest {
         assertThrows(Exception.class, () ->
             MinimalJsonParser.parseObject("{\"key\":}"));
     }
+
+    @Test
+    void throwsOnTruncatedBackslash() {
+        assertThrows(IllegalStateException.class, () ->
+            MinimalJsonParser.parseObject("{\"v\":\"abc\\"));
+    }
 }
