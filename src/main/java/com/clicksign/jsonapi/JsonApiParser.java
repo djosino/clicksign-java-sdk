@@ -82,7 +82,8 @@ public final class JsonApiParser {
          */
         public ResourceObject firstData() {
             if (data.isEmpty()) {
-                throw new IllegalStateException("API returned empty data");
+                throw new IllegalStateException(
+                    "API returned empty data array — expected at least one resource object");
             }
             return data.get(0);
         }

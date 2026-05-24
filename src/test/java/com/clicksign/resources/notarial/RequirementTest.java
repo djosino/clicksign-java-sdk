@@ -98,12 +98,14 @@ class RequirementTest {
 
     @Test
     void createRubricateAcceptsPages() {
-        assertDoesNotThrow(() ->
-            Requirement.CreateParams.builder()
-                .envelopeId(ENVELOPE_ID)
-                .action("rubricate")
-                .pages("1-3")
-                .build());
+        Requirement.CreateParams params = Requirement.CreateParams.builder()
+            .envelopeId(ENVELOPE_ID)
+            .action("rubricate")
+            .pages("1-3")
+            .build();
+        org.junit.jupiter.api.Assertions.assertNotNull(params);
+        org.junit.jupiter.api.Assertions.assertEquals("1-3",
+            params.toAttributes().get("pages"));
     }
 
     @Test

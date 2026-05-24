@@ -116,6 +116,9 @@ public class ResourceQuery<T> {
      * @return this query
      */
     public ResourceQuery<T> include(String... types) {
+        if (types == null) {
+            throw new IllegalArgumentException("types array must not be null");
+        }
         Set<String> all = includeParam == null || includeParam.isBlank()
             ? new LinkedHashSet<>()
             : new LinkedHashSet<>(Arrays.asList(includeParam.split(",")));

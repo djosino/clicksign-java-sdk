@@ -243,23 +243,24 @@ public final class HttpClient {
     private String buildUrl(String path, Map<String, String> params) {
         StringBuilder url = new StringBuilder(config.baseUrl()).append(path);
         if (params != null && !params.isEmpty()) {
-            url.append('?');
+            StringBuilder qs = new StringBuilder();
             params.forEach((k, v) -> {
                 if (v != null) {
-                    url.append(encode(k)).append('=').append(encode(v)).append('&');
+                    if (qs.length() > 0) {
+                        qs.append('&');
+                    }
+                    qs.append(encode(k)).append('=').append(encode(v));
                 }
             });
-            url.setLength(url.length() - 1);
+            if (qs.length() > 0) {
+                url.append('?').append(qs);
+            }
         }
         return url.toString();
     }
 
     private static String encode(String value) {
-        try {
-            return java.net.URLEncoder.encode(value, "UTF-8");
-        } catch (java.io.UnsupportedEncodingException e) {
-            return value;
-        }
+        return java.net.URLEncoder.encode(value, java.nio.charset.StandardCharsets.UTF_8);
     }
 
     private static double elapsedMs(long startNano) {

@@ -95,13 +95,14 @@ public final class WebhookValidator {
 
     /**
      * Constant-time comparison — prevents timing attacks.
-     * Hashes both strings with SHA-256 before comparing so length differences do not leak.
+     * Both sides are hashed to fixed-length SHA-256 digests (32 bytes each) before
+     * calling {@link MessageDigest#isEqual}, ensuring the comparison always iterates
+     * exactly 32 bytes regardless of the attacker-controlled input length.
      */
     private static boolean secureEqual(String a, String b) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] digestA = digest.digest(a.getBytes(StandardCharsets.UTF_8));
-            digest.reset();
             byte[] digestB = digest.digest(b.getBytes(StandardCharsets.UTF_8));
             return MessageDigest.isEqual(digestA, digestB);
         } catch (NoSuchAlgorithmException e) {

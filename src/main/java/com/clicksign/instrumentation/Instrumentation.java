@@ -3,6 +3,7 @@ package com.clicksign.instrumentation;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -96,7 +97,7 @@ public final class Instrumentation {
         try {
             listener.accept(event);
         } catch (Exception e) {
-            LOG.warning("[Clicksign] instrumentation callback error: " + e.getMessage());
+            LOG.log(Level.WARNING, "[Clicksign] instrumentation callback error", e);
         }
     }
 }

@@ -17,38 +17,18 @@ public final class ClientConfig {
         this.maxRetries       = builder.maxRetries;
     }
 
-    /**
-     * Returns the api key.
-     *
-     * @return api key
-     */
     public String apiKey() {
         return apiKey;
     }
 
-    /**
-     * Returns the base url.
-     *
-     * @return base url
-     */
     public String baseUrl() {
         return baseUrl;
     }
 
-    /**
-     * Returns the connect timeout ms.
-     *
-     * @return connect timeout ms
-     */
     public int connectTimeoutMs() {
         return connectTimeoutMs;
     }
 
-    /**
-     * Returns the read timeout ms.
-     *
-     * @return read timeout ms
-     */
     public int readTimeoutMs() {
         return readTimeoutMs;
     }
@@ -64,11 +44,6 @@ public final class ClientConfig {
         return maxRetries;
     }
 
-    /**
-     * Returns a new builder.
-     *
-     * @return new builder
-     */
     public static Builder builder() {
         return new Builder();
     }

@@ -37,14 +37,14 @@ public final class Metadata {
     }
 
     /**
-     * Constructs from a raw map.
+     * Constructs from a raw map. Returns {@link #empty()} for null or empty maps.
      *
      * @param raw map from JSON:API attributes
-     * @return new instance, or {@code null} if the map is empty
+     * @return new instance
      */
     public static Metadata fromMap(Map<String, Object> raw) {
         if (raw == null || raw.isEmpty()) {
-            return null;
+            return empty();
         }
         return new Metadata(raw);
     }

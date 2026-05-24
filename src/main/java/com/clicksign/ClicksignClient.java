@@ -103,173 +103,78 @@ public final class ClicksignClient {
         this.autoSignatureTerms      = new AutoSignatureTerm.Service(httpClient);
     }
 
-    /**
-     * Returns the envelopes.
-     *
-     * @return envelopes
-     */
     public Envelope.Service envelopes() {
         return envelopes;
     }
 
-    /**
-     * Returns the documents.
-     *
-     * @return documents
-     */
     public Document.Service documents() {
         return documents;
     }
 
-    /**
-     * Returns the signers.
-     *
-     * @return signers
-     */
     public Signer.Service signers() {
         return signers;
     }
 
-    /**
-     * Returns the requirements.
-     *
-     * @return requirements
-     */
     public Requirement.Service requirements() {
         return requirements;
     }
 
-    /**
-     * Returns the signature watchers.
-     *
-     * @return signature watchers
-     */
     public SignatureWatcher.Service signatureWatchers() {
         return signatureWatchers;
     }
 
-    /**
-     * Returns the events.
-     *
-     * @return events
-     */
     public Event.Service events() {
         return events;
     }
 
-    /**
-     * Returns the bulk requirements.
-     *
-     * @return bulk requirements
-     */
     public BulkRequirement.Service bulkRequirements() {
         return bulkRequirements;
     }
 
-    /**
-     * Returns the webhooks.
-     *
-     * @return webhooks
-     */
     public Webhook.Service webhooks() {
         return webhooks;
     }
 
-    /**
-     * Returns the folders.
-     *
-     * @return folders
-     */
     public Folder.Service folders() {
         return folders;
     }
 
-    /**
-     * Returns the users.
-     *
-     * @return users
-     */
     public User.Service users() {
         return users;
     }
 
-    /**
-     * Returns the templates.
-     *
-     * @return templates
-     */
     public Template.Service templates() {
         return templates;
     }
 
-    /**
-     * Returns the template fields.
-     *
-     * @return template fields
-     */
     public TemplateField.Service templateFields() {
         return templateFields;
     }
 
-    /**
-     * Returns the memberships.
-     *
-     * @return memberships
-     */
     public Membership.Service memberships() {
         return memberships;
     }
 
-    /**
-     * Returns the groups.
-     *
-     * @return groups
-     */
     public Group.Service groups() {
         return groups;
     }
 
-    /**
-     * Returns the access control lists.
-     *
-     * @return access control lists
-     */
     public AccessControlList.Service accessControlLists() {
         return accessControlLists;
     }
 
-    /**
-     * Returns the envelope bulk creations.
-     *
-     * @return envelope bulk creations
-     */
     public EnvelopeBulkCreation.Service envelopeBulkCreations() {
         return envelopeBulkCreations;
     }
 
-    /**
-     * Returns the acceptance term whatsapps.
-     *
-     * @return acceptance term whatsapps
-     */
     public AcceptanceTermWhatsapp.Service acceptanceTermWhatsapps() {
         return acceptanceTermWhatsapps;
     }
 
-    /**
-     * Returns the auto signature terms.
-     *
-     * @return auto signature terms
-     */
     public AutoSignatureTerm.Service autoSignatureTerms() {
         return autoSignatureTerms;
     }
 
-    /**
-     * Returns a new builder.
-     *
-     * @return new builder
-     */
     public static Builder builder() {
         return new Builder();
     }

@@ -91,8 +91,8 @@ public final class BulkOperationsClient {
 
     private String handleResponse(HttpResponse<String> response) {
         String body = response.body();
-        // If atomic:results is present, return body regardless of HTTP status.
-        if (body != null && body.contains("\"atomic:results\"")) {
+        // atomic:results key at the top-level object means the server processed the batch.
+        if (body != null && hasAtomicResults(body)) {
             return body;
         }
         int status = response.statusCode();
@@ -102,6 +102,18 @@ public final class BulkOperationsClient {
         String requestId = response.headers().firstValue("x-request-id").orElse(null);
         String message   = ErrorMessageExtractor.extract(body, response);
         throw ErrorMessageExtractor.buildException(status, message, requestId, body, null);
+    }
+
+    /**
+     * Returns true if the top-level JSON object contains an {@code "atomic:results"} key.
+     * Uses {@link MinimalJsonParser} to avoid false positives from nested values.
+     */
+    private static boolean hasAtomicResults(String body) {
+        try {
+            return MinimalJsonParser.parseObject(body).containsKey("atomic:results");
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     private static void sleepJitter(int attempt) {
