@@ -119,7 +119,12 @@ public class ResourceQuery<T> {
         Set<String> all = includeParam == null || includeParam.isBlank()
             ? new LinkedHashSet<>()
             : new LinkedHashSet<>(Arrays.asList(includeParam.split(",")));
-        Collections.addAll(all, types);
+        for (String t : types) {
+            if (t == null || t.isBlank()) {
+                throw new IllegalArgumentException("include type must not be null or blank");
+            }
+            all.add(t);
+        }
         includeParam = String.join(",", all);
         return this;
     }

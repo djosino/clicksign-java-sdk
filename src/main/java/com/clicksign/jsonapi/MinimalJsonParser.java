@@ -178,9 +178,11 @@ public final class MinimalJsonParser {
     private String parseString() {
         expect('"');
         StringBuilder sb = new StringBuilder();
+        boolean closed = false;
         while (pos < input.length()) {
             char c = input.charAt(pos++);
             if (c == '"') {
+                closed = true;
                 break;
             }
             if (c == '\\') {
@@ -223,6 +225,9 @@ public final class MinimalJsonParser {
             } else {
                 sb.append(c);
             }
+        }
+        if (!closed) {
+            throw new IllegalStateException("Unterminated string at position " + pos);
         }
         return sb.toString();
     }

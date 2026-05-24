@@ -193,4 +193,16 @@ class ResourceQueryTest {
         String url = requests.get(0).getUrl();
         assertFalse(url.contains("include="), "include param must not be emitted when no types given");
     }
+
+    @Test
+    void includeRejectsNullElement() {
+        DocumentQuery query = documentService.filter(ENVELOPE_ID);
+        assertThrows(IllegalArgumentException.class, () -> query.include((String) null));
+    }
+
+    @Test
+    void includeRejectsBlankElement() {
+        DocumentQuery query = documentService.filter(ENVELOPE_ID);
+        assertThrows(IllegalArgumentException.class, () -> query.include(""));
+    }
 }

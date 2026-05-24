@@ -174,4 +174,10 @@ class MinimalJsonParserTest {
         assertThrows(IllegalStateException.class, () ->
             MinimalJsonParser.parseObject("{\"v\":\"abc\\"));
     }
+
+    @Test
+    void throwsOnUnterminatedString() {
+        assertThrows(IllegalStateException.class, () ->
+            MinimalJsonParser.parseObject("{\"key\":\"truncated"));
+    }
 }
