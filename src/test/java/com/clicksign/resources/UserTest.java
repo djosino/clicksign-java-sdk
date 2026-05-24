@@ -15,6 +15,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
@@ -93,5 +94,30 @@ class UserTest {
 
         assertEquals("user-new", user.id());
         assertEquals("Carol", user.name());
+    }
+
+    @Test
+    void createRequiresName() {
+        assertThrows(IllegalArgumentException.class, () ->
+            User.CreateParams.builder().email("x@example.com").build());
+    }
+
+    @Test
+    void createRequiresEmail() {
+        assertThrows(IllegalArgumentException.class, () ->
+            User.CreateParams.builder().name("Carol").build());
+    }
+
+    @Test
+    void createThrowsValidationException() {
+        wireMock.stubFor(post(urlEqualTo("/users"))
+            .willReturn(aResponse().withStatus(422)
+                .withBody(JsonApiFixtures.errorBody("email already taken"))));
+
+        assertThrows(com.clicksign.errors.ValidationException.class, () ->
+            service.create(User.CreateParams.builder()
+                .name("Carol")
+                .email("carol@example.com")
+                .build()));
     }
 }

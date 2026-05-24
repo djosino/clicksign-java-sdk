@@ -24,6 +24,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -186,5 +187,30 @@ class MembershipTest {
             .willReturn(aResponse().withStatus(204).withBody("")));
 
         assertDoesNotThrow(() -> service.delete("mem-1"));
+    }
+
+    @Test
+    void createRequiresRole() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Membership.CreateParams.builder().userId("user-1").build());
+    }
+
+    @Test
+    void createRequiresUserId() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Membership.CreateParams.builder().role("admin").build());
+    }
+
+    @Test
+    void createThrowsValidationException() {
+        wireMock.stubFor(post(urlEqualTo("/memberships"))
+            .willReturn(aResponse().withStatus(422)
+                .withBody(JsonApiFixtures.errorBody("user not found"))));
+
+        assertThrows(com.clicksign.errors.ValidationException.class, () ->
+            service.create(Membership.CreateParams.builder()
+                .role("admin")
+                .userId("nonexistent")
+                .build()));
     }
 }

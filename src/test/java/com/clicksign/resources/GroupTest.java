@@ -22,6 +22,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
@@ -122,5 +123,21 @@ class GroupTest {
 
         wireMock.verify(deleteRequestedFor(urlEqualTo("/groups/grp-1/relationships/users"))
             .withRequestBody(matchingJsonPath("$.data[0].type", equalTo("users"))));
+    }
+
+    @Test
+    void createRequiresName() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Group.CreateParams.builder().build());
+    }
+
+    @Test
+    void createThrowsValidationException() {
+        wireMock.stubFor(post(urlEqualTo("/groups"))
+            .willReturn(aResponse().withStatus(422)
+                .withBody(JsonApiFixtures.errorBody("name already taken"))));
+
+        assertThrows(com.clicksign.errors.ValidationException.class, () ->
+            service.create(Group.CreateParams.builder().name("Duplicado").build()));
     }
 }

@@ -20,6 +20,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
@@ -110,5 +111,30 @@ class WebhookTest {
             .willReturn(aResponse().withStatus(204).withBody("")));
 
         assertDoesNotThrow(() -> service.delete("wh-1"));
+    }
+
+    @Test
+    void createRequiresEndpoint() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Webhook.CreateParams.builder().build());
+    }
+
+    @Test
+    void createRequiresAtLeastOneEvent() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Webhook.CreateParams.builder().endpoint("https://example.com/hook").build());
+    }
+
+    @Test
+    void createThrowsValidationException() {
+        wireMock.stubFor(post(urlEqualTo("/webhooks"))
+            .willReturn(aResponse().withStatus(422)
+                .withBody(JsonApiFixtures.errorBody("endpoint is invalid"))));
+
+        assertThrows(com.clicksign.errors.ValidationException.class, () ->
+            service.create(Webhook.CreateParams.builder()
+                .endpoint("https://example.com/hook")
+                .addEvent("sign")
+                .build()));
     }
 }

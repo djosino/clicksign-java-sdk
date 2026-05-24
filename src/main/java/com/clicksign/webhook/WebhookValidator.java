@@ -68,6 +68,12 @@ public final class WebhookValidator {
      * @return expected signature string
      */
     public static String computeSignature(String payload, String secret) {
+        if (payload == null) {
+            throw new IllegalArgumentException("payload must not be null");
+        }
+        if (secret == null) {
+            throw new IllegalArgumentException("secret must not be null");
+        }
         try {
             Mac mac = Mac.getInstance(ALGORITHM);
             mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), ALGORITHM));

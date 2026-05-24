@@ -107,4 +107,23 @@ class TemplateTest {
         assertThrows(IllegalArgumentException.class, () ->
             Template.CreateParams.builder().name("Modelo").build());
     }
+
+    @Test
+    void createRequiresName() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Template.CreateParams.builder().contentBase64("abc").build());
+    }
+
+    @Test
+    void createThrowsValidationException() {
+        wireMock.stubFor(post(urlEqualTo("/templates"))
+            .willReturn(aResponse().withStatus(422)
+                .withBody(JsonApiFixtures.errorBody("content is invalid"))));
+
+        assertThrows(com.clicksign.errors.ValidationException.class, () ->
+            service.create(Template.CreateParams.builder()
+                .name("Modelo")
+                .contentBase64("aW52YWxpZA==")
+                .build()));
+    }
 }
