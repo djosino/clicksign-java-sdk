@@ -16,6 +16,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
@@ -68,6 +69,46 @@ class AutoSignatureTermTest {
         wireMock.verify(postRequestedFor(urlEqualTo("/auto_signature/terms"))
             .withRequestBody(matchingJsonPath("$.data.attributes.signer.name", equalTo("João Silva")))
             .withRequestBody(matchingJsonPath("$.data.attributes.api_email", equalTo("api@example.com"))));
+    }
+
+    @Test
+    void createRequiresSignerName() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AutoSignatureTerm.CreateParams.builder()
+                .signerEmail("joao@example.com")
+                .signerDocumentation("123.456.789-10")
+                .signerBirthday("1990-01-01")
+                .build());
+    }
+
+    @Test
+    void createRequiresSignerEmail() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AutoSignatureTerm.CreateParams.builder()
+                .signerName("João Silva")
+                .signerDocumentation("123.456.789-10")
+                .signerBirthday("1990-01-01")
+                .build());
+    }
+
+    @Test
+    void createRequiresSignerDocumentation() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AutoSignatureTerm.CreateParams.builder()
+                .signerName("João Silva")
+                .signerEmail("joao@example.com")
+                .signerBirthday("1990-01-01")
+                .build());
+    }
+
+    @Test
+    void createRequiresSignerBirthday() {
+        assertThrows(IllegalArgumentException.class, () ->
+            AutoSignatureTerm.CreateParams.builder()
+                .signerName("João Silva")
+                .signerEmail("joao@example.com")
+                .signerDocumentation("123.456.789-10")
+                .build());
     }
 
     @Test

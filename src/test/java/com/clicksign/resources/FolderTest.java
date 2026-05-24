@@ -18,6 +18,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
@@ -71,6 +72,18 @@ class FolderTest {
         Folder folder = service.retrieve("fld-1");
         assertEquals("fld-1", folder.id());
         assertTrue(folder.inRoot());
+    }
+
+    @Test
+    void createRequiresName() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Folder.CreateParams.builder().build());
+    }
+
+    @Test
+    void createRejectsBlankName() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Folder.CreateParams.builder().name("   ").build());
     }
 
     @Test

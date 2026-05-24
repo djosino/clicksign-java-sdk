@@ -10,6 +10,9 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import java.util.List;
 import java.util.Map;
 
+import com.clicksign.errors.NotFoundException;
+import com.clicksign.errors.ValidationException;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -19,6 +22,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
@@ -64,6 +68,56 @@ class SignatureWatcherTest {
         assertEquals("w-1", watchers.get(0).id());
         assertEquals("watcher@example.com", watchers.get(0).email());
         assertEquals("email", watchers.get(0).communicateEvents().get("signature_watcher_document_sent"));
+    }
+
+    @Test
+    void createRequiresEnvelopeId() {
+        assertThrows(IllegalArgumentException.class, () ->
+            SignatureWatcher.CreateParams.builder()
+                .email("w@example.com")
+                .kind("all_steps")
+                .build());
+    }
+
+    @Test
+    void createRequiresEmail() {
+        assertThrows(IllegalArgumentException.class, () ->
+            SignatureWatcher.CreateParams.builder()
+                .envelopeId(ENVELOPE_ID)
+                .kind("all_steps")
+                .build());
+    }
+
+    @Test
+    void createRequiresKind() {
+        assertThrows(IllegalArgumentException.class, () ->
+            SignatureWatcher.CreateParams.builder()
+                .envelopeId(ENVELOPE_ID)
+                .email("w@example.com")
+                .build());
+    }
+
+    @Test
+    void createThrowsValidationException() {
+        wireMock.stubFor(post(urlEqualTo("/envelopes/" + ENVELOPE_ID + "/signature_watchers"))
+            .willReturn(aResponse().withStatus(422)
+                .withBody(JsonApiFixtures.errorBody("invalid email"))));
+
+        assertThrows(ValidationException.class, () ->
+            service.create(SignatureWatcher.CreateParams.builder()
+                .envelopeId(ENVELOPE_ID)
+                .email("bad-email")
+                .kind("all_steps")
+                .build()));
+    }
+
+    @Test
+    void listThrowsNotFoundWhenEnvelopeMissing() {
+        wireMock.stubFor(get(urlEqualTo("/envelopes/missing/signature_watchers"))
+            .willReturn(aResponse().withStatus(404)
+                .withBody(JsonApiFixtures.errorBody("envelope not found"))));
+
+        assertThrows(NotFoundException.class, () -> service.list("missing"));
     }
 
     @Test

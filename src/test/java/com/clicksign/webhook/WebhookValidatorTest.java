@@ -89,4 +89,17 @@ class WebhookValidatorTest {
     void isValidSignatureReturnsFalseForNull() {
         assertFalse(WebhookValidator.isValidSignature(PAYLOAD, null, SECRET));
     }
+
+    @Test
+    void verifySignatureThrowsForWrongAlgorithmPrefix() {
+        String validHmac = WebhookValidator.computeSignature(PAYLOAD, SECRET).substring(7);
+        assertThrows(WebhookSignatureException.class,
+            () -> WebhookValidator.verifySignature(PAYLOAD, "sha1=" + validHmac, SECRET));
+    }
+
+    @Test
+    void isValidSignatureReturnsFalseForWrongAlgorithmPrefix() {
+        String validHmac = WebhookValidator.computeSignature(PAYLOAD, SECRET).substring(7);
+        assertFalse(WebhookValidator.isValidSignature(PAYLOAD, "sha1=" + validHmac, SECRET));
+    }
 }

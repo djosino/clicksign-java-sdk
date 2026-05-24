@@ -151,6 +151,20 @@ class ResourceQueryTest {
     }
 
     @Test
+    void includeDeduplicatesRepeatValues() {
+        wireMock.stubFor(get(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .willReturn(okJson(JsonApiFixtures.documentList(
+                JsonApiFixtures.document("doc-1", "a.pdf", ENVELOPE_ID)))));
+
+        documentService.filter(ENVELOPE_ID)
+            .include("envelope", "envelope", "signers")
+            .fetch();
+
+        wireMock.verify(getRequestedFor(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
+            .withQueryParam("include", equalTo("envelope,signers")));
+    }
+
+    @Test
     void fieldsAddsSparseFieldset() {
         wireMock.stubFor(get(urlPathEqualTo("/envelopes/" + ENVELOPE_ID + "/documents"))
             .withQueryParam("fields[documents]", equalTo("filename"))

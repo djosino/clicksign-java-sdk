@@ -71,6 +71,23 @@ class RequirementTest {
     }
 
     @Test
+    void createRequiresAction() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Requirement.CreateParams.builder()
+                .envelopeId(ENVELOPE_ID)
+                .build());
+    }
+
+    @Test
+    void createRejectsBlankAction() {
+        assertThrows(IllegalArgumentException.class, () ->
+            Requirement.CreateParams.builder()
+                .envelopeId(ENVELOPE_ID)
+                .action("   ")
+                .build());
+    }
+
+    @Test
     void createRubricateRequiresPagesOrRubricField() {
         assertThrows(IllegalArgumentException.class, () ->
             Requirement.CreateParams.builder()

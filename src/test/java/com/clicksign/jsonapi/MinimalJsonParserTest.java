@@ -7,6 +7,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MinimalJsonParserTest {
@@ -126,5 +127,38 @@ class MinimalJsonParserTest {
     void parsesEmptyResponse() {
         JsonApiParser.ParsedResponse parsed = JsonApiParser.parse(null);
         assertTrue(parsed.data().isEmpty());
+    }
+
+    @Test
+    void parsesAllCommonEscapeSequences() {
+        Map<String, Object> result = MinimalJsonParser.parseObject(
+            "{\"v\":\"\\n\\r\\t\\b\\f\\\\\\/\"}");
+        assertEquals("\n\r\t\b\f\\/", result.get("v"));
+    }
+
+    @Test
+    void throwsOnIncompleteUnicodeEscape() {
+        // only 2 hex digits after backslash-u: parseInt fails
+        assertThrows(Exception.class, () ->
+            MinimalJsonParser.parseObject("{\"v\":\"\\u12\"}"));
+    }
+
+    @Test
+    void throwsOnTruncatedUnicodeEscape() {
+        // input ends abruptly: bounds check fires with IllegalStateException
+        assertThrows(IllegalStateException.class, () ->
+            MinimalJsonParser.parseObject("{\"v\":\"\\u"));
+    }
+
+    @Test
+    void parsesUnicodeBmp() {
+        Map<String, Object> result = MinimalJsonParser.parseObject("{\"v\":\"\\u0041\"}");
+        assertEquals("A", result.get("v"));
+    }
+
+    @Test
+    void throwsOnMalformedJson() {
+        assertThrows(Exception.class, () ->
+            MinimalJsonParser.parseObject("{\"key\":}"));
     }
 }

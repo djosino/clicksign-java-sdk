@@ -77,4 +77,28 @@ class JsonApiSerializerTest {
         String json = JsonApiSerializer.toJson(list);
         assertEquals("[\"sign\",\"close\"]", json);
     }
+
+    @Test
+    void escapesNewlineInString() {
+        Map<String, Object> attrs = new LinkedHashMap<>();
+        attrs.put("name", "linha1\nlinha2");
+        String json = JsonApiSerializer.dump("envelopes", attrs);
+        assertTrue(json.contains("\"linha1\\nlinha2\""), "newline must be escaped as \\n");
+    }
+
+    @Test
+    void escapesCarriageReturnInString() {
+        Map<String, Object> attrs = new LinkedHashMap<>();
+        attrs.put("name", "a\rb");
+        String json = JsonApiSerializer.dump("envelopes", attrs);
+        assertTrue(json.contains("\"a\\rb\""), "carriage return must be escaped as \\r");
+    }
+
+    @Test
+    void escapesTabInString() {
+        Map<String, Object> attrs = new LinkedHashMap<>();
+        attrs.put("name", "col1\tcol2");
+        String json = JsonApiSerializer.dump("envelopes", attrs);
+        assertTrue(json.contains("\"col1\\tcol2\""), "tab must be escaped as \\t");
+    }
 }
