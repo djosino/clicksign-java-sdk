@@ -37,6 +37,9 @@ public final class WebhookValidator {
         if (signature == null || signature.isBlank()) {
             throw new WebhookSignatureException("Webhook signature is missing");
         }
+        if (payload == null || secret == null) {
+            throw new WebhookSignatureException("Webhook payload and secret must not be null");
+        }
         String expected = computeSignature(payload, secret);
         if (!secureEqual(expected, signature)) {
             throw new WebhookSignatureException("Webhook signature mismatch");

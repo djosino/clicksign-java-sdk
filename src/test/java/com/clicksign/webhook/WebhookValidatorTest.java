@@ -126,4 +126,18 @@ class WebhookValidatorTest {
         assertThrows(IllegalArgumentException.class,
             () -> WebhookValidator.computeSignature(PAYLOAD, null));
     }
+
+    @Test
+    void verifySignatureThrowsWebhookSignatureExceptionForNullPayload() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertThrows(WebhookSignatureException.class,
+            () -> WebhookValidator.verifySignature(null, sig, SECRET));
+    }
+
+    @Test
+    void verifySignatureThrowsWebhookSignatureExceptionForNullSecret() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertThrows(WebhookSignatureException.class,
+            () -> WebhookValidator.verifySignature(PAYLOAD, sig, null));
+    }
 }

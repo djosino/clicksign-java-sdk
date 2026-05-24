@@ -137,17 +137,24 @@ class MinimalJsonParserTest {
     }
 
     @Test
-    void throwsOnIncompleteUnicodeEscape() {
-        // only 2 hex digits after backslash-u: parseInt fails
-        assertThrows(Exception.class, () ->
+    void throwsOnNonHexUnicodeEscape() {
+        // "12}" is read as the 4-char substring — parseInt fails on non-hex char
+        assertThrows(NumberFormatException.class, () ->
             MinimalJsonParser.parseObject("{\"v\":\"\\u12\"}"));
     }
 
     @Test
     void throwsOnTruncatedUnicodeEscape() {
-        // input ends abruptly: bounds check fires with IllegalStateException
+        // input ends before 4 hex digits: bounds check fires with IllegalStateException
         assertThrows(IllegalStateException.class, () ->
             MinimalJsonParser.parseObject("{\"v\":\"\\u"));
+    }
+
+    @Test
+    void throwsOnTruncatedUnicodeEscapeWith3Digits() {
+        // 3 valid hex digits then end of input: bounds check fires with IllegalStateException
+        assertThrows(IllegalStateException.class, () ->
+            MinimalJsonParser.parseObject("{\"v\":\"\\u00A"));
     }
 
     @Test
