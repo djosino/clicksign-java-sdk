@@ -122,13 +122,15 @@ class InstrumentationTest {
         wireMock.stubFor(get(urlEqualTo("/envelopes"))
             .willReturn(okJson("{\"data\":[]}")));
 
+        List<RequestEvent> reached = new ArrayList<>();
         ClicksignClient client = clientBuilder()
             .onRequest(e -> {
                 throw new RuntimeException("callback boom");
             })
+            .onRequest(reached::add)
             .build();
 
-        // Should not throw despite callback exception
         assertDoesNotThrow(() -> client.envelopes().list());
+        assertEquals(1, reached.size(), "second listener must be called even after first throws");
     }
 }

@@ -1,6 +1,7 @@
 package com.clicksign.instrumentation;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -12,7 +13,8 @@ import java.util.logging.Logger;
  * <p>Register callbacks via {@link com.clicksign.ClicksignClient.Builder#onRequest},
  * {@link com.clicksign.ClicksignClient.Builder#onRetry},
  * {@link com.clicksign.ClicksignClient.Builder#onError}. Callbacks are invoked synchronously on the request thread.
- * Exceptions thrown by callbacks are caught and logged — they do not propagate.
+ * Exceptions and Errors thrown by callbacks are caught and logged — they do not propagate.
+ * Listeners are permanent for the lifetime of this instance; there is no unregister method.
  *
  * <pre>{@code
  * ClicksignClient client = ClicksignClient.builder()
@@ -39,7 +41,7 @@ public final class Instrumentation {
      * @param listener listener to add
      */
     public void onRequest(Consumer<RequestEvent> listener) {
-        requestListeners.add(listener);
+        requestListeners.add(Objects.requireNonNull(listener, "listener"));
     }
 
     /**
@@ -48,7 +50,7 @@ public final class Instrumentation {
      * @param listener listener to add
      */
     public void onRetry(Consumer<RetryEvent> listener) {
-        retryListeners.add(listener);
+        retryListeners.add(Objects.requireNonNull(listener, "listener"));
     }
 
     /**
@@ -57,7 +59,7 @@ public final class Instrumentation {
      * @param listener listener to add
      */
     public void onError(Consumer<ErrorEvent> listener) {
-        errorListeners.add(listener);
+        errorListeners.add(Objects.requireNonNull(listener, "listener"));
     }
 
     /**
@@ -96,7 +98,7 @@ public final class Instrumentation {
     private <E> void safeInvoke(Consumer<E> listener, E event) {
         try {
             listener.accept(event);
-        } catch (Exception e) {
+        } catch (Exception | Error e) {
             LOG.log(Level.WARNING, "[Clicksign] instrumentation callback error", e);
         }
     }
