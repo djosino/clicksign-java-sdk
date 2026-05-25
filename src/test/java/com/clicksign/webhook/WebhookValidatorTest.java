@@ -61,6 +61,20 @@ class WebhookValidatorTest {
     }
 
     @Test
+    void verifySignatureThrowsForBlankSignature() {
+        assertThrows(WebhookSignatureException.class,
+            () -> WebhookValidator.verifySignature(PAYLOAD, "   ", SECRET));
+    }
+
+    @Test
+    void verifySignatureThrowsForSignatureWithoutPrefix() {
+        String bareHex = WebhookValidator.computeSignature(PAYLOAD, SECRET).substring(7);
+        WebhookSignatureException ex = assertThrows(WebhookSignatureException.class,
+            () -> WebhookValidator.verifySignature(PAYLOAD, bareHex, SECRET));
+        assertTrue(ex.getMessage().contains("invalid format"));
+    }
+
+    @Test
     void verifySignatureThrowsForTamperedPayload() {
         String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
         assertThrows(WebhookSignatureException.class,
@@ -72,6 +86,20 @@ class WebhookValidatorTest {
         String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
         assertThrows(WebhookSignatureException.class,
             () -> WebhookValidator.verifySignature(PAYLOAD, sig, "wrong-secret"));
+    }
+
+    @Test
+    void verifySignatureThrowsForBlankSecret() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertThrows(WebhookSignatureException.class,
+            () -> WebhookValidator.verifySignature(PAYLOAD, sig, ""));
+    }
+
+    @Test
+    void verifySignatureThrowsForWhitespaceOnlySecret() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertThrows(WebhookSignatureException.class,
+            () -> WebhookValidator.verifySignature(PAYLOAD, sig, "   "));
     }
 
     @Test
@@ -88,6 +116,23 @@ class WebhookValidatorTest {
     @Test
     void isValidSignatureReturnsFalseForNull() {
         assertFalse(WebhookValidator.isValidSignature(PAYLOAD, null, SECRET));
+    }
+
+    @Test
+    void isValidSignatureReturnsFalseForBlankSignature() {
+        assertFalse(WebhookValidator.isValidSignature(PAYLOAD, "   ", SECRET));
+    }
+
+    @Test
+    void isValidSignatureReturnsFalseForBlankSecret() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertFalse(WebhookValidator.isValidSignature(PAYLOAD, sig, ""));
+    }
+
+    @Test
+    void isValidSignatureReturnsFalseForSignatureWithoutPrefix() {
+        String bareHex = WebhookValidator.computeSignature(PAYLOAD, SECRET).substring(7);
+        assertFalse(WebhookValidator.isValidSignature(PAYLOAD, bareHex, SECRET));
     }
 
     @Test
@@ -128,6 +173,12 @@ class WebhookValidatorTest {
     }
 
     @Test
+    void computeSignatureThrowsForBlankSecret() {
+        assertThrows(IllegalArgumentException.class,
+            () -> WebhookValidator.computeSignature(PAYLOAD, ""));
+    }
+
+    @Test
     void verifySignatureThrowsWebhookSignatureExceptionForNullPayload() {
         String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
         assertThrows(WebhookSignatureException.class,
@@ -139,5 +190,30 @@ class WebhookValidatorTest {
         String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
         assertThrows(WebhookSignatureException.class,
             () -> WebhookValidator.verifySignature(PAYLOAD, sig, null));
+    }
+
+    @Test
+    void isValidSignatureReturnsFalseForVeryLongSignature() {
+        String longSig = "sha256=" + "a".repeat(2048);
+        assertFalse(WebhookValidator.isValidSignature(PAYLOAD, longSig, SECRET));
+    }
+
+    @Test
+    void verifySignatureAcceptsUppercasePrefix() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        String upperSig = sig.toUpperCase();
+        assertDoesNotThrow(() -> WebhookValidator.verifySignature(PAYLOAD, upperSig, SECRET));
+    }
+
+    @Test
+    void isValidSignatureReturnsTrueForUppercasePrefix() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertTrue(WebhookValidator.isValidSignature(PAYLOAD, sig.toUpperCase(), SECRET));
+    }
+
+    @Test
+    void isValidSignatureReturnsFalseForWhitespaceOnlySecret() {
+        String sig = WebhookValidator.computeSignature(PAYLOAD, SECRET);
+        assertFalse(WebhookValidator.isValidSignature(PAYLOAD, sig, "   "));
     }
 }
