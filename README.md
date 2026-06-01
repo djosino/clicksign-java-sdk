@@ -1,7 +1,7 @@
 # Clicksign Java SDK
 
 ![Java 11+](https://img.shields.io/badge/Java-11%2B-blue)
-![CI](https://github.com/clicksign/clicksign-java-sdk/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/djosino/clicksign-java-sdk/actions/workflows/ci.yml/badge.svg)
 ![License MIT](https://img.shields.io/badge/license-MIT-green)
 [![Documentação](https://img.shields.io/badge/docs-GitHub-blue)](docs/README.md)
 
@@ -46,7 +46,7 @@ Cliente Java para a [Clicksign API v3](https://developers.clicksign.com/referenc
 
 ```kotlin
 dependencies {
-    implementation("br.com.josino.clicksign:clicksign-java-sdk:0.1.2")
+    implementation("br.com.josino.clicksign:clicksign-java-sdk:0.1.3")
 }
 ```
 
@@ -56,7 +56,7 @@ dependencies {
 <dependency>
   <groupId>br.com.josino.clicksign</groupId>
   <artifactId>clicksign-java-sdk</artifactId>
-  <version>0.1.2</version>
+  <version>0.1.3</version>
 </dependency>
 ```
 
