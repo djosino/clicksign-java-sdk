@@ -15,7 +15,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.patch;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -138,17 +137,6 @@ class RequirementTest {
         wireMock.verify(postRequestedFor(urlEqualTo("/envelopes/" + ENVELOPE_ID + "/requirements"))
             .withRequestBody(matchingJsonPath("$.data.relationships.document.data.id", equalTo("doc-1")))
             .withRequestBody(matchingJsonPath("$.data.relationships.signer.data.id", equalTo("sig-1"))));
-    }
-
-    @Test
-    void updateReturnsRequirement() {
-        wireMock.stubFor(patch(urlEqualTo("/envelopes/" + ENVELOPE_ID + "/requirements/req-1"))
-            .willReturn(okJson(JsonApiFixtures.requirement("req-1", "provide_evidence", ENVELOPE_ID))));
-
-        Requirement updated = service.update("req-1", ENVELOPE_ID,
-            Requirement.UpdateParams.builder().action("provide_evidence").build());
-
-        assertEquals("provide_evidence", updated.action());
     }
 
     @Test

@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [0.1.3]
+
+### Removed
+
+- `Requirement.Service#update()` and `Requirement.UpdateParams` — the API does not expose `PATCH /envelopes/{id}/requirements/{id}`; the method was a spec error
+
+### Changed
+
+- `docs/SPEC.md` — removed Requirement update row; clarified Membership uses PUT (not PATCH)
+
 ## [0.1.2]
 
 ### Changed

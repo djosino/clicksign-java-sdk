@@ -33,7 +33,6 @@ Legenda: **Q** = `ResourceQuery` via `.filter()`.
 | `Requirement` | `filter(envelopeId)` | GET | `/envelopes/{eid}/requirements` | Q |
 | `Requirement` | `retrieve(id, envelopeId)` | GET | `/envelopes/{eid}/requirements/{id}` | |
 | `Requirement` | `create(params)` | POST | `/envelopes/{eid}/requirements` | relationships no body |
-| `Requirement` | `update(id, envelopeId, params)` | PATCH | `/envelopes/{eid}/requirements/{id}` | |
 | `Requirement` | `delete(id, envelopeId)` | DELETE | `/envelopes/{eid}/requirements/{id}` | |
 | `SignatureWatcher` | `list(envelopeId)` | GET | `/envelopes/{eid}/signature_watchers` | |
 | `SignatureWatcher` | `retrieve(id, envelopeId)` | GET | `/envelopes/{eid}/signature_watchers/{id}` | |
@@ -74,7 +73,7 @@ Legenda: **Q** = `ResourceQuery` via `.filter()`.
 | `Membership` | `filter()` | GET | `/memberships` | Q: `role`, `user.id` |
 | `Membership` | `retrieve(id)` | GET | `/memberships/{id}` | |
 | `Membership` | `create(params)` | POST | `/memberships` | |
-| `Membership` | `update(id, params)` | **PUT** | `/memberships/{id}` | Não PATCH |
+| `Membership` | `update(id, params)` | **PUT** | `/memberships/{id}` | PUT — não PATCH (Ruby/Python devem espelhar) |
 | `Membership` | `delete(id)` | DELETE | `/memberships/{id}` | |
 | `Group` | `list()` | GET | `/groups` | |
 | `Group` | `retrieve(id)` | GET | `/groups/{id}` | |
