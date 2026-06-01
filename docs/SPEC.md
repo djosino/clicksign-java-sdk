@@ -67,8 +67,8 @@ Legenda: **Q** = `ResourceQuery` via `.filter()`.
 | `Template` | `delete(id)` | DELETE | `/templates/{id}` | |
 | `Template` | `listTemplateFields(templateId)` | GET | `/templates/{id}/template_fields` | |
 | `TemplateField` | `list()` | GET | `/template_fields` | |
-| `TemplateField` | `update(id, params)` | PATCH | `/template_fields/{id}` | |
-| `TemplateField` | `delete(id)` | DELETE | `/template_fields/{id}` | |
+| `TemplateField` | `update(id, templateId, params)` | PATCH | `/templates/{templateId}/template_fields/{id}` | |
+| `TemplateField` | `delete(id, templateId)` | DELETE | `/templates/{templateId}/template_fields/{id}` | |
 | `Membership` | `list()` | GET | `/memberships` | |
 | `Membership` | `filter()` | GET | `/memberships` | Q: `role`, `user.id` |
 | `Membership` | `retrieve(id)` | GET | `/memberships/{id}` | |

@@ -64,10 +64,10 @@ class TemplateFieldTest {
 
     @Test
     void updateReturnsTemplateField() {
-        wireMock.stubFor(patch(urlEqualTo("/template_fields/tf-1"))
+        wireMock.stubFor(patch(urlEqualTo("/templates/tpl-1/template_fields/tf-1"))
             .willReturn(okJson(JsonApiFixtures.templateField("tf-1", "nome_completo", "tpl-1"))));
 
-        TemplateField updated = service.update("tf-1",
+        TemplateField updated = service.update("tf-1", "tpl-1",
             TemplateField.UpdateParams.builder().name("nome_completo").build());
 
         assertEquals("nome_completo", updated.name());
@@ -75,9 +75,9 @@ class TemplateFieldTest {
 
     @Test
     void deleteDoesNotThrow() {
-        wireMock.stubFor(delete(urlEqualTo("/template_fields/tf-1"))
+        wireMock.stubFor(delete(urlEqualTo("/templates/tpl-1/template_fields/tf-1"))
             .willReturn(aResponse().withStatus(204).withBody("")));
 
-        assertDoesNotThrow(() -> service.delete("tf-1"));
+        assertDoesNotThrow(() -> service.delete("tf-1", "tpl-1"));
     }
 }

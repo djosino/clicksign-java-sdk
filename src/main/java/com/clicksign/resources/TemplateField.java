@@ -131,23 +131,25 @@ public final class TemplateField {
         /**
          * Updates resource.
          *
-         * @param id     resource id
-         * @param params update parameters
+         * @param id         resource id
+         * @param templateId parent template id
+         * @param params     update parameters
          * @return updated resource
          */
-        public TemplateField update(String id, UpdateParams params) {
+        public TemplateField update(String id, String templateId, UpdateParams params) {
             String body = JsonApiSerializer.dump("template_fields", id, params.toAttributes(), null);
-            String raw  = http.patch(ENDPOINT + "/" + id, body);
+            String raw  = http.patch("/templates/" + templateId + "/template_fields/" + id, body);
             return new TemplateField(JsonApiParser.parse(raw).firstData());
         }
 
         /**
          * Deletes resource by id.
          *
-         * @param id resource id
+         * @param id         resource id
+         * @param templateId parent template id
          */
-        public void delete(String id) {
-            http.delete(ENDPOINT + "/" + id, null);
+        public void delete(String id, String templateId) {
+            http.delete("/templates/" + templateId + "/template_fields/" + id, null);
         }
     }
 
