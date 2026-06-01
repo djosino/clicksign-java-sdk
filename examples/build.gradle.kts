@@ -56,3 +56,10 @@ tasks.register<JavaExec>("runProductionLimitations") {
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("com.clicksign.examples.ProductionLimitationsExample")
 }
+
+tasks.register<JavaExec>("runFullFlow") {
+    group = "examples"
+    description = "Fluxo completo: criar → doc → signatário → requisitos → ativar → notificar (requer CLICKSIGN_API_KEY)"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.clicksign.examples.FullFlowExample")
+}
